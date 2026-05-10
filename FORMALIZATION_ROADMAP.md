@@ -52,6 +52,29 @@ def — A.13), `dist-exp-min` (minimum of independent exponentials, survival-
 function level — A.5), and `mc-thm-1.4.32` (Birkhoff/ergodic for Markov chains
 via AFP `Ergodic_Theory.Ergodicity.birkhoff_theorem_AE` — A.9, library_wrapper).
 
+**BM-martingale extensions (2026-05-09 evening)**: `bm-rmk-5.1.6-square` and
+`bm-rmk-5.1.6-exp` both promoted from `reduced_core` to `full` via real Lean
+derivations in `lean/HybridVerify/BrownianMartingale.lean`. The square version
+uses `condExp_indep_eq` + Mathlib's `variance_id_gaussianReal` for the second-
+moment computation; the exponential (Wald) version uses `mgf_id_gaussianReal`
+for the MGF computation + `condExp_mul_of_stronglyMeasurable_left` to pull out
+the 𝓕_s-measurable factor. Both proofs were authored using the persistent
+`lean-repl` daemon (commit 9d19573), which dropped iteration to ~5 sec/check
+from ~5-15 min/check. Net audit: 28 → 26 reduced cores; 14 → 16 full;
+37 → 39 delivery-claim ready.
+
+**A.7 bivariate Gaussian conditional — sketch only**: a structured proof
+attempt for `dist-thm-B.1.3-conditional` (deriving `E[X|σ(Y)] = μ_X +
+(ρσ_X/σ_Y)(Y − μ_Y)` from joint-Gaussianity hypotheses) is preserved at
+`docs/superpowers/sketches/bivariate_gaussian_v1.lean`. The structure follows
+the textbook approach (orthogonal regression + zero-covariance ⇒ independence
+for jointly Gaussian, via Mathlib's `HasGaussianLaw.indepFun_of_covariance_eq_zero`).
+Four open Lean errors remain at the integral-arithmetic / `condExp_add` /
+`show`-tactic-pattern levels — each tractable individually, but the proof
+together is ~250 lines and the API signatures need careful work that the
+single session could not absorb. Benchmark `dist-thm-B.1.3-conditional`
+remains `reduced_core`.
+
 **Degenne BM wraps (2026-05-09)**: confirmed Degenne `RemyDegenne/brownian-motion`
 (commit 51807683) builds cleanly under `lean-interact`'s existing `TempRequireProject`
 once all four transitive deps are pinned in `hybrid_verify.toml` (Mathlib
