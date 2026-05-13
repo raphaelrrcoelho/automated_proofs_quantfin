@@ -79,7 +79,7 @@
       "description": "Proposition 4.3.6: For a continuous adapted process X and an open set A, the hitting time τ_A = inf{t ≥ 0 : X_t ∈ A} is a stopping time",
       "domain": "stopping_times",
       "code": {
-        "lean": "import Mathlib\nimport HybridVerify.HittingTimeOpen\n\nopen MeasureTheory ProbabilityTheory HybridVerify\nopen scoped NNReal ENNReal\n\nvariable {Ω : Type*} {mΩ : MeasurableSpace Ω}\n\n/-- Proposition 4.3.6 (hitting time of an open set, library wrapper).\n    Re-export of `HybridVerify.HittingTimeOpenHyp.is_stopping_time` which\n    wraps Degenne `isStoppingTime_hittingAfter'` from\n    `BrownianMotion/Choquet/Debut.lean`. For a continuous, strongly adapted\n    process `X` indexed by `ℝ≥0` with respect to a filtration satisfying\n    the usual conditions (`IsComplete P`, `IsRightContinuous`), the hitting\n    time `hittingAfter X A 0` of an open set `A` is a stopping time. -/\ntheorem hitting_time_open_is_stopping_time\n    {P : Measure Ω} [IsFiniteMeasure P]\n    {𝓕 : Filtration ℝ≥0 mΩ} [𝓕.IsComplete P] [𝓕.IsRightContinuous]\n    {X : ℝ≥0 → Ω → ℝ} {A : Set ℝ}\n    (h : HittingTimeOpenHyp P 𝓕 X A) :\n    IsStoppingTime 𝓕 (hittingAfter X A 0) :=\n  h.is_stopping_time\n"
+        "lean": "import Mathlib\n\nopen MeasureTheory ProbabilityTheory\n\n/-- Specification of the hitting-time-of-an-open-set theorem for continuous\n    adapted processes (Proposition 4.3.6). -/\nstructure HittingTimeOpenStoppingTime {Ω : Type*} [m0 : MeasurableSpace Ω]\n    (𝓕 : Filtration ℝ m0)\n    (X : ℝ → Ω → ℝ) (A : Set ℝ) (τA : Ω → ℝ) : Prop where\n  /-- A is open. -/\n  is_open_A : IsOpen A\n  /-- Almost every path is continuous. -/\n  continuous_paths : ∀ ω, Continuous fun t => X t ω\n  /-- X is adapted to the filtration. -/\n  adapted : Adapted 𝓕 X\n  /-- τA is the hitting-time inf{t ≥ 0 : X_t ∈ A}. -/\n  hitting_def : ∀ ω, τA ω = sInf {t : ℝ | 0 ≤ t ∧ X t ω ∈ A}\n  /-- Proposition 4.3.6: τA is a stopping time. -/\n  is_stopping_time : IsStoppingTime 𝓕 (fun ω => (τA ω : WithTop ℝ))\n\n/-- Proposition 4.3.6: the hitting time of an open set by a continuous adapted\n    process is a stopping time. -/\ntheorem HittingTimeOpenStoppingTime.hitting_time_is_stopping_time\n    {Ω : Type*} [m0 : MeasurableSpace Ω] {𝓕 : Filtration ℝ m0}\n    {X : ℝ → Ω → ℝ} {A : Set ℝ} {τA : Ω → ℝ}\n    (h : HittingTimeOpenStoppingTime 𝓕 X A τA) :\n    IsStoppingTime 𝓕 (fun ω => (τA ω : WithTop ℝ)) :=\n  h.is_stopping_time\n"
       },
       "metadata": {
         "chapter": 4,
@@ -89,14 +89,8 @@
           "sympy": "import sympy as sp\n\n# Proposition 4.3.6: τ_A is a stopping time for continuous adapted X and open A.\n# Verify the σ-algebra criterion: {τ_A < t} = ∪_{s∈Q∩[0,t)} {X_s ∈ A}\n# (since A is open and X has continuous paths, hitting can be detected on rationals).\n# This makes {τ_A < t} a countable union of F_t-measurable sets, hence in F_t.\n\n# Sanity: countable union of measurable sets is measurable.\n# Symbolic structure check.\nresult = {\n    'verified': True,  # structural argument, hard to symbolize directly\n    'mode': 'symbolic',\n    'note': '{τ_A < t} = ∪_{s∈Q∩[0,t)} {X_s ∈ A}; countable union of F_t-meas sets',\n    'requires': 'continuity of paths, openness of A, completeness of filtration'\n}"
         },
         "cas_reference_note": "Historical SymPy check retained for reference only; default routing is formal-only.",
-        "formalization_status": "library_wrapper",
-        "formalization_scope": "Lean library wrapper of Degenne isStoppingTime_hittingAfter' from BrownianMotion/Choquet/Debut.lean (in RemyDegenne/brownian-motion at pin 51807683). For a continuous, strongly adapted process X indexed by NNReal with respect to a filtration satisfying the usual conditions (IsComplete + IsRightContinuous), the hitting time hittingAfter X A 0 of an open set A is a stopping time. Open implies measurable (the lemma's hypothesis) and continuous + StronglyAdapted gives ProgMeasurable via Mathlib StronglyAdapted.progMeasurable_of_continuous, which is the input to Degenne's debut/Choquet machinery. Verified via #print axioms.",
-        "v430_recovery": {
-          "from": "reduced_core",
-          "to": "library_wrapper",
-          "recorded_on": "2026-05-13",
-          "note": "Promoted via Degenne isStoppingTime_hittingAfter' (Choquet/Debut.lean) after NNReal restructure."
-        }
+        "formalization_status": "reduced_core",
+        "formalization_scope": "Lean specification: the structure encodes the textbook hypotheses and the textbook conclusion as fields, so any inhabitant satisfies the textbook statement by construction; the theorem reads off the conclusion via a structural projection. This is statement-level encoding, not a derivation of the textbook conclusion from foundational primitives. Stays reduced_core because the natural library wrap (Degenne's isStoppingTime_hittingAfter' from Choquet/Debut.lean) has transitive sorryAx dependence through Choquet/CompactSystem.lean (5 unsolved sorries in Degenne master). #print axioms confirms transitive sorryAx; the project audit policy requires library_wrapper claims to be axiomatically clean."
       }
     }
   ]

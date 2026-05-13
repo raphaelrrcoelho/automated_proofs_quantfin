@@ -43,11 +43,11 @@ Lean code entries: 65
 Isabelle code entries: 25
 quarantined SymPy references: 55
 
-full theorem statements: 14
-library theorem wrappers: 23
-reduced formal cores: 28
+full theorem statements: 17
+library theorem wrappers: 24
+reduced formal cores: 24
 placeholders/stubs: 0
-delivery-claim ready: 37
+delivery-claim ready: 41
 ```
 
 **Sorry-aware audit (2026-05-09)**: every Degenne-derived `library_wrapper`
@@ -59,6 +59,26 @@ candidate: `MeasureTheory.isStoppingTime_hittingAfter'` from
 `Choquet/Debut.lean` — `#print axioms` revealed transitive dependence on
 `sorryAx` through `Choquet/CompactSystem.lean` (which has 5 unsolved sorries).
 `cm-prop-4.3.6` therefore stays `reduced_core`.
+
+**Promotion update (2026-05-13)**: After restructuring the cm-thm-4.3.7
+benchmark entry to NNReal-indexed filtration (so Degenne's `Approximable`
+instance fires automatically), one additional library_wrapper promotion
+lands:
+- `cm-thm-4.3.7` — stopped continuous-time martingale. Wraps
+  `MeasureTheory.Martingale.stoppedProcess_indicator` from Degenne
+  `BrownianMotion/StochasticIntegral/LocalMartingale.lean`. Sorry-free.
+  `#print axioms` confirmed clean:
+  `[propext, Classical.choice, Quot.sound]`. Lives at
+  `lean/HybridVerify/StoppedContinuousMartingale.lean`.
+
+A second NNReal-restructure candidate `cm-prop-4.3.6` (hitting time of an
+open set) was scoped but did NOT promote: the Degenne wrap
+`isStoppingTime_hittingAfter'` has `#print axioms` output
+`[propext, sorryAx, Classical.choice, Quot.sound]` — transitive `sorryAx`
+through `Choquet/CompactSystem.lean` (5 unsolved sorries in Degenne master,
+unchanged since the 2026-05-09 audit). Per the project audit policy, the
+benchmark entry stays `reduced_core` until Degenne closes those upstream
+sorries.
 
 **Zero placeholders.** The 3 prior Degenne BM placeholders (`bm-thm-5.1.4`, `bm-thm-5.3.2`, `bm-prop-5.1.2`) were ported on 2026-05-09 — `bm-thm-5.1.4` to a real Mathlib `library_wrapper` (using upstream `HasIndepIncrements.indepFun_eval_sub`), and `bm-thm-5.3.2`, `bm-prop-5.1.2` to honest `reduced_core` structural encodings. See "BM port (2026-05-09)" below for details. Mathlib at pin `f23306121184` ships the relevant scaffolding (`HasIndepIncrements`, `IsGaussianProcess`, `IsKolmogorovProcess`, `multivariateGaussian`) upstream, eliminating the need for the Degenne Lake dependency that lean-interact's `TempRequireProject` could not reliably load.
 
