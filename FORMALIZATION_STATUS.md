@@ -80,6 +80,31 @@ unchanged since the 2026-05-09 audit). Per the project audit policy, the
 benchmark entry stays `reduced_core` until Degenne closes those upstream
 sorries.
 
+**Doob L^p progress (2026-05-13 session)**: `mart-thm-2.4.6` skeleton
+in `lean/HybridVerify/DoobLp.lean` advanced from "10 helpers + main
+`sorry`" to "14 helpers + 3-of-4 main-theorem cases proved + 1 `sorry`
+for truncation":
+
+- `fubini_swap` (Stage 1, ✓): bivariate Tonelli swap with joint
+  measurability of `{(t,ω) | t ≤ runMax M n ω}`, via
+  `lintegral_lintegral_swap`.
+- `holder_apply` + `holder_step` (Stage 2, ✓): `ENNReal.lintegral_mul_le_Lp_mul_Lq`
+  with `HolderConjugate p (p/(p-1))` + rpow algebra `(x^(p-1))^q = x^p`,
+  then combined with the layer-cake bound and Fubini swap into the
+  master inequality `A ≤ ofReal(p/(p-1)) · B^(1/p) · A^((p-1)/p)` where
+  `A = ∫⁻ Mstar^p`, `B = ∫⁻ M_n^p`.
+- `eLpNorm_eq_lintegral_ofReal_pow` (Stage 4, ✓): converts
+  `eLpNorm f (ofReal p) μ` to `(∫⁻ ofReal(f^p))^(1/p)` for non-negative f.
+- Main theorem `doob_lp_maximal_inequality`: handles `A = 0`, `A = B = ∞`,
+  and `0 < A < ∞` cases via rpow inversion (using `ENNReal.rpow_add_of_nonneg`
+  + `ENNReal.div_le_iff`). One `sorry` remains for `A = ∞, B < ∞` — the
+  truncation corner where the chain alone doesn't bootstrap. Standard
+  fix: `min(runMax M n, K)` family + `lintegral_iSup` monotone
+  convergence as `K → ∞`. ~100-150 lines of remaining Lean engineering.
+
+Benchmark entry `mart-thm-2.4.6` stays `reduced_core` until truncation
+closes. Coverage report unchanged this session (41 delivery-ready).
+
 **Zero placeholders.** The 3 prior Degenne BM placeholders (`bm-thm-5.1.4`, `bm-thm-5.3.2`, `bm-prop-5.1.2`) were ported on 2026-05-09 — `bm-thm-5.1.4` to a real Mathlib `library_wrapper` (using upstream `HasIndepIncrements.indepFun_eval_sub`), and `bm-thm-5.3.2`, `bm-prop-5.1.2` to honest `reduced_core` structural encodings. See "BM port (2026-05-09)" below for details. Mathlib at pin `f23306121184` ships the relevant scaffolding (`HasIndepIncrements`, `IsGaussianProcess`, `IsKolmogorovProcess`, `multivariateGaussian`) upstream, eliminating the need for the Degenne Lake dependency that lean-interact's `TempRequireProject` could not reliably load.
 
 **Validation note:** `mart-thm-2.6.7` had additional `Adapted → StronglyAdapted` renames applied at lines 124 (S_adapted) and 143 (hφ_pred) on top of the original Adapted/StronglyAdapted + Finset.stronglyMeasurable_fun_sum + Integrable.bdd_mul cascade fix. End-to-end docker validation of this final patch is pending the in-flight `verify` image rebuild (Dockerfile change to add `[dev]` extras invalidated downstream Isabelle/AFP layers). `mart-thm-2.2.9` was confirmed passing in the prior stretch sweep.
