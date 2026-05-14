@@ -48,6 +48,25 @@ structure BrownianIncrementSpec (μ : Measure Ω) (B : ℝ → Ω → ℝ) : Pro
   gaussian_increments : ∀ ⦃s t : ℝ⦄, s ≤ t →
     ∃ v : NNReal, (v : ℝ) = t - s ∧
       Measure.map (fun ω => B t ω - B s ω) μ = gaussianReal 0 v
+  /-- BM has independent increments: for `r ≤ s ≤ t`, `B s − B r` and
+      `B t − B s` are independent. -/
+  indep_increments : HasIndepIncrements B μ
+
+/-- BM increments have mean zero (under the Gaussian-increments hypothesis). -/
+lemma BrownianIncrementSpec.integral_increment_eq_zero
+    {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {B : ℝ → Ω → ℝ} (hB : BrownianIncrementSpec μ B)
+    {s t : ℝ} (hst : s ≤ t) :
+    ∫ ω, (B t ω - B s ω) ∂μ = 0 := by
+  obtain ⟨v, _, hv_map⟩ := hB.gaussian_increments hst
+  have h_aemeas : AEMeasurable (fun ω => B t ω - B s ω) μ := by
+    apply AEMeasurable.of_map_ne_zero
+    rw [hv_map]
+    exact (IsProbabilityMeasure.ne_zero (gaussianReal 0 v))
+  have : ∫ ω, (B t ω - B s ω) ∂μ
+        = ∫ x, x ∂(Measure.map (fun ω => B t ω - B s ω) μ) := by
+    rw [integral_map h_aemeas measurable_id'.aestronglyMeasurable]
+  rw [this, hv_map, integral_id_gaussianReal]
 
 /-- **Wiener step-integral isometry.**
 
@@ -98,5 +117,75 @@ theorem wiener_step_isometry
     simpa using this
   rw [← h_var_eq, h_var]
   exact hv_eq
+
+/-- BM increment has integrable square (variance is finite, i.e., MemLp 2). -/
+lemma BrownianIncrementSpec.integrable_increment_sq
+    {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {B : ℝ → Ω → ℝ} (hB : BrownianIncrementSpec μ B)
+    {s t : ℝ} (hst : s ≤ t) :
+    Integrable (fun ω => (B t ω - B s ω) ^ 2) μ := by
+  obtain ⟨v, _, hv_map⟩ := hB.gaussian_increments hst
+  have h_aemeas : AEMeasurable (fun ω => B t ω - B s ω) μ := by
+    apply AEMeasurable.of_map_ne_zero
+    rw [hv_map]
+    exact (IsProbabilityMeasure.ne_zero (gaussianReal 0 v))
+  -- Pushforward integrability: ∫ x², ∂(law) < ∞.
+  rw [show (fun ω => (B t ω - B s ω) ^ 2) = (fun x : ℝ => x ^ 2) ∘ (fun ω => B t ω - B s ω)
+        from rfl]
+  apply Integrable.comp_aemeasurable _ h_aemeas
+  rw [hv_map]
+  -- Integrable (x ↦ x²) under gaussianReal 0 v.
+  exact ((memLp_id_gaussianReal 2).integrable_norm_rpow
+    (by norm_num) ENNReal.ofNat_ne_top).mono'
+    (by fun_prop) (by filter_upwards with x; simp [sq_abs])
+
+/-- Variance of a single BM increment equals the time gap. -/
+lemma BrownianIncrementSpec.variance_increment
+    {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {B : ℝ → Ω → ℝ} (hB : BrownianIncrementSpec μ B)
+    {s t : ℝ} (hst : s ≤ t) :
+    Var[fun ω => B t ω - B s ω; μ] = t - s := by
+  obtain ⟨v, hv_eq, hv_map⟩ := hB.gaussian_increments hst
+  have h_aemeas : AEMeasurable (fun ω => B t ω - B s ω) μ := by
+    apply AEMeasurable.of_map_ne_zero
+    rw [hv_map]
+    exact (IsProbabilityMeasure.ne_zero (gaussianReal 0 v))
+  have h_mean_zero : ∫ ω, (B t ω - B s ω) ∂μ = 0 :=
+    hB.integral_increment_eq_zero hst
+  -- Var = E[X²] when E[X] = 0.
+  rw [variance_of_integral_eq_zero h_aemeas h_mean_zero]
+  -- E[X²] = (LHS of wiener_step_isometry with c = 1).
+  have := wiener_step_isometry (μ := μ) hB 1 hst
+  simp at this
+  exact this
+
+/-- **Finset Wiener isometry.** For a strict (sorted) partition
+    `p : Fin (n+1) → ℝ` and coefficients `c : Fin n → ℝ`, the Wiener
+    integral
+       `I = ∑ k, c k · (B (p k.succ) − B (p k.castSucc))`
+    satisfies
+       `E[I²] = ∑ k, c k² · (p k.succ − p k.castSucc)`.
+
+    Proof: each summand `X_k := c k · (B(p_{k+1}) − B(p_k))` is centered
+    with variance `c_k² · (p_{k+1} − p_k)` (`variance_increment` +
+    `variance_const_mul`). The summands are pairwise independent (from
+    `HasIndepIncrements.pairwise`, with scaling preserving independence).
+    Then `Var(∑ X_k) = ∑ Var(X_k)` by `IndepFun.variance_sum`, and
+    `E[I²] = Var(I)` because `I` is centered (sum of centered).
+
+    The proof is mechanical but requires careful `MemLp`-bookkeeping, joint
+    independence transport, and centering reductions. Skeleton below;
+    fully closing requires ~100 more lines of routine Lean.
+
+    Status: skeleton with one `sorry`. The single-step case
+    (`wiener_step_isometry`) and per-increment variance/integrability
+    helpers above are complete, so closing this is mostly bookkeeping. -/
+theorem wiener_finset_isometry
+    {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {B : ℝ → Ω → ℝ} (hB : BrownianIncrementSpec μ B)
+    {n : ℕ} (p : Fin (n + 1) → ℝ) (hp : Monotone p) (c : Fin n → ℝ) :
+    ∫ ω, (∑ k : Fin n, c k * (B (p k.succ) ω - B (p k.castSucc) ω)) ^ 2 ∂μ
+      = ∑ k : Fin n, c k ^ 2 * (p k.succ - p k.castSucc) := by
+  sorry
 
 end HybridVerify
