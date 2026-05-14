@@ -43,11 +43,11 @@ Lean code entries: 65
 Isabelle code entries: 25
 quarantined SymPy references: 55
 
-full theorem statements: 18
-library theorem wrappers: 24
-reduced formal cores: 23
+full theorem statements: 19
+library theorem wrappers: 25
+reduced formal cores: 21
 placeholders/stubs: 0
-delivery-claim ready: 42
+delivery-claim ready: 44
 ```
 
 **Sorry-aware audit (2026-05-09)**: every Degenne-derived `library_wrapper`
