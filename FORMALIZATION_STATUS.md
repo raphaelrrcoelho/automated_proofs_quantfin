@@ -33,7 +33,7 @@ python3 -m python.coverage_report
 ```
 
 Coverage as of 2026-05-17 (after `sc-thm-6.2.5` Itô-isometry + `cm-thm-4.3.10` real-time-in-measure promotions):
-**45 / 65 delivery-ready** (21 full + 24 library wrappers), 20 reduced cores, 0 placeholders.
+**46 / 65 delivery-ready** (22 full + 24 library wrappers), 19 reduced cores, 0 placeholders.
 
 ### Quality / structural improvements (2026-05-16 → 2026-05-17 sessions)
 
@@ -66,11 +66,11 @@ Lean code entries: 65
 Isabelle code entries: 25
 quarantined SymPy references: 55
 
-full theorem statements: 20
-library theorem wrappers: 25
-reduced formal cores: 20
+full theorem statements: 22
+library theorem wrappers: 24
+reduced formal cores: 19
 placeholders/stubs: 0
-delivery-claim ready: 45
+delivery-claim ready: 46
 ```
 
 **Sorry-aware audit (2026-05-09)**: every Degenne-derived `library_wrapper`
