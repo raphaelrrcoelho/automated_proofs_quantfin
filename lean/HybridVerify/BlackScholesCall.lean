@@ -91,6 +91,20 @@ lemma Phi_add_Phi_neg (x : ℝ) : Phi x + Phi (-x) = 1 := by
 
 /-! ### Completing the square -/
 
+/-! ### Tail probabilities of the standard normal -/
+
+/-- `Q(Ioi a) = 1 − Φ(a) = Φ(-a)`. The right tail of the standard normal. -/
+lemma gaussianReal_Ioi_toReal (a : ℝ) :
+    (gaussianReal 0 1 (Set.Ioi a)).toReal = Phi (-a) := by
+  have h_compl : Set.Ioi a = (Set.Iic a)ᶜ := by ext y; simp
+  rw [h_compl, prob_compl_eq_one_sub measurableSet_Iic]
+  rw [ENNReal.toReal_sub_of_le (by
+        rw [show (1 : ℝ≥0∞) = gaussianReal (0 : ℝ) 1 Set.univ from measure_univ.symm]
+        exact measure_mono (Set.subset_univ _)) (by simp)]
+  rw [Phi_neg, ENNReal.toReal_one, Phi_def]
+
+/-! ### Completing the square -/
+
 /-- The exponential shift identity: `exp(c·z) · gaussianPDFReal 0 1 z =
 exp(c²/2) · gaussianPDFReal c 1 z`. This is the algebraic content of
 "completing the square" `c·z − z²/2 = c²/2 − (z − c)²/2`. -/
@@ -108,5 +122,29 @@ lemma exp_mul_gaussianPDFReal_zero_one (c z : ℝ) :
     _ = P * (Real.exp (c^2 / 2) * Real.exp (-(z - c)^2 / 2)) := by rw [Real.exp_add]
     _ = Real.exp (c^2 / 2) * ((Real.sqrt (2 * π))⁻¹ * Real.exp (-(z - c)^2 / 2)) := by
         rw [P_def]; ring
+
+/-- The shifted Gaussian tail integral — the core BS computational primitive:
+  `∫ z in Ioi a, exp(c·z) · gaussianPDFReal 0 1 z dz = exp(c²/2) · Φ(c − a)`.
+
+Combines `exp_mul_gaussianPDFReal_zero_one` (algebraic completing-the-square)
+with `gaussianReal_map_add_const` (push forward via shift). -/
+lemma integral_exp_mul_gaussianPDFReal_Ioi (a c : ℝ) :
+    ∫ z in Set.Ioi a, Real.exp (c * z) * gaussianPDFReal 0 1 z
+      = Real.exp (c^2 / 2) * Phi (c - a) := by
+  rw [setIntegral_congr_fun measurableSet_Ioi
+        (fun z _ => exp_mul_gaussianPDFReal_zero_one c z), integral_const_mul]
+  congr 1
+  have h_int_eq : ∫ z in Set.Ioi a, gaussianPDFReal c 1 z
+      = (gaussianReal c (1 : ℝ≥0) (Set.Ioi a)).toReal := by
+    rw [gaussianReal_apply_eq_integral c (one_ne_zero : (1 : ℝ≥0) ≠ 0) (Set.Ioi a)]
+    exact (ENNReal.toReal_ofReal (setIntegral_nonneg measurableSet_Ioi
+      (fun _ _ => gaussianPDFReal_nonneg _ _ _))).symm
+  have h_shift : gaussianReal c (1 : ℝ≥0) (Set.Ioi a) =
+                 gaussianReal 0 1 (Set.Ioi (a - c)) := by
+    have hmap : (gaussianReal (0 : ℝ) 1).map (fun y => y + c) = gaussianReal c 1 := by
+      rw [gaussianReal_map_add_const, zero_add]
+    rw [← hmap, Measure.map_apply (by fun_prop) measurableSet_Ioi]
+    congr 1; ext y; simp [Set.mem_Ioi, sub_lt_iff_lt_add, add_comm]
+  rw [h_int_eq, h_shift, gaussianReal_Ioi_toReal, neg_sub]
 
 end HybridVerify
