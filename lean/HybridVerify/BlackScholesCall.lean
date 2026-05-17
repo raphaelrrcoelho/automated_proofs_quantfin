@@ -20,6 +20,28 @@
   `gaussianReal_map_const_mul`, `gaussianReal_map_add_const`,
   `gaussianReal_map_neg`, `integral_gaussianReal_eq_integral_smul`,
   `integral_map`, `MeasureTheory.HasLaw`, `MeasureTheory.NoAtoms`.
+
+  ## Current status
+
+  Built primitives (this file):
+  - `Phi`, `Phi_neg`, `Phi_add_Phi_neg`: standard normal CDF + symmetry.
+  - `gaussianReal_Ioi_toReal`: `(gaussianReal 0 1 (Set.Ioi a)).toReal = Phi(-a)`.
+  - `exp_mul_gaussianPDFReal_zero_one`: completing-the-square identity
+    `exp(c·z) · pdf(0,1,z) = exp(c²/2) · pdf(c,1,z)`.
+  - `integral_exp_mul_gaussianPDFReal_Ioi`: the **core BS computational primitive**
+    `∫ z in Ioi a, exp(c·z) · pdf(0,1,z) dz = exp(c²/2) · Phi(c − a)`.
+
+  Pending (planned for a follow-on session, ~100-150 lines):
+  - `BSCallHyp` structure bundling: `S_0 > 0`, `K > 0`, `σ > 0`, `T > 0`,
+    `HasLaw Z (gaussianReal 0 1) Q`.
+  - `bsd1`, `bsd2`, `terminalPrice` definitions.
+  - `bs_call_formula` main theorem: assembles the existing primitives via
+    `HasLaw.integral_comp` (transfer ∫ω → ∫_gaussianReal),
+    `integral_gaussianReal_eq_integral_smul` (gaussian integral → pdf form),
+    region identification `{z : S_T(z) > K} = Set.Ioi (-d_2)`,
+    `setIntegral_indicator` split, `integral_exp_mul_gaussianPDFReal_Ioi`
+    for the S_0 term, `gaussianReal_Ioi_toReal` for the K term, and the
+    final algebraic identity `(r - σ²/2)T + σ²T/2 = rT`.
 -/
 import Mathlib
 
