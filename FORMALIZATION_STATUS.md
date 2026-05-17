@@ -32,8 +32,8 @@ Refresh with:
 python3 -m python.coverage_report
 ```
 
-Coverage numbers unchanged since the 2026-05-13 promotion of `mart-thm-2.4.6`:
-**44 / 65 delivery-ready** (19 full + 25 library wrappers), 21 reduced cores, 0 placeholders.
+Coverage as of 2026-05-17 (after `sc-thm-6.2.5` Itô-isometry promotion):
+**45 / 65 delivery-ready** (20 full + 25 library wrappers), 20 reduced cores, 0 placeholders.
 
 ### Quality / structural improvements (2026-05-16 → 2026-05-17 sessions)
 
@@ -45,15 +45,17 @@ These do not change coverage numbers but improve the project's structural alignm
 - **`WienerIntegral.lean` migrated** from a custom `BrownianIncrementSpec` structure (predating discovery of Degenne's repo) to Degenne's `IsPreBrownian` (NNReal time). All five increment helpers now derive in 1–3 lines from `HasLaw.{integral,variance}_eq` and `IsPreBrownian.{hasLaw_sub,hasIndepIncrements}`. −88 lines (218 → 130).
 - **`LpContinuousMartingaleConvergence.lean` step 5 proved.** New `lp_continuous_martingale_tendsto_eLpNorm_at_naturals`: for `p > 1`, an `L^p`-bounded continuous martingale converges in `L^p` along natural times to its limit. Proof uses Doob's `L^p` maximal inequality (from `MathlibLp`) + monotone convergence to build a single `L^p`-dominator, then Degenne's `uniformIntegrable_of_dominated_singleton` + Mathlib's Vitali (`tendsto_Lp_finite_of_tendsto_ae`). The full continuous-time bridge (`t → ∞` along reals, not just along ℕ) remains as documented follow-on.
 - **`BrownianMartingale.lean` deduplicated.** Extracted `condExp_func_increment` helper used by both `squareSubTime_isMartingale` and `waldExponential_isMartingale` — captures the "function of an increment has cond exp equal to its overall integral, by independence" pattern.
-- **New `WienerIntegralL2.lean`** (375 lines, `lake build` clean, 0 sorries) — extends the step-function Itô isometry to the L²-completion infrastructure:
+- **New `WienerIntegralL2.lean`** (522 lines, `lake build` clean, 0 sorries) — Itô isometry, fully proved end-to-end:
   - Indexes step intervals by `StepIndex T := { (s, t) : ℝ≥0 × ℝ≥0 // s ≤ t ∧ t ≤ T }`.
   - Defines `stepAssembly`, `wienerAssembly : (StepIndex T →₀ ℝ) →ₗ[ℝ] Lp ℝ 2 _` as formal-combination linear maps into the step-function and Wiener-integral sides respectively.
   - Proves the BM covariance identity `∫ ω, (B t ω − B s ω)(B v ω − B u ω) ∂μ = max 0 (min t v − max s u)` via Degenne's `IsPreBrownian.covariance_eval` + zero-mean + the bilinear expansion.
   - Proves the **assembly isometry** `‖wienerAssembly B T f‖ = ‖stepAssembly T f‖` for every `f : StepIndex T →₀ ℝ` (the L²-form of `wiener_finset_isometry`, generalized to arbitrary formal combinations of half-open intervals — no monotonicity needed) by matching both squared norms term-by-term through the inner product `⟨·, ·⟩_ℝ`, the BM covariance identity, and the L² inner-product-of-indicators formula.
-  - Defines `wienerIntegralLp : Lp ℝ 2 (volume.restrict (Set.Iic T)) →L[ℝ] Lp ℝ 2 μ` via `LinearMap.extendOfNorm`.
-  - Proves `wienerIntegralLp_norm` and `wienerIntegralLp_integral_sq` (the Itô isometry in norm and integral forms) **conditional on `DenseRange (stepAssembly T)`**. Density (step indicators span a dense subspace of `Lp` over a regular measure) is the one piece not closed: two viable Mathlib routes are documented in the file header (orthogonal complement via `borel_eq_generateFrom_Ioc_le` + `induction_on_inter`; or `MemLp.induction_dense` + Lebesgue outer regularity), each requiring ~120–150 lines of bridge work. Closing that gap will lift the two CLM isometry theorems to unconditional, at which point `sc-thm-6.2.5` (Itô Isometry) can be promoted from `reduced_core` to `full`.
+  - Proves **density of step indicators** in `Lp ℝ 2 (volume.restrict (Set.Ioc 0 T))` via the orthogonal-complement route: for any `g ∈ range(stepAssembly)ᗮ`, the set-integral `∫ x in s, g x ∂(volume.restrict (Ioc 0 T)) = 0` for every measurable `s` (π-system induction on `borel_eq_generateFrom_Ioc_le` + `induction_on_inter`, with the base case for half-open intervals handled by truncating endpoints to `[0, T]` and applying the orthogonality hypothesis). Then `Lp.ae_eq_zero_of_forall_setIntegral_eq_zero` gives `g =ᵐ 0`, hence the orthogonal complement is `⊥` and the range is dense.
+  - Defines `wienerIntegralLp : Lp ℝ 2 (volume.restrict (Set.Ioc 0 T)) →L[ℝ] Lp ℝ 2 μ` via `LinearMap.extendOfNorm`.
+  - Proves `wienerIntegralLp_norm` (`‖wienerIntegralLp f‖ = ‖f‖`) and `wienerIntegralLp_integral_sq` (`∫ ω, (I f ω)² ∂μ = ∫ s in (0, T], (f s)² ∂volume`) **unconditionally**.
+  - Benchmark `sc-thm-6.2.5` (Itô Isometry, Chapter 6.2.5) is now `full`: the JSON wraps `wienerIntegralLp_integral_sq` as a direct named-lemma re-export. Axioms-clean.
 
-### Original 2026-05-09 audit (numbers unchanged since `mart-thm-2.4.6`)
+### Current audit (2026-05-17)
 
 ```text
 theorems: 65
@@ -64,11 +66,11 @@ Lean code entries: 65
 Isabelle code entries: 25
 quarantined SymPy references: 55
 
-full theorem statements: 19
+full theorem statements: 20
 library theorem wrappers: 25
-reduced formal cores: 21
+reduced formal cores: 20
 placeholders/stubs: 0
-delivery-claim ready: 44
+delivery-claim ready: 45
 ```
 
 **Sorry-aware audit (2026-05-09)**: every Degenne-derived `library_wrapper`
