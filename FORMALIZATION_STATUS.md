@@ -32,7 +32,21 @@ Refresh with:
 python3 -m python.coverage_report
 ```
 
-Current audit (post BM port + Strong Markov AFP wrap + Degenne BM wraps + Degenne Doob L¹ continuous-time wrap + LocalProject spike with bm-thm-5.1.5 → full + LocalProject migration of 4 non-trivial proofs from inline JSON to `lean/HybridVerify/`, 2026-05-09):
+Coverage numbers unchanged since the 2026-05-13 promotion of `mart-thm-2.4.6`:
+**44 / 65 delivery-ready** (19 full + 25 library wrappers), 21 reduced cores, 0 placeholders.
+
+### Quality / structural improvements (2026-05-16 → 2026-05-17 sessions)
+
+These do not change coverage numbers but improve the project's structural alignment with upstream and reduce slop:
+
+- **`*Hyp` wrapper structures removed.** Project-specific bundling structures that gated every major theorem (`ConditionalJensen`, `MartingaleTransform`-as-structure, `FundamentalTheoremOfAssetPricing`, `IndependentExponentialMinimum`, `ContinuousLpMartingaleHyp`, `StoppedContinuousMartingaleHyp`) are gone. Each theorem now takes its hypotheses inline as Mathlib does. Benchmark JSON re-exports pass unpacked hypotheses through.
+- **`DoobLp.lean` deleted** (`MathlibLp.lean` was a strict superset; the benchmark now invokes `MeasureTheory.maximal_ineq_Lp` directly). −946 lines.
+- **File consolidation.** `StoppedContinuousMartingale.lean` deleted (one-line trivial wrap inlined in benchmark JSON); `HittingTimeOpen.lean` merged into `BrownianMartingale.lean`. Build went 8326 → 8312 jobs.
+- **`WienerIntegral.lean` migrated** from a custom `BrownianIncrementSpec` structure (predating discovery of Degenne's repo) to Degenne's `IsPreBrownian` (NNReal time). All five increment helpers now derive in 1–3 lines from `HasLaw.{integral,variance}_eq` and `IsPreBrownian.{hasLaw_sub,hasIndepIncrements}`. −88 lines (218 → 130).
+- **`LpContinuousMartingaleConvergence.lean` step 5 proved.** New `lp_continuous_martingale_tendsto_eLpNorm_at_naturals`: for `p > 1`, an `L^p`-bounded continuous martingale converges in `L^p` along natural times to its limit. Proof uses Doob's `L^p` maximal inequality (from `MathlibLp`) + monotone convergence to build a single `L^p`-dominator, then Degenne's `uniformIntegrable_of_dominated_singleton` + Mathlib's Vitali (`tendsto_Lp_finite_of_tendsto_ae`). The full continuous-time bridge (`t → ∞` along reals, not just along ℕ) remains as documented follow-on.
+- **`BrownianMartingale.lean` deduplicated.** Extracted `condExp_func_increment` helper used by both `squareSubTime_isMartingale` and `waldExponential_isMartingale` — captures the "function of an increment has cond exp equal to its overall integral, by independence" pattern.
+
+### Original 2026-05-09 audit (numbers unchanged since `mart-thm-2.4.6`)
 
 ```text
 theorems: 65
