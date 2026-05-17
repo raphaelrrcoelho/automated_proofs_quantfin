@@ -151,33 +151,68 @@ lemma BrownianIncrementSpec.variance_increment
   simp at this
   exact this
 
-/-- **Finset Wiener isometry.** For a strict (sorted) partition
-    `p : Fin (n+1) → ℝ` and coefficients `c : Fin n → ℝ`, the Wiener
-    integral
-       `I = ∑ k, c k · (B (p k.succ) − B (p k.castSucc))`
-    satisfies
+/-- A single scaled BM increment is in `L²`. -/
+private lemma BrownianIncrementSpec.memLp_increment_two
+    {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {B : ℝ → Ω → ℝ} (hB : BrownianIncrementSpec μ B)
+    {s t : ℝ} (hst : s ≤ t) :
+    MemLp (fun ω => B t ω - B s ω) 2 μ :=
+  (memLp_two_iff_integrable_sq (hB.aemeasurable_increment hst).aestronglyMeasurable).mpr
+    (hB.integrable_increment_sq hst)
+
+/-- **Finset Wiener isometry.** For a monotone partition `p : Fin (n+1) → ℝ`
+    and coefficients `c : Fin n → ℝ`, the Wiener step-sum
+
+       `I ω = ∑ k, c k · (B (p k.succ) ω − B (p k.castSucc) ω)`
+
+    satisfies the discrete Itô isometry
+
        `E[I²] = ∑ k, c k² · (p k.succ − p k.castSucc)`.
 
-    Proof: each summand `X_k := c k · (B(p_{k+1}) − B(p_k))` is centered
-    with variance `c_k² · (p_{k+1} − p_k)` (`variance_increment` +
-    `variance_const_mul`). The summands are pairwise independent (from
-    `HasIndepIncrements.pairwise`, with scaling preserving independence).
-    Then `Var(∑ X_k) = ∑ Var(X_k)` by `IndepFun.variance_sum`, and
-    `E[I²] = Var(I)` because `I` is centered (sum of centered).
-
-    The proof is mechanical but requires careful `MemLp`-bookkeeping, joint
-    independence transport, and centering reductions. Skeleton below;
-    fully closing requires ~100 more lines of routine Lean.
-
-    Status: skeleton with one `sorry`. The single-step case
-    (`wiener_step_isometry`) and per-increment variance/integrability
-    helpers above are complete, so closing this is mostly bookkeeping. -/
+    Each summand is centered, the summands are jointly independent (the
+    increment processes `B(p_{k+1}) − B(p_k)` are independent via
+    `HasIndepIncrements`, and scaling by `c k` preserves independence
+    pointwise). Therefore `E[I²] = Var(I) = ∑ Var(c k · increment_k)
+    = ∑ c k² · (p_{k+1} − p_k)`. -/
 theorem wiener_finset_isometry
     {μ : Measure Ω} [IsProbabilityMeasure μ]
     {B : ℝ → Ω → ℝ} (hB : BrownianIncrementSpec μ B)
     {n : ℕ} (p : Fin (n + 1) → ℝ) (hp : Monotone p) (c : Fin n → ℝ) :
     ∫ ω, (∑ k : Fin n, c k * (B (p k.succ) ω - B (p k.castSucc) ω)) ^ 2 ∂μ
       = ∑ k : Fin n, c k ^ 2 * (p k.succ - p k.castSucc) := by
-  sorry
+  set X : Fin n → Ω → ℝ :=
+    fun k ω => c k * (B (p k.succ) ω - B (p k.castSucc) ω) with hX
+  have hpk : ∀ k : Fin n, p k.castSucc ≤ p k.succ :=
+    fun k => hp (Fin.castSucc_le_succ k)
+  have h_aemeas : ∀ k, AEMeasurable (X k) μ := fun k =>
+    (hB.aemeasurable_increment (hpk k)).const_mul (c k)
+  have h_memLp : ∀ k, MemLp (X k) 2 μ := fun k =>
+    (hB.memLp_increment_two (hpk k)).const_mul (c k)
+  have h_mean_zero : ∀ k, ∫ ω, X k ω ∂μ = 0 := fun k => by
+    simp only [hX, integral_const_mul, hB.integral_increment_eq_zero (hpk k), mul_zero]
+  have h_var_X : ∀ k, Var[X k; μ] = c k ^ 2 * (p k.succ - p k.castSucc) := fun k => by
+    simp only [hX, variance_const_mul, hB.variance_increment (hpk k)]
+  have h_iIndep :
+      iIndepFun (fun (k : Fin n) ω => B (p k.succ) ω - B (p k.castSucc) ω) μ :=
+    hB.indep_increments n p hp
+  have h_iIndep_X : iIndepFun X μ :=
+    h_iIndep.comp (fun k x => c k * x) (fun _ => measurable_const.mul measurable_id)
+  have h_pair :
+      Set.Pairwise (↑(Finset.univ : Finset (Fin n))) (fun i j => X i ⟂ᵢ[μ] X j) :=
+    fun _ _ _ _ hij => h_iIndep_X.indepFun hij
+  have h_aemeas_sum : AEMeasurable (∑ k : Fin n, X k) μ :=
+    Finset.aemeasurable_sum _ (fun k _ => h_aemeas k)
+  have h_mean_sum : ∫ ω, (∑ k : Fin n, X k) ω ∂μ = 0 := by
+    simp_rw [Finset.sum_apply]
+    rw [integral_finset_sum _ (fun k _ => (h_memLp k).integrable one_le_two)]
+    exact Finset.sum_eq_zero (fun k _ => h_mean_zero k)
+  calc ∫ ω, (∑ k : Fin n, X k ω) ^ 2 ∂μ
+      = ∫ ω, ((∑ k : Fin n, X k) ω) ^ 2 ∂μ := by simp_rw [Finset.sum_apply]
+    _ = Var[∑ k : Fin n, X k; μ] :=
+        (variance_of_integral_eq_zero h_aemeas_sum h_mean_sum).symm
+    _ = ∑ k : Fin n, Var[X k; μ] :=
+        IndepFun.variance_sum (fun k _ => h_memLp k) h_pair
+    _ = ∑ k : Fin n, c k ^ 2 * (p k.succ - p k.castSucc) :=
+        Finset.sum_congr rfl (fun k _ => h_var_X k)
 
 end HybridVerify
