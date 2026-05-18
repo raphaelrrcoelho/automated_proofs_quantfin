@@ -6,9 +6,9 @@ formal verification of stochastic-processes textbook theorems via a hybrid lean 
 
 | | count |
 |---|---|
-| total theorems | 65 |
-| delivery-ready | **49** |
-| ↳ full derivations | 25 |
+| total theorems | 76 |
+| delivery-ready | **60** |
+| ↳ full derivations | 36 |
 | ↳ library wrappers | 24 |
 | reduced cores (upstream-gated) | 16 |
 | placeholders | 0 |
@@ -26,7 +26,15 @@ most lean formalization projects pick one theorem and go deep, or contribute to 
 - **substantial original derivations**, not in mathlib or in degenne's brownian-motion library at current pins:
   - itô isometry on $L^2(0, T]$ from step-function isometry + π-system density + `LinearMap.extendOfNorm` (`lean/HybridVerify/WienerIntegralL2.lean`, 433 lines)
   - black-scholes call formula from the risk-neutral lognormal hypothesis (`BlackScholesCall.lean`, ~370 lines, no itô used)
+  - black-scholes put formula via direct integration on the left tail + put-call parity corollary (`BlackScholesPut.lean`)
+  - black-scholes digital options: cash-or-nothing and asset-or-nothing, with call decomposition (`BlackScholesDigital.lean`)
+  - black-scholes greeks: delta and gamma in `BlackScholesPDE.lean`, **vega** ($\partial_\sigma V = S \phi(d_1) \sqrt{\tau}$) and **rho** ($\partial_r V = K \tau e^{-r\tau} \Phi(d_2)$) via magic-identity collapses
   - black-scholes PDE forward direction via the magic identity $S \phi(d_1) = K e^{-r\tau} \phi(d_2)$ (`BlackScholesPDE.lean`)
+  - **bachelier model** option pricing (arithmetic BM), with the truncated-mean primitive $\int_a^\infty z \phi(z) dz = \phi(a)$ via FTC (`BachelierModel.lean`)
+  - **implied volatility uniqueness** via vega-positivity + `strictMonoOn_of_deriv_pos` (`ImpliedVolatility.lean`)
+  - **black-76 formula** for futures options, derived as a specialization of the call formula with zero drift (`BlackFutures.lean`)
+  - **forward / futures pricing** under no-arbitrage ($F = S_0 e^{rT}$), from the gaussian MGF (`BlackScholesForward.lean`)
+  - **single-period binomial replication theorem** + multi-period backward-induction framework (`BinomialModel.lean`)
   - feynman-kac formula identification: heat-kernel convolution equals $\mathbb{E}[g(x + B_t)]$ via `Measure.map` transfer + lebesgue translation invariance (`FeynmanKacHeatEquation.lean`)
   - quadratic variation of brownian motion in $L^1$ form (`BrownianQuadraticVariation.lean`)
   - standard normal CDF derivative $\Phi'(x) = \phi(x)$ via FTC on $\text{Iic}$ decomposition (`GaussianCDFDeriv.lean`). mathlib doesn't ship this; it doesn't ship `Real.erf` either.

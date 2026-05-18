@@ -32,8 +32,26 @@ Refresh with:
 python3 -m python.coverage_report
 ```
 
-Coverage as of 2026-05-17 (after `sc-thm-6.2.5` Itô-isometry + `cm-thm-4.3.10` real-time-in-measure promotions):
-**46 / 65 delivery-ready** (22 full + 24 library wrappers), 19 reduced cores, 0 placeholders.
+Coverage as of 2026-05-18 (after Phase 1 + Phase 2 + Phase 3 (basic) of `QUANTFIN_ROADMAP.md`):
+**60 / 76 delivery-ready** (36 full + 24 library wrappers), 16 reduced cores, 0 placeholders.
+
+The 11 new theorems are in `benchmarks/mathematical_finance.json`:
+
+| ID | name | new module |
+|---|---|---|
+| `mf-bs-put-formula` | BS put formula | `BlackScholesPut.lean` |
+| `mf-put-call-parity` | put-call parity | `BlackScholesPut.lean` |
+| `mf-cash-or-nothing` | cash-or-nothing digital | `BlackScholesDigital.lean` |
+| `mf-asset-or-nothing` | asset-or-nothing digital | `BlackScholesDigital.lean` |
+| `mf-forward-price` | forward / futures pricing | `BlackScholesForward.lean` |
+| `mf-vega` | BS vega | `BlackScholesPDE.lean` (extended) |
+| `mf-rho` | BS rho | `BlackScholesPDE.lean` (extended) |
+| `mf-bachelier-call` | Bachelier model call | `BachelierModel.lean` |
+| `mf-implied-vol-unique` | implied volatility uniqueness | `ImpliedVolatility.lean` |
+| `mf-black-futures` | Black-76 futures call | `BlackFutures.lean` |
+| `mf-binomial-replication` | single-period binomial replication | `BinomialModel.lean` |
+
+All 11 are `full`, axioms-clean (`#print axioms` = `[propext, Classical.choice, Quot.sound]`).
 
 ### Quality / structural improvements (2026-05-16 → 2026-05-17 sessions)
 

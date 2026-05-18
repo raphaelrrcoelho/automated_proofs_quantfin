@@ -1,0 +1,181 @@
+{
+  "description": "Mathematical finance theorems: extended Black-Scholes (put, digitals, vega, rho, forward), Bachelier model, implied volatility, Black-76 formula for futures, single-period binomial replication. All derived from standard Gaussian / discrete-time hypotheses; no Itô calculus required.",
+  "theorems": [
+    {
+      "id": "mf-bs-put-formula",
+      "name": "Black-Scholes European Put Formula",
+      "description": "Discounted expected put payoff under the risk-neutral lognormal hypothesis: P = K e^{-rT} Phi(-d_2) - S_0 Phi(-d_1), where d_1, d_2 are the standard BS quantities.",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.BlackScholesPut\n\nopen MeasureTheory ProbabilityTheory Real\nopen scoped NNReal\nopen HybridVerify\n\nvariable {Ω : Type*} {mΩ : MeasurableSpace Ω}\n\n/-- Black-Scholes European put pricing formula via direct integration\n    parallel to the call formula (left-tail completing-the-square). -/\ntheorem bs_put_formula\n    {Q : Measure Ω} [IsProbabilityMeasure Q]\n    {S_0 K r σ T : ℝ} {Z : Ω → ℝ}\n    (h : BSCallHyp Q S_0 K r σ T Z) :\n    ∫ ω, Real.exp (-r * T) * max (K - bsTerminal S_0 r σ T (Z ω)) 0 ∂Q\n      = K * Real.exp (-r * T) * Phi (-(bsd2 S_0 K r σ T)) -\n        S_0 * Phi (-(bsd1 S_0 K r σ T)) :=\n  HybridVerify.bs_put_formula h\n"
+      },
+      "metadata": {
+        "chapter": 9,
+        "reference": "Black-Scholes put formula (Hull 16.6, Shreve 4.5)",
+        "difficulty": "advanced",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof. Lives in lean/HybridVerify/BlackScholesPut.lean (~230 lines). Derivation parallel to bs_call_formula: HasLaw transfer to standard normal, max(K - S_T, 0) as indicator on Iic(-d_2), then left-tail completing-the-square integral_exp_mul_gaussianPDFReal_Iic. Axioms-clean."
+      }
+    },
+    {
+      "id": "mf-put-call-parity",
+      "name": "Put-Call Parity",
+      "description": "C - P = S_0 - K e^{-rT}: the difference between European call and put prices under the BS hypothesis equals the spot minus the discounted strike. Direct algebraic corollary of bs_call_formula + bs_put_formula + Phi(d) + Phi(-d) = 1.",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.BlackScholesPut\n\nopen MeasureTheory ProbabilityTheory Real\nopen scoped NNReal\nopen HybridVerify\n\nvariable {Ω : Type*} {mΩ : MeasurableSpace Ω}\n\n/-- Put-call parity: C - P = S_0 - K e^{-rT}. -/\ntheorem put_call_parity\n    {Q : Measure Ω} [IsProbabilityMeasure Q]\n    {S_0 K r σ T : ℝ} {Z : Ω → ℝ}\n    (h : BSCallHyp Q S_0 K r σ T Z) :\n    (∫ ω, Real.exp (-r * T) * max (bsTerminal S_0 r σ T (Z ω) - K) 0 ∂Q) -\n    (∫ ω, Real.exp (-r * T) * max (K - bsTerminal S_0 r σ T (Z ω)) 0 ∂Q)\n      = S_0 - K * Real.exp (-r * T) :=\n  HybridVerify.bs_put_call_parity h\n"
+      },
+      "metadata": {
+        "chapter": 9,
+        "reference": "Put-call parity (Hull 11.4, Shreve 4.5)",
+        "difficulty": "intermediate",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof. Direct algebraic corollary of bs_call_formula + bs_put_formula + Phi_add_Phi_neg. Lives in lean/HybridVerify/BlackScholesPut.lean. Axioms-clean."
+      }
+    },
+    {
+      "id": "mf-cash-or-nothing",
+      "name": "Cash-or-Nothing Digital Call",
+      "description": "Cash-or-nothing digital pays $1 iff S_T > K. Price: V = e^{-rT} Phi(d_2).",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.BlackScholesDigital\n\nopen MeasureTheory ProbabilityTheory Real\nopen scoped NNReal\nopen HybridVerify\n\nvariable {Ω : Type*} {mΩ : MeasurableSpace Ω}\n\n/-- Cash-or-nothing digital call pricing formula. -/\ntheorem cash_or_nothing_formula\n    {Q : Measure Ω} [IsProbabilityMeasure Q]\n    {S_0 K r σ T : ℝ} {Z : Ω → ℝ}\n    (h : BSCallHyp Q S_0 K r σ T Z) :\n    ∫ ω, Real.exp (-r * T) *\n        (Set.Ioi K).indicator (fun _ => (1 : ℝ)) (bsTerminal S_0 r σ T (Z ω)) ∂Q\n      = Real.exp (-r * T) * Phi (bsd2 S_0 K r σ T) :=\n  HybridVerify.bs_cash_or_nothing_formula h\n"
+      },
+      "metadata": {
+        "chapter": 9,
+        "reference": "Cash-or-nothing digital (Hull 26.1)",
+        "difficulty": "intermediate",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof. HasLaw transfer + indicator identification on Ioi(-d_2) via bsTerminal_gt_K_iff + gaussianReal_Ioi_toReal. Lives in lean/HybridVerify/BlackScholesDigital.lean. Axioms-clean."
+      }
+    },
+    {
+      "id": "mf-asset-or-nothing",
+      "name": "Asset-or-Nothing Digital Call",
+      "description": "Asset-or-nothing digital pays S_T iff S_T > K. Price: V = S_0 Phi(d_1).",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.BlackScholesDigital\n\nopen MeasureTheory ProbabilityTheory Real\nopen scoped NNReal\nopen HybridVerify\n\nvariable {Ω : Type*} {mΩ : MeasurableSpace Ω}\n\n/-- Asset-or-nothing digital call pricing formula. -/\ntheorem asset_or_nothing_formula\n    {Q : Measure Ω} [IsProbabilityMeasure Q]\n    {S_0 K r σ T : ℝ} {Z : Ω → ℝ}\n    (h : BSCallHyp Q S_0 K r σ T Z) :\n    ∫ ω, Real.exp (-r * T) *\n        (Set.Ioi K).indicator (fun s => s) (bsTerminal S_0 r σ T (Z ω)) ∂Q\n      = S_0 * Phi (bsd1 S_0 K r σ T) :=\n  HybridVerify.bs_asset_or_nothing_formula h\n"
+      },
+      "metadata": {
+        "chapter": 9,
+        "reference": "Asset-or-nothing digital (Hull 26.1)",
+        "difficulty": "intermediate",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof. HasLaw transfer + indicator on Ioi(-d_2) + completing-the-square integral_exp_mul_gaussianPDFReal_Ioi. Together with cash-or-nothing, gives BS call decomposition. Lives in lean/HybridVerify/BlackScholesDigital.lean. Axioms-clean."
+      }
+    },
+    {
+      "id": "mf-forward-price",
+      "name": "Forward / Futures Pricing Formula",
+      "description": "F = S_0 e^{rT}: the no-arbitrage forward price equals the risk-neutral expectation of the terminal asset price under BSCallHyp.",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.BlackScholesForward\n\nopen MeasureTheory ProbabilityTheory Real\nopen scoped NNReal\nopen HybridVerify\n\nvariable {Ω : Type*} {mΩ : MeasurableSpace Ω}\n\n/-- No-arbitrage forward price under BS lognormal hypothesis: E_Q[S_T] = S_0 e^{rT}. -/\ntheorem forward_price\n    {Q : Measure Ω} [IsProbabilityMeasure Q]\n    {S_0 K r σ T : ℝ} {Z : Ω → ℝ}\n    (h : BSCallHyp Q S_0 K r σ T Z) :\n    ∫ ω, bsTerminal S_0 r σ T (Z ω) ∂Q = S_0 * Real.exp (r * T) :=\n  HybridVerify.expected_terminal_eq_forward h\n"
+      },
+      "metadata": {
+        "chapter": 9,
+        "reference": "Forward pricing under no-arbitrage (Hull 5.6)",
+        "difficulty": "intermediate",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof. Uses Gaussian MGF identity integral_exp_mul_gaussianPDFReal_univ + BS martingale algebra. Lives in lean/HybridVerify/BlackScholesForward.lean. Axioms-clean."
+      }
+    },
+    {
+      "id": "mf-vega",
+      "name": "BS Vega (Sensitivity to Volatility)",
+      "description": "Vega = dV/dσ = S phi(d_1) sqrt(T). The Black-Scholes call price has derivative with respect to volatility equal to S * pdf(d_1) * sqrt(T), strictly positive for S, T > 0.",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.BlackScholesPDE\n\nopen MeasureTheory ProbabilityTheory Real\nopen scoped NNReal\nopen HybridVerify\n\n/-- Black-Scholes vega: dV/dσ = S phi(d_1) sqrt(τ). -/\ntheorem bs_vega {K r : ℝ} (hK : 0 < K)\n    {S σ τ : ℝ} (hS : 0 < S) (hσ : 0 < σ) (hτ : 0 < τ) :\n    HasDerivAt (fun s => HybridVerify.bsV K r s S τ)\n      (S * gaussianPDFReal 0 1 (HybridVerify.bsd1 S K r σ τ) * Real.sqrt τ) σ :=\n  HybridVerify.hasDerivAt_bsV_sigma hK hS hσ hτ\n"
+      },
+      "metadata": {
+        "chapter": 9,
+        "reference": "BS vega (Hull 19.3, Shreve 4.5)",
+        "difficulty": "advanced",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof. Chain rule + magic identity bs_identity collapse the d/dσ d_i terms, leaving S pdf(d_1) sqrt(τ). Lives in lean/HybridVerify/BlackScholesPDE.lean. Axioms-clean."
+      }
+    },
+    {
+      "id": "mf-rho",
+      "name": "BS Rho (Sensitivity to Risk-Free Rate)",
+      "description": "Rho = dV/dr = K tau e^{-r tau} Phi(d_2). The Black-Scholes call price derivative with respect to the risk-free rate r equals K * tau * exp(-r*tau) * Phi(d_2).",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.BlackScholesPDE\n\nopen MeasureTheory ProbabilityTheory Real\nopen scoped NNReal\nopen HybridVerify\n\n/-- Black-Scholes rho: dV/dr = K tau e^{-r tau} Phi(d_2). -/\ntheorem bs_rho {K σ τ : ℝ} (hK : 0 < K) (hσ : 0 < σ) (hτ : 0 < τ)\n    {S : ℝ} (hS : 0 < S) (r : ℝ) :\n    HasDerivAt (fun r' => HybridVerify.bsV K r' σ S τ)\n      (K * τ * Real.exp (-(r * τ)) * HybridVerify.Phi (HybridVerify.bsd2 S K r σ τ)) r :=\n  HybridVerify.hasDerivAt_bsV_r hK hσ hτ hS r\n"
+      },
+      "metadata": {
+        "chapter": 9,
+        "reference": "BS rho (Hull 19.5)",
+        "difficulty": "advanced",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof. Chain rule on d/dr d_i + d/dr exp(-rτ) + magic identity collapses pdf terms, leaving K*τ*exp(-rτ)*Phi(d_2). Lives in lean/HybridVerify/BlackScholesPDE.lean. Axioms-clean."
+      }
+    },
+    {
+      "id": "mf-bachelier-call",
+      "name": "Bachelier Model Call Pricing",
+      "description": "Under arithmetic-BM dynamics S_T = S_0 + sigma*sqrt(T)*Z (no log, no exponential), the European call price is V = (S_0 - K) Phi(d) + sigma sqrt(T) phi(d), where d = (S_0 - K)/(sigma sqrt(T)).",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.BachelierModel\n\nopen MeasureTheory ProbabilityTheory Real\nopen scoped NNReal\nopen HybridVerify\n\nvariable {Ω : Type*} {mΩ : MeasurableSpace Ω}\n\n/-- Bachelier European call pricing formula. -/\ntheorem bachelier_call_formula\n    {Q : Measure Ω} [IsProbabilityMeasure Q]\n    {S_0 K σ T : ℝ} {Z : Ω → ℝ}\n    (h : BachelierHyp Q S_0 K σ T Z) :\n    ∫ ω, max (bachelierTerminal S_0 σ T (Z ω) - K) 0 ∂Q\n      = (S_0 - K) * Phi (bachelierD S_0 K σ T) +\n        σ * Real.sqrt T * gaussianPDFReal 0 1 (bachelierD S_0 K σ T) :=\n  HybridVerify.bachelier_call_formula h\n"
+      },
+      "metadata": {
+        "chapter": 9,
+        "reference": "Bachelier (1900) option pricing; modern: Brigo & Mercurio (2006), Black (1976)",
+        "difficulty": "advanced",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof. Parallels bs_call_formula but for arithmetic BM. Key new primitive: truncated mean of N(0,1): integral_id_mul_gaussianPDFReal_Ioi a = pdf(0,1,a), proved via FTC integral_Ioi_of_hasDerivAt_of_tendsto using (-pdf)' = z*pdf. Plus integrable_id_mul_gaussianPDFReal_volume (transfer via withDensity). Lives in lean/HybridVerify/BachelierModel.lean (~330 lines). Axioms-clean."
+      }
+    },
+    {
+      "id": "mf-implied-vol-unique",
+      "name": "Implied Volatility Uniqueness",
+      "description": "For S, K, T > 0, the BS call price as a function of sigma is strictly monotone on (0, infinity). Hence the implied volatility (when it exists) is unique.",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.ImpliedVolatility\n\nopen MeasureTheory ProbabilityTheory Real\nopen HybridVerify\n\n/-- Implied volatility uniqueness: the BS call price is strictly monotone in σ on (0, ∞). -/\ntheorem implied_vol_unique {K r T : ℝ} (hK : 0 < K) (hT : 0 < T)\n    {S : ℝ} (hS : 0 < S) {σ₁ σ₂ : ℝ} (hσ₁ : 0 < σ₁) (hσ₂ : 0 < σ₂)\n    (h_eq : HybridVerify.bsV K r σ₁ S T = HybridVerify.bsV K r σ₂ S T) :\n    σ₁ = σ₂ :=\n  HybridVerify.implied_volatility_unique hK hT hS hσ₁ hσ₂ h_eq\n"
+      },
+      "metadata": {
+        "chapter": 9,
+        "reference": "Implied volatility uniqueness (Hull 19.10, Shreve 4.5)",
+        "difficulty": "advanced",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof. Vega-positivity (bsV_vega_pos) + strictMonoOn_of_deriv_pos + StrictMonoOn.injOn. Lives in lean/HybridVerify/ImpliedVolatility.lean. Axioms-clean."
+      }
+    },
+    {
+      "id": "mf-black-futures",
+      "name": "Black-76 Formula for Futures Options",
+      "description": "European call on a futures contract: V = e^{-rT} [F Phi(d_1) - K Phi(d_2)] where d_1 = (log(F/K) + sigma^2 T/2) / (sigma sqrt(T)) and d_2 = d_1 - sigma sqrt(T). Specialization of BS to zero-drift futures + independent discount rate.",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.BlackFutures\n\nopen MeasureTheory ProbabilityTheory Real\nopen scoped NNReal\nopen HybridVerify\n\nvariable {Ω : Type*} {mΩ : MeasurableSpace Ω}\n\n/-- Black-76 formula for European call on futures. -/\ntheorem black_futures_call\n    {Q : Measure Ω} [IsProbabilityMeasure Q]\n    {F K σ T : ℝ} {Z : Ω → ℝ}\n    (h : BSCallHyp Q F K 0 σ T Z) (r : ℝ) :\n    ∫ ω, Real.exp (-r * T) * max (bsTerminal F 0 σ T (Z ω) - K) 0 ∂Q\n      = Real.exp (-r * T) *\n          (F * Phi (bsd1 F K 0 σ T) - K * Phi (bsd2 F K 0 σ T)) :=\n  HybridVerify.black_futures_formula h r\n"
+      },
+      "metadata": {
+        "chapter": 9,
+        "reference": "Black (1976) formula for futures options (Hull 18.7)",
+        "difficulty": "advanced",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof. Specialization of bs_call_formula with BS-drift r=0 (futures are martingales) plus external discount rate. Lives in lean/HybridVerify/BlackFutures.lean. Axioms-clean."
+      }
+    },
+    {
+      "id": "mf-binomial-replication",
+      "name": "Single-Period Binomial Replication Theorem",
+      "description": "In a single-period binomial model with no-arbitrage (d < e^r < u), every contingent claim with payoffs (V_u, V_d) in the up/down states is replicable, and the replicating portfolio cost equals the risk-neutral expected payoff discounted: V_0 = e^{-r} (q V_u + (1-q) V_d) where q = (e^r - d) / (u - d).",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.BinomialModel\n\nopen HybridVerify\n\n/-- Single-period binomial: the replicating portfolio cost equals the\n    risk-neutral expected discounted payoff. -/\ntheorem binomial_replication_cost {S_0 u d r V_u V_d : ℝ}\n    (hS_0 : 0 < S_0) (h : BinomialNoArb u d r) :\n    let Δ : ℝ := (V_u - V_d) / (S_0 * (u - d))\n    let B : ℝ := Real.exp (-r) * (u * V_d - d * V_u) / (u - d)\n    Δ * S_0 + B = binomialOptionPriceOnePeriod u d r V_u V_d :=\n  HybridVerify.replicating_portfolio_cost hS_0 h\n\n/-- Single-period binomial: the replicating portfolio pays V_u in the up state. -/\ntheorem binomial_replication_up {S_0 u d r V_u V_d : ℝ}\n    (hS_0 : 0 < S_0) (h : BinomialNoArb u d r) :\n    let Δ : ℝ := (V_u - V_d) / (S_0 * (u - d))\n    let B : ℝ := Real.exp (-r) * (u * V_d - d * V_u) / (u - d)\n    Δ * (S_0 * u) + B * Real.exp r = V_u :=\n  HybridVerify.replicating_payoff_up hS_0 h\n\n/-- Single-period binomial: the replicating portfolio pays V_d in the down state. -/\ntheorem binomial_replication_down {S_0 u d r V_u V_d : ℝ}\n    (hS_0 : 0 < S_0) (h : BinomialNoArb u d r) :\n    let Δ : ℝ := (V_u - V_d) / (S_0 * (u - d))\n    let B : ℝ := Real.exp (-r) * (u * V_d - d * V_u) / (u - d)\n    Δ * (S_0 * d) + B * Real.exp r = V_d :=\n  HybridVerify.replicating_payoff_down hS_0 h\n"
+      },
+      "metadata": {
+        "chapter": 9,
+        "reference": "Single-period binomial replication (Cox-Ross-Rubinstein 1979; Shreve I 1.2)",
+        "difficulty": "intermediate",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof of all three statements: portfolio cost, up-state payoff, down-state payoff. Lives in lean/HybridVerify/BinomialModel.lean. Axioms-clean. Multi-period backward induction (binomialPrice) also defined and proved consistent; CRR convergence to BS is upstream."
+      }
+    }
+  ]
+}
