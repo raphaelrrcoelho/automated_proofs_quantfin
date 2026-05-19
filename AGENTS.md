@@ -44,8 +44,7 @@ python3 -m python.coverage_report
 
 Delivery/status docs:
 - `FORMALIZATION_STATUS.md`: authoritative current audit, safe claim wording, verification evidence, and remaining placeholders.
-- `FORMALIZATION_ROADMAP.md`: next steps for moving reduced cores toward faithful full theorem formalizations.
-- `DELIVERY_NOTE.md`: Saporito-facing packaging note and draft outreach text.
+- `QUANTFIN_ROADMAP.md`: next-steps roadmap for the unblocked quant-finance work.
 
 Docker notes for future agents:
 - `docker/Dockerfile.verify` is intended to be the canonical reproducible environment for Python + SymPy + Lean + Isabelle.
@@ -85,7 +84,7 @@ SymPy never returns L3+ even on success — this is intentional, encoding that C
 - Historical SymPy snippets may remain under `metadata.cas_reference.sympy`, but active benchmark code must be formal-only. Run `python3 -m pytest tests/test_router.py` after routing or benchmark-code edits.
 - Historical SymPy snippets are quarantined under `metadata.cas_reference.sympy`, not active `code.sympy`. Run `python3 -m python.coverage_report` for a static formal coverage summary.
 - Every benchmark theorem must declare `metadata.formalization_status`: `full`, `library_wrapper`, `reduced_core`, or `placeholder`. Delivery claims count only `full + library_wrapper`; see `FORMALIZATION_STATUS.md`.
-- Do not tell a collaborator that all course theorems are formally proved. Use the delivery-safe language in `DELIVERY_NOTE.md` unless `python3 -m python.coverage_report` shows zero reduced cores and zero placeholders.
+- Do not tell a collaborator that all course theorems are formally proved. Run `python3 -m python.coverage_report` for the current `full / library_wrapper / reduced_core / placeholder` split; delivery claims count only `full + library_wrapper`.
 
 **Backends are lazily initialized**. `LeanBackend._ensure_server` and `IsabelleBackend._ensure_connector`/`_ensure_session` defer the expensive Mathlib/HOL-Probability bootstrap to the first `verify()` call. Both hold a `threading.Lock` since the underlying servers are not thread-safe — async `verify()` calls serialize through the lock.
 

@@ -15,7 +15,7 @@ formal verification of stochastic-processes textbook theorems via a hybrid lean 
 
 every theorem tagged `full` is `#print axioms`-clean: depends only on `[propext, Classical.choice, Quot.sound]` (the three standard mathlib axioms).
 
-see `FORMALIZATION_STATUS.md` for the per-theorem audit and `FORMALIZATION_ROADMAP.md` for what's left.
+see `FORMALIZATION_STATUS.md` for the per-theorem audit and `QUANTFIN_ROADMAP.md` for what's next.
 
 ## what makes it different
 

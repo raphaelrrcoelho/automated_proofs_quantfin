@@ -384,4 +384,4 @@ That claim is not supported. The honest version is:
 
 ## Path Forward
 
-See `docs/superpowers/specs/2026-05-06-real-proof-tiers.md` for the three-tier classification of which theorems support real proofs today (Tier A), which require building Brownian motion first (Tier B), and which require the stochastic-integral layer (Tier C). The next stage of work is to attack Tier A theorems with real proofs — many of them (conditional Jensen, Doob L^p) are flagged as TODOs in Mathlib master and would land upstream.
+See `QUANTFIN_ROADMAP.md` for the current roadmap.
