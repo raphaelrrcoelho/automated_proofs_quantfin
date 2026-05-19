@@ -32,10 +32,10 @@ Refresh with:
 python3 -m python.coverage_report
 ```
 
-Coverage as of 2026-05-19 (extended quant-finance pass: put greeks, higher-order BS greeks, Bachelier greeks, digital greeks, BS-Merton with dividends, Garman-Kohlhagen FX, Black-76 greeks):
-**79 / 95 delivery-ready** (55 full + 24 library wrappers), 16 reduced cores, 0 placeholders.
+Coverage as of 2026-05-19 (extended quant-finance pass: put greeks, higher-order BS greeks, Bachelier greeks, digital greeks, BS-Merton with dividends, Garman-Kohlhagen FX, Black-76 greeks; second pass: Bachelier γ/θ, asset-or-nothing γ, BS-Merton δ/γ/vega, American options in binomial tree):
+**88 / 104 delivery-ready** (64 full + 24 library wrappers), 16 reduced cores, 0 placeholders.
 
-The `mathematical_finance.json` benchmark now has 30 theorems (all `full`). Original 14 + 16 new from the 2026-05-19 pass:
+The `mathematical_finance.json` benchmark now has 39 theorems (all `full`). Original 14 + 16 from the first 2026-05-19 pass + 9 from the second 2026-05-19 pass:
 
 | ID | name | new module |
 |---|---|---|
@@ -69,8 +69,17 @@ The `mathematical_finance.json` benchmark now has 30 theorems (all `full`). Orig
 | `mf-black76-delta` | Black-76 delta | `BlackFuturesGreeks.lean` |
 | `mf-black76-gamma` | Black-76 gamma | `BlackFuturesGreeks.lean` |
 | `mf-black76-vega` | Black-76 vega | `BlackFuturesGreeks.lean` |
+| `mf-bachelier-gamma` | Bachelier gamma | `BachelierGreeks.lean` |
+| `mf-bachelier-theta` | Bachelier theta | `BachelierGreeks.lean` |
+| `mf-asset-digital-gamma` | asset-or-nothing digital gamma | `BlackScholesDigitalGreeks.lean` |
+| `mf-bs-merton-delta` | BS-Merton (dividends) delta | `BlackScholesDividendsGreeks.lean` |
+| `mf-bs-merton-gamma` | BS-Merton (dividends) gamma | `BlackScholesDividendsGreeks.lean` |
+| `mf-bs-merton-vega` | BS-Merton (dividends) vega | `BlackScholesDividendsGreeks.lean` |
+| `mf-american-intrinsic-bound` | American option ≥ intrinsic | `AmericanBinomial.lean` |
+| `mf-american-supermartingale` | American discounted price is supermartingale | `AmericanBinomial.lean` |
+| `mf-american-ge-european` | American ≥ European (same payoff) | `AmericanBinomial.lean` |
 
-All 30 are `full`, axioms-clean (`#print axioms` = `[propext, Classical.choice, Quot.sound]`).
+All 39 are `full`, axioms-clean (`#print axioms` = `[propext, Classical.choice, Quot.sound]`).
 
 ### Quality / structural improvements (2026-05-16 → 2026-05-17 sessions)
 

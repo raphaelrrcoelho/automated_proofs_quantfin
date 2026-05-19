@@ -480,6 +480,150 @@
         "formalization_status": "full",
         "formalization_scope": "Full formal proof. bsV vega at r=0 times outer discount factor. Lives in lean/HybridVerify/BlackFuturesGreeks.lean. Axioms-clean."
       }
+    },
+    {
+      "id": "mf-bachelier-gamma",
+      "name": "Bachelier Gamma",
+      "description": "Bachelier gamma: ∂²V/∂S² = ϕ(d) / (σ √T). Chain rule on Φ(d(S)).",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.BachelierGreeks\n\nopen HybridVerify\n\ntheorem bachelier_gamma_thm {K σ T : ℝ} (hσ : 0 < σ) (hT : 0 < T) (S : ℝ) :\n    HasDerivAt (fun s => HybridVerify.Phi (HybridVerify.bachelierD s K σ T))\n      (gaussianPDFReal 0 1 (HybridVerify.bachelierD S K σ T) / (σ * Real.sqrt T)) S :=\n  HybridVerify.hasDerivAt_bachelierV_SS hσ hT S\n"
+      },
+      "metadata": {
+        "chapter": 9,
+        "reference": "Bachelier gamma",
+        "difficulty": "advanced",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof. Chain rule on Φ(d(S)) with ∂_S d = 1/(σ√T). Lives in lean/HybridVerify/BachelierGreeks.lean. Axioms-clean."
+      }
+    },
+    {
+      "id": "mf-bachelier-theta",
+      "name": "Bachelier Theta",
+      "description": "Bachelier theta: ∂V/∂T = σ · ϕ(d) / (2 √T). Cancellation via (S-K) · d / √T = σ · d².",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.BachelierGreeks\n\nopen HybridVerify\n\ntheorem bachelier_theta_thm {K σ : ℝ} (hσ : 0 < σ) {S T : ℝ} (hT : 0 < T) :\n    HasDerivAt (fun t => HybridVerify.bachelierV K σ t S)\n      (σ * gaussianPDFReal 0 1 (HybridVerify.bachelierD S K σ T) / (2 * Real.sqrt T)) T :=\n  HybridVerify.hasDerivAt_bachelierV_T hσ hT\n"
+      },
+      "metadata": {
+        "chapter": 9,
+        "reference": "Bachelier theta",
+        "difficulty": "advanced",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof. Quotient + chain rules on d(T) + algebraic cancellation. Lives in lean/HybridVerify/BachelierGreeks.lean. Axioms-clean."
+      }
+    },
+    {
+      "id": "mf-asset-digital-gamma",
+      "name": "Asset-or-Nothing Digital Gamma",
+      "description": "Asset digital gamma: ∂²V_asset/∂S² = -ϕ(d₁) · d₂ / (S σ² T). Sum of Φ-term and pdf-term contributions, collapsed via σ√T − d₁ = -d₂.",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.BlackScholesDigitalGreeks\n\nopen HybridVerify\n\ntheorem asset_digital_gamma_thm {K r σ : ℝ} (hK : 0 < K) (hσ : 0 < σ)\n    {S τ : ℝ} (hS : 0 < S) (hτ : 0 < τ) :\n    HasDerivAt\n      (fun s => HybridVerify.Phi (HybridVerify.bsd1 s K r σ τ) +\n        gaussianPDFReal 0 1 (HybridVerify.bsd1 s K r σ τ) / (σ * Real.sqrt τ))\n      (-(gaussianPDFReal 0 1 (HybridVerify.bsd1 S K r σ τ) *\n        HybridVerify.bsd2 S K r σ τ / (S * σ^2 * τ))) S :=\n  HybridVerify.hasDerivAt_bsAssetDigital_SS hK hσ hS hτ\n"
+      },
+      "metadata": {
+        "chapter": 9,
+        "reference": "Asset-or-nothing gamma (Hull 26.1)",
+        "difficulty": "advanced",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof. Sum of Φ-chain-rule and pdf-chain-rule contributions, collapsed via the σ√τ − d₁ = -d₂ identity. Lives in lean/HybridVerify/BlackScholesDigitalGreeks.lean. Axioms-clean."
+      }
+    },
+    {
+      "id": "mf-bs-merton-delta",
+      "name": "BS-Merton Delta (Dividends)",
+      "description": "BS-Merton delta: ∂V_q/∂S = e^{-qT} · Φ(d₁') where d₁' = bsd1 S K (r-q) σ T. Via identity V_q = e^{-qT} · bsV(K, r-q, σ, S, T).",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.BlackScholesDividendsGreeks\n\nopen HybridVerify\n\ntheorem bs_merton_delta_thm {K r q σ : ℝ} (hK : 0 < K) (hσ : 0 < σ)\n    {S τ : ℝ} (hS : 0 < S) (hτ : 0 < τ) :\n    HasDerivAt (fun s => HybridVerify.bsVDiv K r q σ s τ)\n      (Real.exp (-(q * τ)) * HybridVerify.Phi (HybridVerify.bsd1 S K (r - q) σ τ)) S :=\n  HybridVerify.hasDerivAt_bsVDiv_S hK hσ hS hτ\n"
+      },
+      "metadata": {
+        "chapter": 9,
+        "reference": "BS-Merton dividends delta (Hull 17.1)",
+        "difficulty": "advanced",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof. Direct const_mul of the BS call delta at effective drift r-q. Lives in lean/HybridVerify/BlackScholesDividendsGreeks.lean. Axioms-clean."
+      }
+    },
+    {
+      "id": "mf-bs-merton-gamma",
+      "name": "BS-Merton Gamma (Dividends)",
+      "description": "BS-Merton gamma: ∂²V_q/∂S² = e^{-qT} · ϕ(d₁') / (S σ √T).",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.BlackScholesDividendsGreeks\n\nopen HybridVerify\n\ntheorem bs_merton_gamma_thm {K r q σ : ℝ} (hK : 0 < K) (hσ : 0 < σ)\n    {S τ : ℝ} (hS : 0 < S) (hτ : 0 < τ) :\n    HasDerivAt (fun s => Real.exp (-(q * τ)) *\n        HybridVerify.Phi (HybridVerify.bsd1 s K (r - q) σ τ))\n      (Real.exp (-(q * τ)) * gaussianPDFReal 0 1 (HybridVerify.bsd1 S K (r - q) σ τ)\n        / (S * σ * Real.sqrt τ)) S :=\n  HybridVerify.hasDerivAt_bsVDiv_SS hK hσ hS hτ\n"
+      },
+      "metadata": {
+        "chapter": 9,
+        "reference": "BS-Merton dividends gamma (Hull 17.1)",
+        "difficulty": "advanced",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof. Direct const_mul of the BS call gamma at effective drift r-q. Lives in lean/HybridVerify/BlackScholesDividendsGreeks.lean. Axioms-clean."
+      }
+    },
+    {
+      "id": "mf-bs-merton-vega",
+      "name": "BS-Merton Vega (Dividends)",
+      "description": "BS-Merton vega: ∂V_q/∂σ = e^{-qT} · S · ϕ(d₁') · √T.",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.BlackScholesDividendsGreeks\n\nopen HybridVerify\n\ntheorem bs_merton_vega_thm {K r q : ℝ} (hK : 0 < K)\n    {S σ τ : ℝ} (hS : 0 < S) (hσ : 0 < σ) (hτ : 0 < τ) :\n    HasDerivAt (fun s => HybridVerify.bsVDiv K r q s S τ)\n      (Real.exp (-(q * τ)) * S * gaussianPDFReal 0 1 (HybridVerify.bsd1 S K (r - q) σ τ)\n        * Real.sqrt τ) σ :=\n  HybridVerify.hasDerivAt_bsVDiv_sigma hK hS hσ hτ\n"
+      },
+      "metadata": {
+        "chapter": 9,
+        "reference": "BS-Merton dividends vega (Hull 17.1)",
+        "difficulty": "advanced",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof. Direct const_mul of the BS call vega at effective drift r-q. Lives in lean/HybridVerify/BlackScholesDividendsGreeks.lean. Axioms-clean."
+      }
+    },
+    {
+      "id": "mf-american-intrinsic-bound",
+      "name": "American Option ≥ Intrinsic",
+      "description": "For every n, S: g(S) ≤ americanPrice u d r g n S. The American option is always worth at least its immediate exercise value. Direct from the Bellman max.",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.AmericanBinomial\n\nopen HybridVerify\n\ntheorem american_ge_intrinsic_thm (u d r : ℝ) (g : ℝ → ℝ) (n : ℕ) (S : ℝ) :\n    g S ≤ HybridVerify.americanPrice u d r g n S :=\n  HybridVerify.americanPrice_ge_intrinsic u d r g n S\n"
+      },
+      "metadata": {
+        "chapter": 9,
+        "reference": "American option intrinsic bound (Shreve I 4.4)",
+        "difficulty": "intermediate",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof. Immediate from americanPrice (n+1) S = max(g S, continuation) ≥ g S. Lives in lean/HybridVerify/AmericanBinomial.lean. Axioms-clean."
+      }
+    },
+    {
+      "id": "mf-american-supermartingale",
+      "name": "American Discounted Price is Supermartingale",
+      "description": "The one-period continuation at V_{n+1} is bounded above by V_{n+1} itself: discounted American price is a supermartingale under the risk-neutral measure.",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.AmericanBinomial\n\nopen HybridVerify\n\ntheorem american_supermartingale_thm (u d r : ℝ) (g : ℝ → ℝ) (n : ℕ) (S : ℝ) :\n    HybridVerify.binomialOptionPriceOnePeriod u d r\n        (HybridVerify.americanPrice u d r g n (S * u))\n        (HybridVerify.americanPrice u d r g n (S * d))\n      ≤ HybridVerify.americanPrice u d r g (n + 1) S :=\n  HybridVerify.americanPrice_supermartingale u d r g n S\n"
+      },
+      "metadata": {
+        "chapter": 9,
+        "reference": "American supermartingale property (Shreve I 4.4, Hull 21.5)",
+        "difficulty": "intermediate",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof. Direct from Bellman max: V_{n+1} = max(g S, continuation) ≥ continuation. Lives in lean/HybridVerify/AmericanBinomial.lean. Axioms-clean."
+      }
+    },
+    {
+      "id": "mf-american-ge-european",
+      "name": "American ≥ European",
+      "description": "binomialPrice ≤ americanPrice for the same intrinsic g. The American option dominates the European with the same payoff — the early-exercise feature can only add value.",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.AmericanBinomial\n\nopen HybridVerify\n\ntheorem american_ge_european_thm {u d r : ℝ} (h : HybridVerify.BinomialNoArb u d r)\n    (g : ℝ → ℝ) (n : ℕ) (S : ℝ) :\n    HybridVerify.binomialPrice u d r g n S ≤ HybridVerify.americanPrice u d r g n S :=\n  HybridVerify.binomialPrice_le_americanPrice h g n S\n"
+      },
+      "metadata": {
+        "chapter": 9,
+        "reference": "American ≥ European (Hull 11.5, Shreve I 4.4)",
+        "difficulty": "advanced",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof by induction on remaining steps, using supermartingale property + monotonicity of binomialOptionPriceOnePeriod. Lives in lean/HybridVerify/AmericanBinomial.lean. Axioms-clean."
+      }
     }
   ]
 }
