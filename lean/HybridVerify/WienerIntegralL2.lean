@@ -74,7 +74,8 @@ def lo (i : StepIndex T) : ℝ := (i.1.1 : ℝ)
 def hi (i : StepIndex T) : ℝ := (i.1.2 : ℝ)
 
 lemma hi_le_T (i : StepIndex T) : i.hi ≤ (T : ℝ) := by
-  unfold hi; exact_mod_cast i.2.2
+  unfold hi
+  exact_mod_cast i.2.2
 
 /-- The half-open interval `(lo, hi]` as a subset of ℝ. -/
 def interval (i : StepIndex T) : Set ℝ := Set.Ioc i.lo i.hi
@@ -142,8 +143,8 @@ For `s ≤ t, u ≤ v ∈ ℝ≥0`,
 
 The right hand side is written as `max 0 (min t v - max s u)`. -/
 
-/-- `∫ ω, B s ω * B t ω ∂μ = min s t` for pre-Brownian motion `B` with zero start.
-Combines `IsPreBrownian.covariance_eval` and `covariance_eq_sub` (the means are zero). -/
+/-- `∫ ω, B s ω * B t ω ∂μ = min s t` for pre-Brownian motion `B` with zero start,
+using `IsPreBrownian.covariance_eval` and `covariance_eq_sub` (the means are zero). -/
 lemma integral_mul_eval (s t : ℝ≥0) :
     ∫ ω, B s ω * B t ω ∂μ = ((min s t : ℝ≥0) : ℝ) := by
   have hBs : MemLp (B s) 2 μ := (hB.isGaussianProcess.hasGaussianLaw_eval s).memLp_two
@@ -192,7 +193,8 @@ lemma covariance_increment_aux (s t u v : ℝ≥0) (hst : s ≤ t) (huv : u ≤ 
   have h_eq_fun :
       (fun ω => (B t ω - B s ω) * (B v ω - B u ω)) =
         (fun ω => B t ω * B v ω - B t ω * B u ω - B s ω * B v ω + B s ω * B u ω) := by
-    funext ω; ring
+    funext ω
+    ring
   have e1 : ∫ ω, B t ω * B v ω - B t ω * B u ω ∂μ =
             (∫ ω, B t ω * B v ω ∂μ) - (∫ ω, B t ω * B u ω ∂μ) :=
     integral_sub hInt_tv hInt_tu
@@ -208,7 +210,8 @@ lemma covariance_increment_aux (s t u v : ℝ≥0) (hst : s ≤ t) (huv : u ≤ 
       ∫ ω, (B t ω - B s ω) * (B v ω - B u ω) ∂μ =
         (∫ ω, B t ω * B v ω ∂μ) - (∫ ω, B t ω * B u ω ∂μ) -
         (∫ ω, B s ω * B v ω ∂μ) + (∫ ω, B s ω * B u ω ∂μ) := by
-    rw [h_eq_fun]; linarith [e1, e2, e3]
+    rw [h_eq_fun]
+    linarith [e1, e2, e3]
   rw [h_lhs, integral_mul_eval (μ := μ) t v, integral_mul_eval (μ := μ) t u,
       integral_mul_eval (μ := μ) s v, integral_mul_eval (μ := μ) s u]
   exact covariance_increment_arithmetic s t u v hst huv
@@ -372,9 +375,10 @@ private lemma setIntegral_eq_zero_of_orthogonal {T : ℝ≥0}
     rw [integral_iUnion hf_meas hf hg_int.integrableOn]
     simp [hf_zero]
 
-/-- **Density of step indicators.** The map `stepAssembly T` has dense range in
-`Lp ℝ 2 (volume.restrict (Set.Ioc 0 T))`. Proof: orthogonal complement is `⊥`
-via `setIntegral_eq_zero_of_orthogonal` + `Lp.ae_eq_zero_of_forall_setIntegral_eq_zero`. -/
+/-- The map `stepAssembly T` has dense range in
+`Lp ℝ 2 (volume.restrict (Set.Ioc 0 T))`. The proof identifies the orthogonal
+complement with `⊥` using `setIntegral_eq_zero_of_orthogonal` and
+`Lp.ae_eq_zero_of_forall_setIntegral_eq_zero`. -/
 theorem stepAssembly_denseRange (T : ℝ≥0) :
     DenseRange (stepAssembly T) := by
   haveI : IsFiniteMeasure (volume.restrict (Set.Ioc (0 : ℝ) (T : ℝ))) :=
@@ -402,7 +406,7 @@ noncomputable def wienerIntegralLp (B : ℝ≥0 → Ω → ℝ)
     Lp ℝ 2 (volume.restrict (Set.Ioc (0 : ℝ) (T : ℝ))) →L[ℝ] Lp ℝ 2 μ :=
   (wienerAssembly (μ := μ) B T).extendOfNorm (stepAssembly T)
 
-/-- **Itô isometry (norm form).** For every `f ∈ L²([0, T])`,
+/-- Itô isometry, norm form. For every `f ∈ L²([0, T])`,
 `‖wienerIntegralLp f‖ = ‖f‖`. -/
 theorem wienerIntegralLp_norm (T : ℝ≥0)
     (f : Lp ℝ 2 (volume.restrict (Set.Ioc (0 : ℝ) (T : ℝ)))) :
@@ -411,7 +415,8 @@ theorem wienerIntegralLp_norm (T : ℝ≥0)
   have h_dense := stepAssembly_denseRange T
   have h_norm : ∀ x : StepIndex T →₀ ℝ,
       ‖wienerAssembly (μ := μ) B T x‖ ≤ 1 * ‖stepAssembly T x‖ := fun x => by
-    rw [one_mul]; exact (wiener_assembly_isometry (μ := μ) (B := B) T x).le
+    rw [one_mul]
+    exact (wiener_assembly_isometry (μ := μ) (B := B) T x).le
   -- Equality holds on `range stepAssembly` by `extendOfNorm_eq` + assembly isometry.
   have h_on_range : ∀ x, ‖W (stepAssembly T x)‖ = ‖stepAssembly T x‖ := fun x => by
     rw [hW, wienerIntegralLp, LinearMap.extendOfNorm_eq h_dense ⟨1, h_norm⟩,
@@ -431,7 +436,7 @@ private lemma Lp_real_two_norm_sq {α : Type*} {mα : MeasurableSpace α} (ν : 
   show (g ω) * (g ω) = (g ω) ^ 2
   ring
 
-/-- **Itô isometry (integral form).** For every `f ∈ L²([0, T])`,
+/-- Itô isometry, integral form. For every `f ∈ L²([0, T])`,
 `∫ ω, (wienerIntegralLp f ω)² ∂μ = ∫ s in (0, T], (f s)² ∂volume`. -/
 theorem wienerIntegralLp_integral_sq (T : ℝ≥0)
     (f : Lp ℝ 2 (volume.restrict (Set.Ioc (0 : ℝ) (T : ℝ)))) :

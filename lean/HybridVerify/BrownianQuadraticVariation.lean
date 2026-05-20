@@ -143,7 +143,7 @@ private lemma tendsto_nt_div_succ (t : ℝ) :
     tendsto_const_nhds.sub h_t_div
   rwa [sub_zero] at h_sub
 
-/-- **Saporito Theorem 6.1.1** (L¹ form): for a process with measurable sections and
+/-- Saporito Theorem 6.1.1, in L¹ form: for a process with measurable sections and
 Gaussian increments, the squared-increment sums along the equipartition of `[0, t]`
 with `n + 1` subintervals have expectation tending to `t` as `n → ∞`. -/
 theorem qv_equals_t (hB : BrownianQuadraticVariation μ B)

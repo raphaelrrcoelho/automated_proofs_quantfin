@@ -14,15 +14,15 @@ This file adds four convenience lemmas about `gaussianReal μ v` on `ℝ`:
 
 * `gaussianReal_Iic_neg`: reflection symmetry of centered Gaussians,
   `P(Z ≤ -x) = 1 − P(Z ≤ x)` for `Z ~ N(0, v)` (any `v ≠ 0`).
-* `gaussianReal_Ioi_toReal`: the trivial right-tail identity
+* `gaussianReal_Ioi_toReal`: the right-tail identity
   `P(Z > a) = 1 − P(Z ≤ a)` for any `Z ~ N(μ, v)`.
 * `exp_mul_gaussianPDFReal`: the completing-the-square identity
   `exp(c · z) · pdf(μ, v, z) = exp(c·μ + c²·v/2) · pdf(μ + c·v, v, z)`.
 * `integral_exp_mul_gaussianPDFReal_Ioi`: the shifted-tail integral
   `∫ z in Ioi a, exp(c · z) · pdf(μ, v, z) dz = exp(c·μ + c²·v/2) · P_{N(μ+c·v, v)}(Ioi a)`.
 
-These are the workhorse identities used in derivations of the Black–Scholes
-pricing formulas.
+These are Gaussian tail and exponential-tilting identities for real Gaussian
+measures.
 -/
 
 @[expose] public section
@@ -49,7 +49,8 @@ lemma gaussianReal_Iic_neg {v : ℝ≥0} (hv : v ≠ 0) (x : ℝ) :
     rw [gaussianReal_map_neg, neg_zero]
   -- Iic(-x) under negation pulls back to Ici x.
   have h_preimage : (fun y : ℝ => -y) ⁻¹' Set.Iic (-x) = Set.Ici x := by
-    ext y; simp only [Set.mem_preimage, Set.mem_Iic, neg_le_neg_iff, Set.mem_Ici]
+    ext y
+    simp only [Set.mem_preimage, Set.mem_Iic, neg_le_neg_iff, Set.mem_Ici]
   have h_eq : gaussianReal (0 : ℝ) v (Set.Iic (-x)) = gaussianReal 0 v (Set.Ici x) := by
     conv_lhs => rw [← hmap]
     rw [Measure.map_apply measurable_neg measurableSet_Iic, h_preimage]
@@ -72,11 +73,13 @@ lemma gaussianReal_Iic_neg {v : ℝ≥0} (hv : v ≠ 0) (x : ℝ) :
   have h_iic_finite : gaussianReal (0 : ℝ) v (Set.Iic x) ≠ ⊤ := (measure_lt_top _ _).ne
   have h_sum :
       gaussianReal (0 : ℝ) v (Set.Iic x) + gaussianReal 0 v (Set.Ici x) = 1 := by
-    rw [h_iio_iic]; exact h_total
+    rw [h_iio_iic]
+    exact h_total
   have h_eq_sub :
       gaussianReal (0 : ℝ) v (Set.Ici x) = 1 - gaussianReal 0 v (Set.Iic x) := by
     refine ENNReal.eq_sub_of_add_eq h_iic_finite ?_
-    rw [add_comm]; exact h_sum
+    rw [add_comm]
+    exact h_sum
   rw [h_eq, h_eq_sub, ENNReal.toReal_sub_of_le (gaussianReal_Iic_le_one _ _ _) (by simp)]
   rfl
 
@@ -84,7 +87,9 @@ lemma gaussianReal_Iic_neg {v : ℝ≥0} (hv : v ≠ 0) (x : ℝ) :
 lemma gaussianReal_Ioi_toReal (μ : ℝ) (v : ℝ≥0) (a : ℝ) :
     (gaussianReal μ v (Set.Ioi a)).toReal
       = 1 - (gaussianReal μ v (Set.Iic a)).toReal := by
-  have h_compl : Set.Ioi a = (Set.Iic a)ᶜ := by ext y; simp
+  have h_compl : Set.Ioi a = (Set.Iic a)ᶜ := by
+    ext y
+    simp
   rw [h_compl, prob_compl_eq_one_sub measurableSet_Iic,
       ENNReal.toReal_sub_of_le (gaussianReal_Iic_le_one _ _ _) (by simp),
       ENNReal.toReal_one]
@@ -95,7 +100,7 @@ lemma gaussianReal_Ioi_toReal (μ : ℝ) (v : ℝ≥0) (a : ℝ) :
 This is the algebraic content of the change of variables
 `c · z − (z − μ)² / (2v) = c·μ + c²·v/2 − (z − (μ + c·v))² / (2v)`.
 
-Holds for all `v : ℝ≥0` (the `v = 0` Dirac case is trivial, both sides being `_ * 0`). -/
+Holds for all `v : ℝ≥0`; in the `v = 0` Dirac case both sides are `_ * 0`. -/
 lemma exp_mul_gaussianPDFReal (μ : ℝ) (v : ℝ≥0) (c z : ℝ) :
     Real.exp (c * z) * gaussianPDFReal μ v z
       = Real.exp (c * μ + c ^ 2 * (v : ℝ) / 2) * gaussianPDFReal (μ + c * v) v z := by
@@ -129,9 +134,9 @@ defining identity `gaussianReal μ v (Ioi a) = ENNReal.ofReal (∫_{Ioi a} pdf(�
 Requires `v ≠ 0` because for the Dirac case `v = 0` the LHS is `0` (the PDF vanishes)
 but the RHS picks up a contribution `exp(c·μ) · 𝟙_{Ioi a}(μ)`, so the identity fails.
 
-This is the workhorse for Black–Scholes-style derivations: specialise `μ = 0`, `v = 1`
-to get `exp(c²/2) · P_{N(0,1)}(Ioi (a − c))`, which combined with `gaussianReal_Iic_neg`
-(reflection) and `gaussianReal_Ioi_toReal` (complement) yields the standard form
+Specialising to `μ = 0`, `v = 1` gives
+`exp(c²/2) · P_{N(0,1)}(Ioi (a − c))`, which combined with `gaussianReal_Iic_neg`
+and `gaussianReal_Ioi_toReal` yields the standard reflected-tail form
 `exp(c²/2) · P_{N(0,1)}(Iic (c − a))`. -/
 lemma integral_exp_mul_gaussianPDFReal_Ioi {v : ℝ≥0} (hv : v ≠ 0) (μ a c : ℝ) :
     ∫ z in Set.Ioi a, Real.exp (c * z) * gaussianPDFReal μ v z

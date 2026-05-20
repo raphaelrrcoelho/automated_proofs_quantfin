@@ -22,9 +22,9 @@ Itô isometry for step-function integrands against a pre-Brownian motion
   `∫ ω, (∑ k, c k · (B (p k.succ) ω − B (p k.castSucc) ω))² ∂μ
       = ∑ k, c k² · (p k.succ − p k.castSucc)`.
 
-Step 1 + step 2 of the standard Wiener-integral construction (the Cauchy-completion
-step 3 to general `f ∈ L²([0, T])` is documented as remaining work; see
-`MeasureTheory.SimpleFunc.dense_lp`).
+This file contains the step-function kernel. The extension to
+`Lp ℝ 2 (volume.restrict (Set.Ioc 0 T))` is developed in
+`HybridVerify.WienerIntegralL2`.
 -/
 
 namespace HybridVerify
@@ -69,7 +69,7 @@ private lemma memLp_increment_two (s t : ℝ≥0) :
   hB.isGaussianProcess.hasGaussianLaw_sub.memLp_two
 
 omit [IsProbabilityMeasure μ] in
-/-- **Wiener step-integral isometry.** For a pre-Brownian motion `B`, scalar `c`,
+/-- Wiener step-integral isometry. For a pre-Brownian motion `B`, scalar `c`,
 and `s ≤ t : ℝ≥0`, the single-step Wiener integral `c · (B_t − B_s)` satisfies
 
   `∫ ω, (c · (B_t ω − B_s ω))² ∂μ = c² · (t − s)`.
@@ -86,7 +86,7 @@ theorem wiener_step_isometry (c : ℝ) {s t : ℝ≥0} (hst : s ≤ t) :
         (by simpa using integral_increment_eq_zero (B := B) hst)]
   simpa using variance_increment (B := B) (μ := μ) hst
 
-/-- **Finset Wiener isometry.** For a monotone partition `p : Fin (n+1) → ℝ≥0`
+/-- Finset Wiener isometry. For a monotone partition `p : Fin (n+1) → ℝ≥0`
 and coefficients `c : Fin n → ℝ`, the Wiener step-sum
 
   `I ω = ∑ k, c k · (B (p k.succ) ω − B (p k.castSucc) ω)`

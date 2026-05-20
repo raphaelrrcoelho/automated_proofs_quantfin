@@ -30,14 +30,15 @@ This is the strong-type companion to `MeasureTheory.maximal_ineq`
 
 The proof follows the standard textbook argument:
 
-1. **Layer-cake decomposition.** `∫⁻ f*^p = p · ∫⁻ t in (0, ∞), μ{f* ≥ t} · t^{p-1}`.
-2. **Weak-type bound.** Apply `MeasureTheory.maximal_ineq` pointwise:
+1. Layer-cake decomposition:
+   `∫⁻ f*^p = p · ∫⁻ t in (0, ∞), μ{f* ≥ t} · t^{p-1}`.
+2. Weak-type bound. Apply `MeasureTheory.maximal_ineq` pointwise:
    `μ{f* ≥ t} · t^{p-1} ≤ t^{p-2} · ∫_{f* ≥ t} f_n`.
-3. **Fubini.** Swap the order of integration to express the right-hand side as
+3. Fubini. Swap the order of integration to express the right-hand side as
    `∫⁻ ω, f_n(ω) · f*(ω)^{p-1} / (p-1)`.
-4. **Hölder.** Bound that integral by
+4. Hölder. Bound that integral by
    `(∫⁻ f_n^p)^{1/p} · (∫⁻ f*^p)^{(p-1)/p}` using conjugate exponents.
-5. **Rpow inversion.** From `A ≤ C · B^{1/p} · A^{(p-1)/p}`, conclude
+5. Rpow inversion. From `A ≤ C · B^{1/p} · A^{(p-1)/p}`, conclude
    `A^{1/p} ≤ C · B^{1/p}`. A truncation argument (replacing `f*` by
    `min f* K` and letting `K → ∞` via monotone convergence) handles the
    case where `A = ∞` a priori.
@@ -354,8 +355,12 @@ private lemma holder_apply
   have hpq : p.HolderConjugate q := Real.HolderConjugate.conjExponent hp
   have hp_pos : 0 < p := lt_trans zero_lt_one hp
   have hpm1_pos : 0 < p - 1 := by linarith
-  have hq_pos : 0 < q := by simp only [hq_def]; positivity
-  have hpm1_q_eq_p : (p - 1) * q = p := by simp only [hq_def]; field_simp
+  have hq_pos : 0 < q := by
+    simp only [hq_def]
+    positivity
+  have hpm1_q_eq_p : (p - 1) * q = p := by
+    simp only [hq_def]
+    field_simp
   have hf_meas : AEMeasurable (fun ω ↦ ENNReal.ofReal (f n ω)) μ :=
     (ENNReal.measurable_ofReal.comp
       (((hsub.stronglyMeasurable n).measurable).mono (𝒢.le n) le_rfl)).aemeasurable
@@ -435,7 +440,8 @@ private lemma fubini_swap_truncated
   have hsubM : Measurable (f n) :=
     ((hsub.stronglyMeasurable n).measurable).mono (𝒢.le n) le_rfl
   have hIocEqRestrict : Set.Ioc (0:ℝ) K = Set.Ioi 0 ∩ Set.Iic K := by
-    ext t; simp [Set.mem_Ioc, Set.mem_Ioi, Set.mem_Iic, and_comm]
+    ext t
+    simp [Set.mem_Ioc, Set.mem_Ioi, Set.mem_Iic, and_comm]
   rw [hIocEqRestrict]
   rw [← MeasureTheory.lintegral_indicator (measurableSet_Ioi.inter measurableSet_Iic)]
   -- Step 1: rewrite the inner setLIntegral as a full lintegral via indicator.
@@ -588,7 +594,8 @@ private lemma A_K_le_layer_integral
       simp [hle]
     · simp only [hle, if_false]
       rw [show {ω | t ≤ min (runMax f n ω) K} = ∅ by
-        ext ω; simp [hle]]
+        ext ω
+        simp [hle]]
       simp
   -- Restrict the outer integral to Ioc 0 K.
   have h_split : ∫⁻ t in Set.Ioi (0:ℝ), μ {ω | t ≤ min (runMax f n ω) K} *
@@ -685,7 +692,9 @@ private lemma holder_step_truncated
         ∫⁻ ω, ENNReal.ofReal (f n ω) *
               ENNReal.ofReal ((min (runMax f n ω) K) ^ (p - 1)) ∂μ := by
     rw [← lintegral_const_mul]
-    · congr 1; funext ω; ring
+    · congr 1
+      funext ω
+      ring
     · exact ((ENNReal.measurable_ofReal.comp hsubM).mul
         (ENNReal.measurable_ofReal.comp (hZKmeas.pow_const (p - 1))))
   rw [h_mul_const] at hA
@@ -693,7 +702,8 @@ private lemma holder_step_truncated
   have h_const_combine :
       ENNReal.ofReal p * ENNReal.ofReal (1 / (p - 1)) = ENNReal.ofReal (p / (p - 1)) := by
     rw [← ENNReal.ofReal_mul hp_pos.le]
-    congr 1; field_simp
+    congr 1
+    field_simp
   rw [show ENNReal.ofReal p * (ENNReal.ofReal (1 / (p - 1)) *
         ∫⁻ ω, ENNReal.ofReal (f n ω) *
               ENNReal.ofReal ((min (runMax f n ω) K) ^ (p - 1)) ∂μ)
@@ -709,8 +719,12 @@ private lemma holder_step_truncated
   --   ≤ (∫⁻ ofReal(f n^p))^(1/p) * (∫⁻ ofReal(Z_K^p))^((p-1)/p)
   set q := p / (p - 1) with hq_def
   have hpq : p.HolderConjugate q := Real.HolderConjugate.conjExponent hp
-  have hq_pos : 0 < q := by simp only [hq_def]; positivity
-  have hpm1_q_eq_p : (p - 1) * q = p := by simp only [hq_def]; field_simp
+  have hq_pos : 0 < q := by
+    simp only [hq_def]
+    positivity
+  have hpm1_q_eq_p : (p - 1) * q = p := by
+    simp only [hq_def]
+    field_simp
   have hf_meas : AEMeasurable (fun ω ↦ ENNReal.ofReal (f n ω)) μ :=
     (ENNReal.measurable_ofReal.comp hsubM).aemeasurable
   have hg_meas : AEMeasurable
@@ -777,7 +791,9 @@ private lemma holder_step
         ∫⁻ ω, ENNReal.ofReal (f n ω) *
               ENNReal.ofReal ((runMax f n ω) ^ (p - 1)) ∂μ := by
     rw [← lintegral_const_mul]
-    · congr 1; funext ω; ring
+    · congr 1
+      funext ω
+      ring
     · exact ((ENNReal.measurable_ofReal.comp
           (((hsub.stronglyMeasurable n).measurable).mono (𝒢.le n) le_rfl)).mul
         (ENNReal.measurable_ofReal.comp
@@ -787,7 +803,8 @@ private lemma holder_step
   have h_const_combine :
       ENNReal.ofReal p * ENNReal.ofReal (1 / (p - 1)) = ENNReal.ofReal (p / (p - 1)) := by
     rw [← ENNReal.ofReal_mul hp_pos.le]
-    congr 1; field_simp
+    congr 1
+    field_simp
   rw [show ENNReal.ofReal p * (ENNReal.ofReal (1 / (p - 1)) *
         ∫⁻ ω, ENNReal.ofReal (f n ω) *
               ENNReal.ofReal ((runMax f n ω) ^ (p - 1)) ∂μ)
@@ -839,7 +856,9 @@ private lemma runMax_pow_lintegral_lt_top
   have h_sum_inv : (1 : ℝ) / p + (p - 1) / p = 1 := by
     rw [← add_div, show (1 : ℝ) + (p - 1) = p by ring, div_self hp_ne_zero]
   have h_prod_p : (1 : ℝ) / p * p = 1 := by field_simp
-  have hC_lt_top : C < ⊤ := by rw [hC_def]; exact ENNReal.ofReal_lt_top
+  have hC_lt_top : C < ⊤ := by
+    rw [hC_def]
+    exact ENNReal.ofReal_lt_top
   have hRHS_lt_top : C * B ^ (1 / p) < ⊤ :=
     ENNReal.mul_lt_top hC_lt_top
       (ENNReal.rpow_lt_top_of_nonneg hp_inv_pos.le hB_lt_top.ne)
@@ -864,7 +883,8 @@ private lemma runMax_pow_lintegral_lt_top
         _ < ⊤ := ENNReal.mul_lt_top ENNReal.ofReal_lt_top (measure_lt_top μ Set.univ)
     have h_inv_bound : A_K ^ (1 / p) ≤ C * B ^ (1 / p) := by
       by_cases hA_K_zero : A_K = 0
-      · rw [hA_K_zero, ENNReal.zero_rpow_of_pos hp_inv_pos]; exact bot_le
+      · rw [hA_K_zero, ENNReal.zero_rpow_of_pos hp_inv_pos]
+        exact bot_le
       have hAKpm1_ne_zero : A_K ^ ((p - 1) / p) ≠ 0 :=
         fun h ↦ hA_K_zero (ENNReal.rpow_eq_zero_iff_of_pos hpm1_p_pos |>.mp h)
       have hAKpm1_ne_top : A_K ^ ((p - 1) / p) ≠ ⊤ := fun h ↦
@@ -903,7 +923,7 @@ private lemma runMax_pow_lintegral_lt_top
     h_iSup ▸ iSup_le fun K ↦ h_AK_bounded ((K : ℝ) + 1) (by positivity)
   exact lt_of_le_of_lt h_A_le hRHS_p_lt_top
 
-/-- **Doob's L^p maximal inequality** for discrete-time non-negative submartingales.
+/-- Doob's L^p maximal inequality for discrete-time non-negative submartingales.
 
 For a non-negative submartingale `f : ℕ → Ω → ℝ` and `1 < p`, the L^p norm
 of the running maximum `f*_n(ω) = max_{k ≤ n} f_k(ω)` is bounded by
@@ -936,7 +956,8 @@ theorem maximal_ineq_Lp
   have hpm1_p_pos : 0 < (p - 1) / p := div_pos (by linarith) hp_pos
   -- Degenerate cases first.
   by_cases hA0 : A = 0
-  · rw [hA0, ENNReal.zero_rpow_of_pos hp_inv_pos]; exact bot_le
+  · rw [hA0, ENNReal.zero_rpow_of_pos hp_inv_pos]
+    exact bot_le
   by_cases hAtop : A = ⊤
   · by_cases hBtop : B = ⊤
     · -- Both sides `⊤` since `C ≠ 0`.
@@ -977,7 +998,7 @@ private lemma martingale_norm_submartingale
   calc ‖f i ω‖ = ‖(μ[f j | (𝒢 i : MeasurableSpace Ω)]) ω‖ := by rw [hω]
     _ ≤ _ := hjensen
 
-/-- **Doob's L^p maximal inequality, Banach-valued martingale form.**
+/-- Doob's L^p maximal inequality, Banach-valued martingale form.
 
 For a Banach-valued martingale `f : ℕ → Ω → E` and `1 < p`,
 `‖max_{k ≤ n} ‖f_k‖‖_{L^p} ≤ (p / (p - 1)) · ‖f_n‖_{L^p}`.

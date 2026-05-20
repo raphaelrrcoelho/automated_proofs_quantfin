@@ -6,10 +6,10 @@
 
   Proof strategy:
     1. Sample at natural times: `N_k(ω) := M (k : ℝ) ω` is a discrete
-       martingale w.r.t. the sub-filtration `𝓕_k := 𝓕 (k : ℝ)`.
-    2. The L^p bound transfers to N (trivially, since N_k = M_k for k : ℕ).
+       martingale with respect to the sub-filtration `𝓕_k := 𝓕 (k : ℝ)`.
+    2. The L^p bound transfers to N (since N_k = M_k for k : ℕ).
        Also L^1 bound from finite measure + L^p bound (Hölder when p > 1,
-       trivial when p = 1).
+       direct when p = 1).
     3. Apply Mathlib's `Submartingale.exists_ae_tendsto_of_bdd` to get
        almost-sure convergence of N at natural times.
     4. By path continuity, the continuous-time limit at `t → ∞` agrees
@@ -78,7 +78,7 @@ def natFiltration (𝓕 : Filtration ℝ mΩ) : Filtration ℕ mΩ where
   le' n := 𝓕.le _
 
 /-- A continuous martingale sampled at natural times is a discrete
-    martingale w.r.t. the natural-time sub-filtration. -/
+    martingale with respect to the natural-time sub-filtration. -/
 private lemma discreteSample_martingale
     {μ : Measure Ω} {𝓕 : Filtration ℝ mΩ} {M : ℝ → Ω → ℝ}
     (hM : Martingale M 𝓕 μ) :
@@ -161,7 +161,7 @@ private lemma discreteSampleLimit_integrable
     MeasureTheory.Filtration.memLp_limitProcess_of_eLpNorm_bdd hAE hR'
   exact h_memLp.integrable le_rfl
 
-/-- **Theorem 4.3.10 (Saporito Ch 4.3) — natural-time formulation.**
+/-- Theorem 4.3.10 (Saporito Ch 4.3), natural-time formulation.
 
     A continuous-time martingale `(M_t)` bounded in `L^p` (`p ≥ 1`)
     sampled at natural times `t = n : ℕ` converges almost surely to an
@@ -253,7 +253,9 @@ private lemma lintegral_ofReal_runMaxNorm_rpow_le
       eLpNorm (fun ω => runMaxNorm M n ω) (ENNReal.ofReal p) μ
         ≤ ENNReal.ofReal (p / (p - 1)) * ENNReal.ofReal R :=
     (Martingale.eLpNorm_norm_runMax_le (discreteSample_martingale hM) hp n).trans
-      (by gcongr; exact hbound _)
+      (by
+        gcongr
+        exact hbound _)
   rw [eLpNorm_eq_lintegral_rpow_enorm_toReal (by simp [hp_pos]) ENNReal.ofReal_ne_top,
       ENNReal.toReal_ofReal hp_pos.le] at hDoob
   have hpow := ENNReal.rpow_le_rpow hDoob hp_pos.le
@@ -344,7 +346,7 @@ private lemma norm_discreteSample_le_dominator
   exact ENNReal.toReal_mono hS_lt_top.ne <|
     le_iSup (fun k : ℕ => ‖discreteSample M k ω‖ₑ) n
 
-/-- **L^p convergence at natural times** (for `p > 1`). The discrete sample of an
+/-- L^p convergence at natural times (for `p > 1`). The discrete sample of an
 `L^p`-bounded continuous martingale converges to the limit process in `L^p`. -/
 theorem lp_continuous_martingale_tendsto_eLpNorm_at_naturals
     {μ : Measure Ω} [IsFiniteMeasure μ] {𝓕 : Filtration ℝ mΩ}
@@ -394,7 +396,8 @@ private lemma shiftedProc_martingale {μ : Measure Ω} {𝓕 : Filtration ℝ m�
     Martingale (shiftedProc M n) (shiftedFiltration 𝓕 n) μ := by
   refine ⟨fun t => hM.stronglyMeasurable _, fun s t hst => ?_⟩
   have h_le : (n : ℝ) + (s : ℝ) ≤ (n : ℝ) + (t : ℝ) := by
-    have : (s : ℝ) ≤ (t : ℝ) := by exact_mod_cast hst
+    have hs_le_t : (s : ℝ) ≤ (t : ℝ) := by
+      exact_mod_cast hst
     linarith
   exact hM.condExp_ae_eq h_le
 
@@ -403,7 +406,9 @@ private lemma constProc_martingale {μ : Measure Ω} [IsFiniteMeasure μ] {𝓕 
     Martingale (constProc M n) (shiftedFiltration 𝓕 n) μ := by
   have h_le_shifted : ∀ s : ℝ≥0,
       (𝓕 (n : ℝ) : MeasurableSpace Ω) ≤ (shiftedFiltration 𝓕 n).seq s := fun s =>
-    𝓕.mono (by have : (0 : ℝ) ≤ (s : ℝ) := s.coe_nonneg; linarith)
+    𝓕.mono (by
+      have hs_nonneg : (0 : ℝ) ≤ (s : ℝ) := s.coe_nonneg
+      linarith)
   refine ⟨fun t => (hM.stronglyMeasurable _).mono (h_le_shifted t), fun s _t _hst => ?_⟩
   have hM_meas : StronglyMeasurable[(shiftedFiltration 𝓕 n).seq s] (M (n : ℝ)) :=
     (hM.stronglyMeasurable _).mono (h_le_shifted s)
@@ -432,9 +437,11 @@ private lemma incrementProc_isRightContinuous
   have h_f_rc : ContinuousWithinAt (fun u : ℝ => M u ω) (Set.Ioi (shift a)) (shift a) :=
     hM_cont ω _
   have h_mapsto : Set.MapsTo shift (Set.Ioi a) (Set.Ioi (shift a)) := fun t ht => by
-    have hlt : (a : ℝ) < (t : ℝ) := by exact_mod_cast ht
+    have hlt : (a : ℝ) < (t : ℝ) := by
+      exact_mod_cast ht
     show shift a < shift t
-    simp only [shift_def]; linarith
+    simp only [shift_def]
+    linarith
   exact h_f_rc.comp h_shift_cont.continuousWithinAt h_mapsto
 
 /-- L^p triangle: `eLpNorm (M_(n+1) - M_n) p μ → 0` from step 5 + reindex. -/
@@ -460,14 +467,20 @@ private lemma eLpNorm_increment_p_tendsto_zero
   have hL_shift : Tendsto (fun n : ℕ => eLpNorm
       (fun ω => M ((n : ℝ) + 1) ω - L ω) (ENNReal.ofReal p) μ) atTop (𝓝 0) := by
     refine ((tendsto_add_atTop_iff_nat 1).mpr hL_step5).congr (fun n => ?_)
-    congr 1; funext ω; congr 2; push_cast; ring
+    congr 1
+    funext ω
+    congr 2
+    push_cast
+    ring
   -- triangle: ‖M(n+1) - M n‖_p ≤ ‖M(n+1) - L‖_p + ‖M n - L‖_p
   have h_triangle : ∀ n : ℕ,
       eLpNorm (fun ω => M ((n : ℝ) + 1) ω - M (n : ℝ) ω) (ENNReal.ofReal p) μ
         ≤ eLpNorm (fun ω => M ((n : ℝ) + 1) ω - L ω) (ENNReal.ofReal p) μ
           + eLpNorm (fun ω => M (n : ℝ) ω - L ω) (ENNReal.ofReal p) μ := fun n => by
     have h_eq : (fun ω => M ((n : ℝ) + 1) ω - M (n : ℝ) ω)
-        = (fun ω => (M ((n : ℝ) + 1) ω - L ω) - (M (n : ℝ) ω - L ω)) := by funext; ring
+        = (fun ω => (M ((n : ℝ) + 1) ω - L ω) - (M (n : ℝ) ω - L ω)) := by
+      funext ω
+      ring
     rw [h_eq]
     exact eLpNorm_sub_le ((h_meas_M _).sub h_meas_L) ((h_meas_M _).sub h_meas_L) h_one_le_p
   have h_rhs : Tendsto (fun n : ℕ =>
@@ -504,7 +517,9 @@ private lemma eLpNorm_increment_one_tendsto_zero
     rw [C_def, ENNReal.toReal_one, ENNReal.toReal_ofReal hp_pos.le, one_div_one]
   have hC_ne_top : C ≠ ⊤ :=
     ENNReal.rpow_ne_top_of_nonneg
-      (by have : 1 / p ≤ 1 := (div_le_one hp_pos).mpr hp.le; linarith)
+      (by
+        have hp_inv_le_one : 1 / p ≤ 1 := (div_le_one hp_pos).mpr hp.le
+        linarith)
       (measure_ne_top _ _)
   have h_bound_tendsto : Tendsto (fun n : ℕ => eLpNorm
       (fun ω => M ((n : ℝ) + 1) ω - M (n : ℝ) ω) (ENNReal.ofReal p) μ * C) atTop (𝓝 0) := by
@@ -566,8 +581,13 @@ private lemma sup_increment_measure_tendsto_zero
       (incrementProc_isRightContinuous hM_cont n)
     rw [smul_eq_mul] at h_max
     refine h_max.trans ?_
-    rw [show (fun ω => ‖incrementProc M n 1 ω‖) = (fun ω => ‖M ((n : ℝ) + 1) ω - M (n : ℝ) ω‖)
-      from funext fun ω => by show ‖M ((n : ℝ) + ((1 : ℝ≥0) : ℝ)) ω - _‖ = _; rw [NNReal.coe_one]]
+    have h_endpoint :
+        (fun ω => ‖incrementProc M n 1 ω‖)
+          = fun ω => ‖M ((n : ℝ) + 1) ω - M (n : ℝ) ω‖ := by
+      funext ω
+      show ‖M ((n : ℝ) + ((1 : ℝ≥0) : ℝ)) ω - _‖ = _
+      rw [NNReal.coe_one]
+    rw [h_endpoint]
     exact setIntegral_le_integral (increment_integrable hp hM hbound n).norm
       (Filter.Eventually.of_forall fun _ => norm_nonneg _)
   -- ε * μ.real S → 0 by sandwich with integral_norm_increment_tendsto_zero
@@ -581,9 +601,9 @@ private lemma sup_increment_measure_tendsto_zero
   refine h_div.congr fun n => ?_
   rw [← mul_assoc, inv_mul_cancel₀ hε.ne', one_mul]
 
-/-- The norm of the increment trajectory on `[0, 1]` is `BddAbove` a.s.
-Combines `Martingale.submartingale_norm` with Degenne's continuous-time Doob L^p
-`Submartingale.rightCont_iSup_ofReal_ne_top`. -/
+/-- The norm of the increment trajectory on `[0, 1]` is `BddAbove` a.s.,
+using `Martingale.submartingale_norm` and Degenne's continuous-time Doob L^p
+maximal lemma `Submartingale.rightCont_iSup_ofReal_ne_top`. -/
 private lemma incrementProc_bddAbove_ae
     {μ : Measure Ω} [IsFiniteMeasure μ] {𝓕 : Filtration ℝ mΩ}
     {M : ℝ → Ω → ℝ} (hM : Martingale M 𝓕 μ)
@@ -605,7 +625,7 @@ private lemma incrementProc_bddAbove_ae
   exact ENNReal.toReal_mono hω
     (le_iSup (fun j : Set.Iic (1 : ℝ≥0) => ENNReal.ofReal ‖incrementProc M n j ω‖) i)
 
-/-- **Theorem 4.3.10 (Saporito Ch 4.3) — real-time convergence in measure.**
+/-- Theorem 4.3.10 (Saporito Ch 4.3), real-time convergence in measure.
 
 An `L^p`-bounded continuous-time martingale `(M_t)` with right-continuous paths on a finite
 probability space converges in measure to the natural-time limit `discreteSampleLimit μ 𝓕 M`
@@ -657,7 +677,9 @@ theorem lp_continuous_martingale_tendstoInMeasure
         exact le_of_lt (by linarith : t - (n : ℝ) < 1)
       rw [show M t ω - M (n : ℝ) ω = incrementProc M n s ω by
         show _ = M ((n : ℝ) + (s : ℝ)) ω - M (n : ℝ) ω
-        congr 2; show t = (n : ℝ) + (t - (n : ℝ)); ring]
+        congr 2
+        show t = (n : ℝ) + (t - (n : ℝ))
+        ring]
       exact le_ciSup (f := fun i : Set.Iic (1 : ℝ≥0) => ‖incrementProc M n i ω‖) h_bdd
         ⟨s, h_s_le_one⟩
     · right
@@ -679,11 +701,11 @@ theorem lp_continuous_martingale_tendstoInMeasure
   exact tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds h_sum
     (Filter.Eventually.of_forall fun _ => measureReal_nonneg) h_bound
 
-/-- **Theorem 4.3.10 (Saporito Ch 4.3) — combined natural-a.s. + real-time-in-measure.**
+/-- Theorem 4.3.10 (Saporito Ch 4.3), combined natural-a.s. and real-time-in-measure.
 
 For an `L^p`-bounded continuous-time martingale (`p > 1`) with right-continuous paths on a
 finite probability space, there is an integrable limit `M_∞` to which the process converges
-a.s. at natural times AND in measure as `t → ∞` along all reals. -/
+a.s. at natural times and in measure as `t → ∞` along all reals. -/
 theorem lp_continuous_martingale_full
     {μ : Measure Ω} [IsFiniteMeasure μ] {𝓕 : Filtration ℝ mΩ}
     {M : ℝ → Ω → ℝ} {p : ℝ} (hp : 1 < p)

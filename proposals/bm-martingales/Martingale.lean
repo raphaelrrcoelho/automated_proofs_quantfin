@@ -12,7 +12,7 @@ public import BrownianMotion.Gaussian.BrownianMotion
 /-!
 # Martingale properties of pre-Brownian motion
 
-For a filtered pre-Brownian motion `X`, the following are martingales w.r.t. `𝓕`:
+For a filtered pre-Brownian motion `X`, the following are martingales with respect to `𝓕`:
 
 * `X` itself (already provided as `IsPreBrownian.isMartingale` in `Gaussian/BrownianMotion.lean`)
 * `t ↦ (X t)² − t`
@@ -62,7 +62,8 @@ private lemma integrable_exp_mul_of_hasLaw {Ω : Type*} {mΩ : MeasurableSpace �
     Integrable (fun ω ↦ Real.exp (α * Z ω)) P := by
   rw [show (fun ω ↦ Real.exp (α * Z ω)) = (fun x ↦ Real.exp (α * x)) ∘ Z from rfl]
   refine Integrable.comp_aemeasurable ?_ hZ_meas.aemeasurable
-  rw [hZ.map_eq]; exact integrable_exp_mul_gaussianReal α
+  rw [hZ.map_eq]
+  exact integrable_exp_mul_gaussianReal α
 
 namespace IsFilteredPreBrownian
 
@@ -174,7 +175,8 @@ private lemma condExp_squareSubTime_residual {s t : ℝ≥0} (hst : s ≤ t) :
     refine (condExp_mul_of_stronglyMeasurable_left h_smeas_s h_int_cross h_int_diff).trans ?_
     filter_upwards [h_ce_increment] with ω hω
     show (X s) ω * _ = 0
-    rw [hω]; simp
+    rw [hω]
+    simp
   -- E[diff² | 𝓕_s] =ᵐ (t − s).
   have h_ce_diff_sq :
       P[fun ω ↦ (X t ω - X s ω) ^ 2 | (𝓕 s : MeasurableSpace Ω)] =ᵐ[P]
@@ -188,16 +190,19 @@ private lemma condExp_squareSubTime_residual {s t : ℝ≥0} (hst : s ≤ t) :
     filter_upwards [h_ce_diff_sq] with ω h
     show P[fun ω ↦ (X t ω - X s ω) ^ 2 | (𝓕 s : MeasurableSpace Ω)] ω
           - P[fun _ : Ω ↦ ((t : ℝ) - (s : ℝ)) | (𝓕 s : MeasurableSpace Ω)] ω = 0
-    rw [h, condExp_const (𝓕.le s)]; simp
-  -- Combine via condExp_add + condExp_smul: E[2 cross + diff_sq_sub | 𝓕_s] =ᵐ 2·0 + 0 = 0.
+    rw [h, condExp_const (𝓕.le s)]
+    simp
+  -- Additivity and scalar multiplication reduce the residual to the two centered identities.
   refine (condExp_add h_int_2cross h_int_diff_sq_sub _).trans ?_
   have h_eq_smul : (fun ω ↦ 2 * (X s ω * (X t ω - X s ω)))
                  = (2 : ℝ) • (fun ω ↦ X s ω * (X t ω - X s ω)) := by
-    funext ω; simp only [Pi.smul_apply, smul_eq_mul]
+    funext ω
+    simp only [Pi.smul_apply, smul_eq_mul]
   have h_smul :
       P[fun ω ↦ 2 * (X s ω * (X t ω - X s ω)) | (𝓕 s : MeasurableSpace Ω)] =ᵐ[P]
         (2 : ℝ) • P[fun ω ↦ X s ω * (X t ω - X s ω) | (𝓕 s : MeasurableSpace Ω)] := by
-    rw [h_eq_smul]; exact condExp_smul (2 : ℝ) _ _
+    rw [h_eq_smul]
+    exact condExp_smul (2 : ℝ) _ _
   filter_upwards [h_smul, h_ce_cross, h_ce_diff_sq_sub] with ω hsm hcr hds
   simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul] at *
   linarith
@@ -242,7 +247,8 @@ theorem squareSubTime_isMartingale :
   refine (condExp_add h_int_Bs_sq_sub h_int_residual _).trans ?_
   filter_upwards [condExp_squareSubTime_residual (hX := hX) hst] with ω hω
   show P[fun ω ↦ (X s ω) ^ 2 - (s : ℝ) | (𝓕 s : MeasurableSpace Ω)] ω + _ = _
-  rw [h_condBs_sq_sub, hω]; simp
+  rw [h_condBs_sq_sub, hω]
+  simp
 
 /-- For a filtered pre-Brownian motion `X` and `α : ℝ`,
 `t ↦ exp(α X_t - α² t / 2)` is a martingale with respect to `𝓕`. -/

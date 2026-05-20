@@ -42,7 +42,7 @@ private lemma min_gt_iInter (hn : 0 < n) (t : ℝ) :
   simp [Finset.lt_inf'_iff, Set.mem_iInter, Set.mem_preimage, Set.mem_Ioi]
 
 omit [IsProbabilityMeasure μ] in
-/-- **Appendix B.2 — Minimum of independent exponentials.**
+/-- Appendix B.2: minimum of independent exponentials.
 
 For a finite family of jointly independent `Exp(rates i)` random variables `τ : Fin n → Ω → ℝ`,
 the survival function of the pointwise minimum is `exp(-(∑ rates) · t)` for `t ≥ 0` —

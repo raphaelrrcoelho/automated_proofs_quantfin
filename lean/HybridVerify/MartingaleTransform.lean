@@ -110,7 +110,7 @@ private lemma martingaleTransform_step
   rw [hω1]
   simp [Pi.add_apply, hcondAM_n, hω2]
 
-/-- **Theorem 2.2.9**: the martingale transform of a martingale `M` by a bounded
+/-- Theorem 2.2.9: the martingale transform of a martingale `M` by a bounded
 predictable process `A` is itself a martingale. -/
 theorem martingaleTransform_isMartingale
     (hM : Martingale M 𝓕 μ) (hA : StronglyAdapted 𝓕 (fun n ↦ A (n + 1)))
