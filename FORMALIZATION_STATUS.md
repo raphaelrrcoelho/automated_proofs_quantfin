@@ -32,10 +32,10 @@ Refresh with:
 python3 -m python.coverage_report
 ```
 
-Coverage as of 2026-05-19 (extended quant-finance pass: put greeks, higher-order BS greeks, Bachelier greeks, digital greeks, BS-Merton with dividends, Garman-Kohlhagen FX, Black-76 greeks; second pass: Bachelier γ/θ, asset-or-nothing γ, BS-Merton δ/γ/vega, American options in binomial tree; third pass: CRR drift-quotient limit closing the analytic content of CRR-to-BS; fifth pass: cash-or-nothing digital gamma closing the previously deferred quotient-rule item; sixth pass: full digital ρ/vega/θ matrix for cash and asset variants — 6 theorems closing the remaining digital Greek gap):
-**99 / 115 delivery-ready** (75 full + 24 library wrappers), 16 reduced cores, 0 placeholders.
+Coverage as of 2026-05-19 (extended quant-finance pass: put greeks, higher-order BS greeks, Bachelier greeks, digital greeks, BS-Merton with dividends, Garman-Kohlhagen FX, Black-76 greeks; second pass: Bachelier γ/θ, asset-or-nothing γ, BS-Merton δ/γ/vega, American options in binomial tree; third pass: CRR drift-quotient limit closing the analytic content of CRR-to-BS; fifth pass: cash-or-nothing digital gamma closing the previously deferred quotient-rule item; sixth pass: full digital ρ/vega/θ matrix for cash and asset variants — 6 theorems closing the remaining digital Greek gap; seventh pass: Black-76 ρ and θ closing the futures-options Greek set):
+**101 / 117 delivery-ready** (77 full + 24 library wrappers), 16 reduced cores, 0 placeholders.
 
-The `mathematical_finance.json` benchmark now has 50 theorems (all `full`). Original 14 + 16 from the first pass + 9 from the second pass + 1 from the third pass + 3 from the fourth pass + 1 from the fifth pass + 6 from the sixth pass:
+The `mathematical_finance.json` benchmark now has 52 theorems (all `full`). Original 14 + 16 from the first pass + 9 from the second pass + 1 from the third pass + 3 from the fourth pass + 1 from the fifth pass + 6 from the sixth pass + 2 from the seventh pass:
 
 | ID | name | new module |
 |---|---|---|
@@ -89,8 +89,10 @@ The `mathematical_finance.json` benchmark now has 50 theorems (all `full`). Orig
 | `mf-cash-digital-vega` | Cash-or-nothing digital vega | `BlackScholesDigitalGreeks.lean` |
 | `mf-asset-digital-theta` | Asset-or-nothing digital theta | `BlackScholesDigitalGreeks.lean` |
 | `mf-cash-digital-theta` | Cash-or-nothing digital theta | `BlackScholesDigitalGreeks.lean` |
+| `mf-black76-rho` | Black-76 rho (futures call) | `BlackFuturesGreeks.lean` |
+| `mf-black76-theta` | Black-76 theta (T form, futures call) | `BlackFuturesGreeks.lean` |
 
-All 50 are `full`, axioms-clean (`#print axioms` = `[propext, Classical.choice, Quot.sound]`).
+All 52 are `full`, axioms-clean (`#print axioms` = `[propext, Classical.choice, Quot.sound]`).
 
 ### Quality / structural improvements (2026-05-16 → 2026-05-17 sessions)
 

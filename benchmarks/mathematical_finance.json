@@ -800,6 +800,38 @@
         "formalization_status": "full",
         "formalization_scope": "Full formal proof via product rule on e^{-rτ}·Φ(d₂(τ)). ∂_τ e^{-rτ} = -r·e^{-rτ}; ∂_τ Φ(d₂(τ)) = ϕ(d₂)·∂_τ d₂ where ∂_τ d₂ is the Lean natural form. Lives in lean/HybridVerify/BlackScholesDigitalGreeks.lean. Axioms-clean."
       }
+    },
+    {
+      "id": "mf-black76-rho",
+      "name": "Black-76 Rho",
+      "description": "Black-76 rho: ∂_r V_B = -T · V_B. Clean form because the inner bsV is r-independent (zero drift in futures setup) — only the e^{-rT} discount contributes.",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.BlackFuturesGreeks\n\nopen HybridVerify\n\ntheorem black76_rho_thm (K σ F T : ℝ) (r : ℝ) :\n    HasDerivAt (fun r' => HybridVerify.blackV K σ r' F T)\n      (-T * HybridVerify.blackV K σ r F T) r :=\n  HybridVerify.hasDerivAt_blackV_r K σ F T r\n"
+      },
+      "metadata": {
+        "chapter": 9,
+        "reference": "Black-76 rho (Hull 17.6)",
+        "difficulty": "advanced",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof. The inner bsV(K, 0, σ, F, T) has zero drift so is r-independent. Only the discount factor e^{-rT} contributes, giving the clean -T·V_B form. Lives in lean/HybridVerify/BlackFuturesGreeks.lean. Axioms-clean."
+      }
+    },
+    {
+      "id": "mf-black76-theta",
+      "name": "Black-76 Theta (T form)",
+      "description": "Black-76 theta: ∂_T V_B = -r·V_B + e^{-rT}·σ·F·ϕ(d₁)/(2√T). Product rule on e^{-rT}·bsV(K, 0, σ, F, T) using BS theta at r=0.",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.BlackFuturesGreeks\n\nopen HybridVerify\n\ntheorem black76_theta_thm {K σ : ℝ} (hK : 0 < K) (hσ : 0 < σ) (r : ℝ)\n    {F T : ℝ} (hF : 0 < F) (hT : 0 < T) :\n    HasDerivAt (fun t => HybridVerify.blackV K σ r F t)\n      (-r * HybridVerify.blackV K σ r F T +\n        Real.exp (-(r * T)) *\n          (σ * F * gaussianPDFReal 0 1 (HybridVerify.bsd1 F K 0 σ T) / (2 * Real.sqrt T))) T :=\n  HybridVerify.hasDerivAt_blackV_T hK hσ r hF hT\n"
+      },
+      "metadata": {
+        "chapter": 9,
+        "reference": "Black-76 theta (Hull 17.6)",
+        "difficulty": "advanced",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof via product rule on e^{-rT}·bsV(K, 0, σ, F, T). ∂_T e^{-rT} = -r·e^{-rT}; ∂_T bsV(·, 0, ·) reduces to σ·F·ϕ(d₁)/(2√T) (the rK·e^{-rT}·Φ(d₂) term vanishes at r=0). Lives in lean/HybridVerify/BlackFuturesGreeks.lean. Axioms-clean."
+      }
     }
   ]
 }
