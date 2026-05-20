@@ -32,10 +32,10 @@ Refresh with:
 python3 -m python.coverage_report
 ```
 
-Coverage as of 2026-05-20 (extended quant-finance pass: put greeks, higher-order BS greeks, Bachelier greeks, digital greeks, BS-Merton with dividends, Garman-Kohlhagen FX, Black-76 greeks; second pass: Bachelier γ/θ, asset-or-nothing γ, BS-Merton δ/γ/vega, American options in binomial tree; third pass: CRR drift-quotient limit closing the analytic content of CRR-to-BS; fifth pass: cash-or-nothing digital gamma closing the previously deferred quotient-rule item; sixth pass: full digital ρ/vega/θ matrix for cash and asset variants — 6 theorems closing the remaining digital Greek gap; seventh pass: Black-76 ρ and θ closing the futures-options Greek set; eighth pass: CRR drift limit n-form `n·(2p_n−1)·σ·√(T/n) → (r−σ²/2)T` closing the previously deferred substitution work; ninth pass: Phase 5 broader quant-finance — fixed-income ZCB pricing/yield/duration/convexity, two-asset Markowitz portfolio theory with completing-the-square factorization, CAPM beta + portfolio linearity — 12 theorems extending the project beyond derivatives pricing into fixed income and portfolio theory; **tenth pass: Phase 6 quant-risk + N-asset portfolio + bond immunization** — Gaussian VaR/CVaR closed forms with affine/scaling identities, bond portfolio rate sensitivity + Redington-style first-order immunization, N-asset Markowitz variance via Finset double sum with diagonal/iid/PSD/two-asset specializations — 15 theorems extending the project into risk-measurement and multi-asset portfolio theory):
-**129 / 145 delivery-ready** (105 full + 24 library wrappers), 16 reduced cores, 0 placeholders.
+Coverage as of 2026-05-20 (extended quant-finance pass: put greeks, higher-order BS greeks, Bachelier greeks, digital greeks, BS-Merton with dividends, Garman-Kohlhagen FX, Black-76 greeks; second pass: Bachelier γ/θ, asset-or-nothing γ, BS-Merton δ/γ/vega, American options in binomial tree; third pass: CRR drift-quotient limit closing the analytic content of CRR-to-BS; fifth pass: cash-or-nothing digital gamma closing the previously deferred quotient-rule item; sixth pass: full digital ρ/vega/θ matrix for cash and asset variants — 6 theorems closing the remaining digital Greek gap; seventh pass: Black-76 ρ and θ closing the futures-options Greek set; eighth pass: CRR drift limit n-form `n·(2p_n−1)·σ·√(T/n) → (r−σ²/2)T` closing the previously deferred substitution work; ninth pass: Phase 5 broader quant-finance — fixed-income ZCB pricing/yield/duration/convexity, two-asset Markowitz portfolio theory with completing-the-square factorization, CAPM beta + portfolio linearity — 12 theorems extending the project beyond derivatives pricing into fixed income and portfolio theory; tenth pass: Phase 6 quant-risk + N-asset portfolio + bond immunization — Gaussian VaR/CVaR closed forms with affine/scaling identities, bond portfolio rate sensitivity + Redington-style first-order immunization, N-asset Markowitz variance via Finset double sum with diagonal/iid/PSD/two-asset specializations — 15 theorems; **eleventh pass: Phase 7 performance / coherent risk / fixed-income depth / static bounds / two-fund separation** — Sharpe (√T scaling + scale invariance) + Kelly criterion, gaussian VaR/CVaR coherent risk-measure axioms (translation, homogeneity, monotonicity, gaussian subadditivity via joint-stdev triangle inequality), annuity geometric-series closed form + forward/spot consistency + coupon-bond YTM monotonicity, Phi ≤ 1 + BS call/put price upper bounds + box-spread arbitrage identity, capital market line equation + Sharpe invariance + two-fund decomposition — 23 theorems extending the project into performance measurement, axiomatic risk, and multi-fund portfolio theory):
+**152 / 168 delivery-ready** (128 full + 24 library wrappers), 16 reduced cores, 0 placeholders.
 
-The `mathematical_finance.json` benchmark now has 80 theorems (all `full`). Original 14 + 16 from the first pass + 9 from the second pass + 1 from the third pass + 3 from the fourth pass + 1 from the fifth pass + 6 from the sixth pass + 2 from the seventh pass + 1 from the eighth pass + 12 from the ninth pass + 15 from the tenth pass:
+The `mathematical_finance.json` benchmark now has 103 theorems (all `full`). Original 14 + 16 from the first pass + 9 from the second pass + 1 from the third pass + 3 from the fourth pass + 1 from the fifth pass + 6 from the sixth pass + 2 from the seventh pass + 1 from the eighth pass + 12 from the ninth pass + 15 from the tenth pass + 23 from the eleventh pass:
 
 | ID | name | new module |
 |---|---|---|
@@ -119,8 +119,31 @@ The `mathematical_finance.json` benchmark now has 80 theorems (all `full`). Orig
 | `mf-markowitz-n-iid` | Diversification under iid: Var(c·1) = c²·n·σ² | `MarkowitzNAsset.lean` |
 | `mf-markowitz-n-psd` | N-asset variance ≥ 0 under PSD kernel | `MarkowitzNAsset.lean` |
 | `mf-markowitz-n-two-asset` | N-asset compatibility with two-asset Markowitz | `MarkowitzNAsset.lean` |
+| `mf-sharpe-scale-invariant` | Sharpe ratio scale invariance | `PerformanceRatios.lean` |
+| `mf-sharpe-sqrtT-scaling` | Sharpe √T time-aggregation scaling | `PerformanceRatios.lean` |
+| `mf-kelly-foc` | Kelly fraction first-order optimality | `PerformanceRatios.lean` |
+| `mf-gaussian-var-translation` | Gaussian VaR translation invariance | `RiskMeasureAxioms.lean` |
+| `mf-gaussian-cvar-translation` | Gaussian CVaR translation invariance | `RiskMeasureAxioms.lean` |
+| `mf-gaussian-var-pos-homog` | Gaussian VaR positive homogeneity | `RiskMeasureAxioms.lean` |
+| `mf-gaussian-cvar-pos-homog` | Gaussian CVaR positive homogeneity | `RiskMeasureAxioms.lean` |
+| `mf-gaussian-var-monotone` | Gaussian VaR monotonicity in mean | `RiskMeasureAxioms.lean` |
+| `mf-gaussian-cvar-monotone` | Gaussian CVaR monotonicity in mean | `RiskMeasureAxioms.lean` |
+| `mf-joint-stdev-triangle` | Joint-stdev triangle inequality `√(σ₁²+2ρσ₁σ₂+σ₂²) ≤ σ₁+σ₂` | `RiskMeasureAxioms.lean` |
+| `mf-gaussian-var-subadditive` | Gaussian VaR subadditivity | `RiskMeasureAxioms.lean` |
+| `mf-gaussian-cvar-subadditive` | Gaussian CVaR subadditivity | `RiskMeasureAxioms.lean` |
+| `mf-annuity-closed-form` | Annuity geometric-series closed form | `CouponBondsAndAnnuities.lean` |
+| `mf-forward-spot-flat` | Forward rate = spot rate under flat curve | `CouponBondsAndAnnuities.lean` |
+| `mf-coupon-bond-strict-anti` | Coupon bond strictly decreasing in yield (YTM uniqueness) | `CouponBondsAndAnnuities.lean` |
+| `mf-phi-le-one` | Standard normal CDF upper bound Φ ≤ 1 | `StaticOptionBounds.lean` |
+| `mf-bsV-le-S` | BS call price ≤ underlying | `StaticOptionBounds.lean` |
+| `mf-bsP-le-K-disc` | BS put price ≤ discounted strike | `StaticOptionBounds.lean` |
+| `mf-box-spread-identity` | Box spread arbitrage identity `= (K₂-K₁)·e^{-rτ}` | `StaticOptionBounds.lean` |
+| `mf-cml-equation` | Capital Market Line equation | `TwoFundSeparation.lean` |
+| `mf-cml-sharpe-invariant` | Sharpe invariance along the CML | `TwoFundSeparation.lean` |
+| `mf-cml-decomposition-unique` | CML decomposition uniqueness | `TwoFundSeparation.lean` |
+| `mf-cml-mean-at-stdev` | CML mean recovery from std deviation | `TwoFundSeparation.lean` |
 
-All 80 are `full`, axioms-clean (`#print axioms` = `[propext, Classical.choice, Quot.sound]`).
+All 103 are `full`, axioms-clean (`#print axioms` = `[propext, Classical.choice, Quot.sound]`).
 
 ### Quality / structural improvements (2026-05-16 → 2026-05-17 sessions)
 

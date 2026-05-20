@@ -1280,6 +1280,374 @@
         "formalization_status": "full",
         "formalization_scope": "Full formal proof via Finset.univ on Fin 2 expansion + ring. Lives in lean/HybridVerify/MarkowitzNAsset.lean. Axioms-clean."
       }
+    },
+    {
+      "id": "mf-sharpe-scale-invariant",
+      "name": "Sharpe Ratio Scale Invariance",
+      "description": "The Sharpe ratio (μ - r_f)/σ is invariant under uniform scaling of mean, risk-free rate, and volatility: S(λμ, λr_f, λσ) = S(μ, r_f, σ).",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.PerformanceRatios\n\nopen HybridVerify\n\ntheorem sharpe_scale_invariant_thm {c : ℝ} (hc : c ≠ 0) (μ r_f σ : ℝ) :\n    HybridVerify.sharpeRatio (c * μ) (c * r_f) (c * σ) =\n      HybridVerify.sharpeRatio μ r_f σ :=\n  HybridVerify.sharpeRatio_scale_invariant hc μ r_f σ\n"
+      },
+      "metadata": {
+        "chapter": 15,
+        "reference": "Sharpe ratio (Sharpe 1966; Bodie-Kane-Marcus Ch 10)",
+        "difficulty": "beginner",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof via field_simp on the definition. Lives in lean/HybridVerify/PerformanceRatios.lean. Axioms-clean."
+      }
+    },
+    {
+      "id": "mf-sharpe-sqrtT-scaling",
+      "name": "Sharpe Ratio √T Time-Aggregation Scaling",
+      "description": "Under iid time aggregation L_T ~ N(T·μ, T·σ²), the Sharpe ratio scales as √T: S_T = √T · S_1. Standard quant rule for annualizing.",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.PerformanceRatios\n\nopen HybridVerify Real\n\ntheorem sharpe_sqrtT_thm {μ r_f σ T : ℝ} (hT : 0 < T) (hσ : σ ≠ 0) :\n    HybridVerify.sharpeRatio (T * μ) (T * r_f) (σ * Real.sqrt T) =\n      Real.sqrt T * HybridVerify.sharpeRatio μ r_f σ :=\n  HybridVerify.sharpeRatio_scaleT hT hσ\n"
+      },
+      "metadata": {
+        "chapter": 15,
+        "reference": "Sharpe ratio time scaling (Bodie-Kane-Marcus Ch 5.5; Hull Ch 14 vol annualization)",
+        "difficulty": "intermediate",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof via T = √T·√T rewrite + field_simp. Lives in lean/HybridVerify/PerformanceRatios.lean. Axioms-clean."
+      }
+    },
+    {
+      "id": "mf-kelly-foc",
+      "name": "Kelly Criterion First-Order Optimality",
+      "description": "At the Kelly fraction f* = (p·b - q)/b with q = 1 - p, the derivative of the expected log-growth p·log(1 + f·b) + q·log(1 - f) vanishes.",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.PerformanceRatios\n\nopen HybridVerify\n\ntheorem kelly_foc_thm {p b : ℝ}\n    (hp : 0 < p) (hp1 : p < 1) (hb : 0 < b) :\n    HasDerivAt (fun f => HybridVerify.kellyGrowth p b f) 0\n      (HybridVerify.kellyFraction p b) :=\n  HybridVerify.kellyGrowth_deriv_at_kelly hp hp1 hb\n"
+      },
+      "metadata": {
+        "chapter": 15,
+        "reference": "Kelly criterion (Kelly 1956; Thorp 2006)",
+        "difficulty": "intermediate",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof via HasDerivAt.log composition + field_simp on the polynomial identity at f*. Lives in lean/HybridVerify/PerformanceRatios.lean. Axioms-clean."
+      }
+    },
+    {
+      "id": "mf-gaussian-var-translation",
+      "name": "Gaussian VaR Translation Invariance",
+      "description": "VaR(L + c) = VaR(L) + c — the translation-invariance axiom of coherent risk measures (Artzner-Delbaen-Eber-Heath 1999).",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.RiskMeasureAxioms\n\nopen HybridVerify\n\ntheorem gaussian_var_translation_thm (μ σ z c : ℝ) :\n    HybridVerify.gaussianVaR (μ + c) σ z = HybridVerify.gaussianVaR μ σ z + c :=\n  HybridVerify.gaussianVaR_translation μ σ z c\n"
+      },
+      "metadata": {
+        "chapter": 13,
+        "reference": "Coherent risk measure axioms (Artzner-Delbaen-Eber-Heath 1999; McNeil-Frey-Embrechts Ch 2.3)",
+        "difficulty": "beginner",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof via ring. Lives in lean/HybridVerify/RiskMeasureAxioms.lean. Axioms-clean."
+      }
+    },
+    {
+      "id": "mf-gaussian-cvar-translation",
+      "name": "Gaussian CVaR Translation Invariance",
+      "description": "CVaR(L + c) = CVaR(L) + c — translation-invariance axiom for CVaR.",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.RiskMeasureAxioms\n\nopen HybridVerify\n\ntheorem gaussian_cvar_translation_thm (μ σ z α c : ℝ) :\n    HybridVerify.gaussianCVaR (μ + c) σ z α =\n      HybridVerify.gaussianCVaR μ σ z α + c :=\n  HybridVerify.gaussianCVaR_translation μ σ z α c\n"
+      },
+      "metadata": {
+        "chapter": 13,
+        "reference": "Coherent risk measure axioms (Artzner-Delbaen-Eber-Heath 1999; McNeil-Frey-Embrechts Ch 2.3)",
+        "difficulty": "beginner",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof via ring. Lives in lean/HybridVerify/RiskMeasureAxioms.lean. Axioms-clean."
+      }
+    },
+    {
+      "id": "mf-gaussian-var-pos-homog",
+      "name": "Gaussian VaR Positive Homogeneity",
+      "description": "VaR(λ·L) = λ·VaR(L) for λ ≥ 0 — positive-homogeneity axiom of coherent risk measures.",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.RiskMeasureAxioms\n\nopen HybridVerify\n\ntheorem gaussian_var_pos_homog_thm (μ σ z : ℝ) {l : ℝ} (hl : 0 ≤ l) :\n    HybridVerify.gaussianVaR (l * μ) (l * σ) z = l * HybridVerify.gaussianVaR μ σ z :=\n  HybridVerify.gaussianVaR_positiveHomogeneity μ σ z hl\n"
+      },
+      "metadata": {
+        "chapter": 13,
+        "reference": "Coherent risk measure axioms (Artzner-Delbaen-Eber-Heath 1999)",
+        "difficulty": "beginner",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof via ring. Lives in lean/HybridVerify/RiskMeasureAxioms.lean. Axioms-clean."
+      }
+    },
+    {
+      "id": "mf-gaussian-cvar-pos-homog",
+      "name": "Gaussian CVaR Positive Homogeneity",
+      "description": "CVaR(λ·L) = λ·CVaR(L) for λ ≥ 0.",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.RiskMeasureAxioms\n\nopen HybridVerify\n\ntheorem gaussian_cvar_pos_homog_thm (μ σ z α : ℝ) {l : ℝ} (hl : 0 ≤ l) :\n    HybridVerify.gaussianCVaR (l * μ) (l * σ) z α =\n      l * HybridVerify.gaussianCVaR μ σ z α :=\n  HybridVerify.gaussianCVaR_positiveHomogeneity μ σ z α hl\n"
+      },
+      "metadata": {
+        "chapter": 13,
+        "reference": "Coherent risk measure axioms (Artzner-Delbaen-Eber-Heath 1999)",
+        "difficulty": "beginner",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof via ring. Lives in lean/HybridVerify/RiskMeasureAxioms.lean. Axioms-clean."
+      }
+    },
+    {
+      "id": "mf-gaussian-var-monotone",
+      "name": "Gaussian VaR Monotonicity in Mean",
+      "description": "If μ₁ ≤ μ₂ and the volatilities match, VaR(L₁) ≤ VaR(L₂) — monotonicity axiom (parameter form).",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.RiskMeasureAxioms\n\nopen HybridVerify\n\ntheorem gaussian_var_monotone_thm {μ₁ μ₂ σ z : ℝ} (hμ : μ₁ ≤ μ₂) :\n    HybridVerify.gaussianVaR μ₁ σ z ≤ HybridVerify.gaussianVaR μ₂ σ z :=\n  HybridVerify.gaussianVaR_monotone_mean hμ\n"
+      },
+      "metadata": {
+        "chapter": 13,
+        "reference": "Coherent risk measure axioms — monotonicity (Artzner-Delbaen-Eber-Heath 1999)",
+        "difficulty": "beginner",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof via linarith on the definition. Lives in lean/HybridVerify/RiskMeasureAxioms.lean. Axioms-clean."
+      }
+    },
+    {
+      "id": "mf-gaussian-cvar-monotone",
+      "name": "Gaussian CVaR Monotonicity in Mean",
+      "description": "If μ₁ ≤ μ₂ and the volatilities match, CVaR(L₁) ≤ CVaR(L₂).",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.RiskMeasureAxioms\n\nopen HybridVerify\n\ntheorem gaussian_cvar_monotone_thm {μ₁ μ₂ σ z α : ℝ} (hμ : μ₁ ≤ μ₂) :\n    HybridVerify.gaussianCVaR μ₁ σ z α ≤ HybridVerify.gaussianCVaR μ₂ σ z α :=\n  HybridVerify.gaussianCVaR_monotone_mean hμ\n"
+      },
+      "metadata": {
+        "chapter": 13,
+        "reference": "Coherent risk measure axioms — monotonicity (Artzner-Delbaen-Eber-Heath 1999)",
+        "difficulty": "beginner",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof via linarith on the definition. Lives in lean/HybridVerify/RiskMeasureAxioms.lean. Axioms-clean."
+      }
+    },
+    {
+      "id": "mf-joint-stdev-triangle",
+      "name": "Joint Standard-Deviation Triangle Inequality",
+      "description": "√(σ₁² + 2·ρ·σ₁·σ₂ + σ₂²) ≤ σ₁ + σ₂ whenever |ρ| ≤ 1 and σ_i ≥ 0. The substantive inequality behind gaussian subadditivity.",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.RiskMeasureAxioms\n\nopen HybridVerify\n\ntheorem joint_stdev_triangle_thm {σ₁ σ₂ ρ : ℝ}\n    (h₁ : 0 ≤ σ₁) (h₂ : 0 ≤ σ₂) (hρ : ρ ≤ 1) :\n    Real.sqrt (σ₁ ^ 2 + 2 * ρ * σ₁ * σ₂ + σ₂ ^ 2) ≤ σ₁ + σ₂ :=\n  HybridVerify.joint_stdev_le h₁ h₂ hρ\n"
+      },
+      "metadata": {
+        "chapter": 13,
+        "reference": "Joint-gaussian stdev triangle inequality (used for VaR/CVaR subadditivity)",
+        "difficulty": "intermediate",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof via nlinarith on (σ₁+σ₂)² - (σ₁²+2ρσ₁σ₂+σ₂²) = 2(1-ρ)σ₁σ₂ ≥ 0, then Real.sqrt monotonicity. Lives in lean/HybridVerify/RiskMeasureAxioms.lean. Axioms-clean."
+      }
+    },
+    {
+      "id": "mf-gaussian-var-subadditive",
+      "name": "Gaussian VaR Subadditivity",
+      "description": "For joint-gaussian losses L_i ~ N(μ_i, σ_i²) with correlation ρ ≤ 1 and right-tail z ≥ 0: VaR(L₁+L₂) ≤ VaR(L₁) + VaR(L₂). Subadditivity axiom (gaussian family).",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.RiskMeasureAxioms\n\nopen HybridVerify\n\ntheorem gaussian_var_subadditive_thm {μ₁ μ₂ σ₁ σ₂ ρ z : ℝ}\n    (h₁ : 0 ≤ σ₁) (h₂ : 0 ≤ σ₂) (hρ : ρ ≤ 1) (hz : 0 ≤ z) :\n    HybridVerify.gaussianVaR (μ₁ + μ₂)\n        (Real.sqrt (σ₁ ^ 2 + 2 * ρ * σ₁ * σ₂ + σ₂ ^ 2)) z ≤\n      HybridVerify.gaussianVaR μ₁ σ₁ z + HybridVerify.gaussianVaR μ₂ σ₂ z :=\n  HybridVerify.gaussianVaR_subadditive h₁ h₂ hρ hz\n"
+      },
+      "metadata": {
+        "chapter": 13,
+        "reference": "Coherent risk measure axioms — gaussian VaR subadditivity (Artzner-Delbaen-Eber-Heath 1999)",
+        "difficulty": "intermediate",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof via joint-stdev triangle inequality + nlinarith. Lives in lean/HybridVerify/RiskMeasureAxioms.lean. Axioms-clean."
+      }
+    },
+    {
+      "id": "mf-gaussian-cvar-subadditive",
+      "name": "Gaussian CVaR Subadditivity",
+      "description": "Same setup as gaussian VaR subadditivity with level α < 1: CVaR(L₁+L₂) ≤ CVaR(L₁) + CVaR(L₂). Gives CVaR coherence in the gaussian family.",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.RiskMeasureAxioms\n\nopen HybridVerify\n\ntheorem gaussian_cvar_subadditive_thm {μ₁ μ₂ σ₁ σ₂ ρ z α : ℝ}\n    (h₁ : 0 ≤ σ₁) (h₂ : 0 ≤ σ₂) (hρ : ρ ≤ 1) (hα : α < 1) :\n    HybridVerify.gaussianCVaR (μ₁ + μ₂)\n        (Real.sqrt (σ₁ ^ 2 + 2 * ρ * σ₁ * σ₂ + σ₂ ^ 2)) z α ≤\n      HybridVerify.gaussianCVaR μ₁ σ₁ z α + HybridVerify.gaussianCVaR μ₂ σ₂ z α :=\n  HybridVerify.gaussianCVaR_subadditive h₁ h₂ hρ hα\n"
+      },
+      "metadata": {
+        "chapter": 13,
+        "reference": "Coherent risk measure axioms — gaussian CVaR subadditivity (Artzner-Delbaen-Eber-Heath 1999)",
+        "difficulty": "intermediate",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof via joint-stdev triangle inequality + PDF non-negativity + linarith. Lives in lean/HybridVerify/RiskMeasureAxioms.lean. Axioms-clean."
+      }
+    },
+    {
+      "id": "mf-annuity-closed-form",
+      "name": "Annuity Closed Form via Geometric Series",
+      "description": "A_n(c, r, Δt) = c·e^{-rΔt}·(1 - e^{-nrΔt})/(1 - e^{-rΔt}), the standard annuity present-value formula derived from the geometric series identity.",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.CouponBondsAndAnnuities\n\nopen HybridVerify Real\n\ntheorem annuity_closed_form_thm (n : ℕ) (c r Δt : ℝ)\n    (h : Real.exp (-(r * Δt)) ≠ 1) :\n    HybridVerify.annuityValue n c r Δt =\n      c * Real.exp (-(r * Δt)) *\n        (1 - Real.exp (-(r * Δt)) ^ n) / (1 - Real.exp (-(r * Δt))) :=\n  HybridVerify.annuityValue_closed_form n c r Δt h\n"
+      },
+      "metadata": {
+        "chapter": 14,
+        "reference": "Annuity formula (Fabozzi, Fixed Income Mathematics Ch 2; Hull Ch 4.5)",
+        "difficulty": "intermediate",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof via term rewriting exp(-r(i+1)Δt) = exp(-rΔt)·exp(-rΔt)^i, geom_sum_eq, and field_simp. Lives in lean/HybridVerify/CouponBondsAndAnnuities.lean. Axioms-clean."
+      }
+    },
+    {
+      "id": "mf-forward-spot-flat",
+      "name": "Forward Rate = Spot Rate Under Flat Curve",
+      "description": "Under a constant short rate r, the instantaneous forward rate f(t, T) = -∂_T log B(t, T) equals r at every horizon. ZCB compatibility.",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.CouponBondsAndAnnuities\n\nopen HybridVerify\n\ntheorem forward_spot_flat_thm (r t T : ℝ) :\n    HasDerivAt (fun T' => -Real.log (HybridVerify.zcb r t T')) r T :=\n  HybridVerify.hasDerivAt_neg_log_zcb_T r t T\n"
+      },
+      "metadata": {
+        "chapter": 14,
+        "reference": "Forward/spot rate consistency (Hull Ch 4.7; Fabozzi Ch 3)",
+        "difficulty": "intermediate",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof: log(exp(-r(T-t))) = -r(T-t), so -log = r(T-t), with derivative r in T. Lives in lean/HybridVerify/CouponBondsAndAnnuities.lean. Axioms-clean."
+      }
+    },
+    {
+      "id": "mf-coupon-bond-strict-anti",
+      "name": "Coupon Bond Strictly Decreasing in Yield",
+      "description": "For a coupon bond with strictly positive coupons paid at strictly future times, the price is a strictly decreasing function of the yield. Establishes YTM uniqueness at the parameter-monotonicity level.",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.CouponBondsAndAnnuities\n\nopen HybridVerify\n\ntheorem coupon_bond_strict_anti_thm\n    {ι : Type*} (s : Finset ι) (c T : ι → ℝ) (t : ℝ)\n    (h_pos : ∀ i ∈ s, 0 < c i)\n    (h_future : ∀ i ∈ s, t < T i)\n    (h_nonempty : s.Nonempty) :\n    StrictAnti (fun r => ∑ i ∈ s, c i * Real.exp (-(r * (T i - t)))) :=\n  HybridVerify.couponBondPrice_strictAnti s c T t h_pos h_future h_nonempty\n"
+      },
+      "metadata": {
+        "chapter": 14,
+        "reference": "YTM monotonicity → uniqueness (Fabozzi, Fixed Income Mathematics; Hull Ch 4)",
+        "difficulty": "intermediate",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof via Finset.sum_lt_sum_of_nonempty and Real.exp_lt_exp on each summand. Lives in lean/HybridVerify/CouponBondsAndAnnuities.lean. Axioms-clean."
+      }
+    },
+    {
+      "id": "mf-phi-le-one",
+      "name": "Standard Normal CDF Upper Bound",
+      "description": "Φ(x) ≤ 1 for all x, the upper-bound side of the CDF range. Follows from Φ(x) + Φ(-x) = 1 and Φ(-x) ≥ 0.",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.StaticOptionBounds\n\nopen HybridVerify\n\ntheorem phi_le_one_thm (x : ℝ) : HybridVerify.Phi x ≤ 1 :=\n  HybridVerify.Phi_le_one x\n"
+      },
+      "metadata": {
+        "chapter": 9,
+        "reference": "Standard normal CDF range",
+        "difficulty": "beginner",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof via Phi_add_Phi_neg + Phi_nonneg + linarith. Lives in lean/HybridVerify/StaticOptionBounds.lean. Axioms-clean."
+      }
+    },
+    {
+      "id": "mf-bsV-le-S",
+      "name": "Call Price Upper Bound",
+      "description": "Black-Scholes call price never exceeds the underlying price: bsV(K, r, σ, S, τ) ≤ S, for S, K ≥ 0. Follows from Φ ≤ 1.",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.StaticOptionBounds\n\nopen HybridVerify\n\ntheorem bsV_le_S_thm (K r σ S τ : ℝ) (hS : 0 ≤ S) (hK : 0 ≤ K) :\n    HybridVerify.bsV K r σ S τ ≤ S :=\n  HybridVerify.bsV_le_S K r σ S τ hS hK\n"
+      },
+      "metadata": {
+        "chapter": 9,
+        "reference": "Call price upper bound (Hull Ch 11.2; Merton 1973)",
+        "difficulty": "beginner",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof from S·Φ(d₁) ≤ S and K·e^{-rτ}·Φ(d₂) ≥ 0. Lives in lean/HybridVerify/StaticOptionBounds.lean. Axioms-clean."
+      }
+    },
+    {
+      "id": "mf-bsP-le-K-disc",
+      "name": "Put Price Upper Bound",
+      "description": "Black-Scholes put price never exceeds the discounted strike: bsP(K, r, σ, S, τ) ≤ K·e^{-rτ}, for S, K ≥ 0.",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.StaticOptionBounds\n\nopen HybridVerify\n\ntheorem bsP_le_K_disc_thm (K r σ S τ : ℝ) (hS : 0 ≤ S) (hK : 0 ≤ K) :\n    HybridVerify.bsP K r σ S τ ≤ K * Real.exp (-(r * τ)) :=\n  HybridVerify.bsP_le_K_disc K r σ S τ hS hK\n"
+      },
+      "metadata": {
+        "chapter": 9,
+        "reference": "Put price upper bound (Hull Ch 11.2; Merton 1973)",
+        "difficulty": "beginner",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof from K·e^{-rτ}·Φ(-d₂) ≤ K·e^{-rτ} and S·Φ(-d₁) ≥ 0. Lives in lean/HybridVerify/StaticOptionBounds.lean. Axioms-clean."
+      }
+    },
+    {
+      "id": "mf-box-spread-identity",
+      "name": "Box Spread Arbitrage Identity",
+      "description": "The box spread payoff (long call/short put at K₁) - (long call/short put at K₂) equals (K₂ - K₁)·e^{-rτ}, independent of S, σ. Pure-arbitrage identity from put-call parity at two strikes.",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.StaticOptionBounds\n\nopen HybridVerify\n\ntheorem box_spread_thm (K₁ K₂ r σ S τ : ℝ) :\n    (HybridVerify.bsV K₁ r σ S τ - HybridVerify.bsP K₁ r σ S τ) -\n      (HybridVerify.bsV K₂ r σ S τ - HybridVerify.bsP K₂ r σ S τ) =\n      (K₂ - K₁) * Real.exp (-(r * τ)) :=\n  HybridVerify.box_spread_identity K₁ K₂ r σ S τ\n"
+      },
+      "metadata": {
+        "chapter": 9,
+        "reference": "Box spread pricing (Hull Ch 12.8; Cohen 1985)",
+        "difficulty": "intermediate",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof via two applications of put-call parity + linarith. Lives in lean/HybridVerify/StaticOptionBounds.lean. Axioms-clean."
+      }
+    },
+    {
+      "id": "mf-cml-equation",
+      "name": "Capital Market Line Equation",
+      "description": "On the CML through (0, r_f) with slope Sharpe_t: μ_combined = r_f + σ_combined·Sharpe_t. Standard CML equation.",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.TwoFundSeparation\n\nopen HybridVerify\n\ntheorem cml_equation_thm (μ_t σ_t r_f α : ℝ) (hσ_t : σ_t ≠ 0) :\n    HybridVerify.cmlMean μ_t r_f α =\n      r_f + HybridVerify.cmlStdev σ_t α * HybridVerify.sharpeRatio μ_t r_f σ_t :=\n  HybridVerify.cml_equation μ_t σ_t r_f α hσ_t\n"
+      },
+      "metadata": {
+        "chapter": 12,
+        "reference": "Capital Market Line (Tobin 1958; Bodie-Kane-Marcus Ch 9.2)",
+        "difficulty": "intermediate",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof via field_simp + ring on the definitions. Lives in lean/HybridVerify/TwoFundSeparation.lean. Axioms-clean."
+      }
+    },
+    {
+      "id": "mf-cml-sharpe-invariant",
+      "name": "Sharpe Invariance Along the CML",
+      "description": "Every (mean, stdev) pair on the Capital Market Line has the same Sharpe ratio as the tangent portfolio. Algebraic content of two-fund separation.",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.TwoFundSeparation\n\nopen HybridVerify\n\ntheorem cml_sharpe_invariant_thm (μ_t σ_t r_f α : ℝ)\n    (hα : α ≠ 0) (hσ_t : σ_t ≠ 0) :\n    HybridVerify.sharpeRatio (HybridVerify.cmlMean μ_t r_f α) r_f\n        (HybridVerify.cmlStdev σ_t α) =\n      HybridVerify.sharpeRatio μ_t r_f σ_t :=\n  HybridVerify.cml_sharpeRatio_invariant μ_t σ_t r_f α hα hσ_t\n"
+      },
+      "metadata": {
+        "chapter": 12,
+        "reference": "Two-fund separation theorem (Tobin 1958; Bodie-Kane-Marcus Ch 9.2)",
+        "difficulty": "intermediate",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof via field_simp + ring. Lives in lean/HybridVerify/TwoFundSeparation.lean. Axioms-clean."
+      }
+    },
+    {
+      "id": "mf-cml-decomposition-unique",
+      "name": "CML Decomposition Uniqueness",
+      "description": "Given a target portfolio standard deviation σ_p, the tangent-fund weight on the CML is uniquely α = σ_p/σ_t.",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.TwoFundSeparation\n\nopen HybridVerify\n\ntheorem cml_decomposition_thm (σ_t σ_p : ℝ) (hσ_t : σ_t ≠ 0) :\n    HybridVerify.cmlStdev σ_t (σ_p / σ_t) = σ_p :=\n  HybridVerify.cml_decomposition_unique σ_t σ_p hσ_t\n"
+      },
+      "metadata": {
+        "chapter": 12,
+        "reference": "Two-fund separation decomposition (Tobin 1958)",
+        "difficulty": "beginner",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof via field_simp. Lives in lean/HybridVerify/TwoFundSeparation.lean. Axioms-clean."
+      }
+    },
+    {
+      "id": "mf-cml-mean-at-stdev",
+      "name": "CML Mean Recovery from Std Deviation",
+      "description": "A portfolio with std deviation σ_p on the CML has expected return r_f + σ_p·Sharpe_t. Inverse mapping to cml_decomposition_unique.",
+      "domain": "mathematical_finance",
+      "code": {
+        "lean": "import Mathlib\nimport HybridVerify.TwoFundSeparation\n\nopen HybridVerify\n\ntheorem cml_mean_at_stdev_thm (μ_t σ_t r_f σ_p : ℝ) (hσ_t : σ_t ≠ 0) :\n    HybridVerify.cmlMean μ_t r_f (σ_p / σ_t) =\n      r_f + σ_p * HybridVerify.sharpeRatio μ_t r_f σ_t :=\n  HybridVerify.cml_mean_at_stdev μ_t σ_t r_f σ_p hσ_t\n"
+      },
+      "metadata": {
+        "chapter": 12,
+        "reference": "Capital Market Line — return as function of risk (Bodie-Kane-Marcus Ch 9.2)",
+        "difficulty": "beginner",
+        "formalization_status": "full",
+        "formalization_scope": "Full formal proof via field_simp + ring. Lives in lean/HybridVerify/TwoFundSeparation.lean. Axioms-clean."
+      }
     }
   ]
 }

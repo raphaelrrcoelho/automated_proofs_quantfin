@@ -6,9 +6,9 @@ formal verification of stochastic-processes textbook theorems via a hybrid lean 
 
 | | count |
 |---|---|
-| total theorems | 145 |
-| delivery-ready | **129** |
-| ↳ full derivations | 105 |
+| total theorems | 168 |
+| delivery-ready | **152** |
+| ↳ full derivations | 128 |
 | ↳ library wrappers | 24 |
 | reduced cores (upstream-gated) | 16 |
 | placeholders | 0 |
@@ -50,6 +50,11 @@ most lean formalization projects pick one theorem and go deep, or contribute to 
   - **Gaussian risk measures** (`GaussianRiskMeasures.lean`): closed-form Value-at-Risk and Conditional Value-at-Risk for $L \sim \mathcal{N}(\mu, \sigma^2)$ — $\mathrm{VaR}_\alpha = \mu + \sigma z$, $\mathrm{CVaR}_\alpha = \mu + \sigma \phi(z)/(1-\alpha)$ — with affine invariance, standard-normal specializations, the $\mathrm{CVaR} - \mathrm{VaR} = \sigma(\phi(z)/(1-\alpha) - z)$ identity, and the $\sqrt{T}$ time-aggregation rule.
   - **bond portfolio immunization** (`BondImmunization.lean`): Finset-indexed bond portfolio value $P(r) = \sum_i w_i e^{-r(T_i - t)}$, duration-times-value $D_P \cdot P = \sum_i w_i (T_i - t) e^{-r(T_i - t)}$, first-order rate sensitivity $\partial P/\partial r = -D_P \cdot P$, and Redington-style first-order immunization condition (matching $D_A \cdot A = D_L \cdot L$ ⇒ $\partial(A-L)/\partial r = 0$).
   - **N-asset Markowitz** (`MarkowitzNAsset.lean`): portfolio variance as Finset double sum $\sum_{i,j} w_i w_j \sigma_{ij}$, quadratic scaling, diagonal collapse ($\mathrm{Var} = \sum w_i^2 \sigma_{ii}$ under zero cross-covariances), iid diversification ($c^2 n \sigma^2$), positive-semidefinite non-negativity, and explicit two-asset compatibility with `Markowitz.lean`.
+  - **performance ratios** (`PerformanceRatios.lean`): Sharpe ratio scale invariance and $\sqrt{T}$ time-aggregation scaling, Kelly criterion first-order optimality $g'(f^*) = 0$ for the expected log-growth $p \log(1 + fb) + q \log(1 - f)$.
+  - **coherent risk-measure axioms** (`RiskMeasureAxioms.lean`): gaussian VaR/CVaR satisfy the Artzner-Delbaen-Eber-Heath axioms (translation invariance, positive homogeneity, monotonicity, subadditivity), with the substantive joint-stdev triangle inequality $\sqrt{\sigma_1^2 + 2\rho \sigma_1 \sigma_2 + \sigma_2^2} \le \sigma_1 + \sigma_2$ for $|\rho| \le 1$.
+  - **annuity + YTM + forward/spot consistency** (`CouponBondsAndAnnuities.lean`): annuity geometric-series closed form $A_n = c e^{-r\Delta t} (1 - x^n)/(1 - x)$ with $x = e^{-r\Delta t}$, instantaneous forward rate $f(t,T) = r$ under flat curve, coupon-bond strict monotonicity in yield (parameter form of YTM uniqueness).
+  - **static option bounds + box-spread identity** (`StaticOptionBounds.lean`): $\Phi \le 1$, BS call price $\le S$, BS put price $\le K e^{-r\tau}$, and the put-call-parity box-spread identity $(bsV(K_1) - bsP(K_1)) - (bsV(K_2) - bsP(K_2)) = (K_2 - K_1) e^{-r\tau}$.
+  - **two-fund separation (algebraic)** (`TwoFundSeparation.lean`): Capital Market Line equation $\mu = r_f + \sigma \cdot \mathrm{Sharpe}_t$, Sharpe invariance along the CML, and unique decomposition of any CML portfolio as $\alpha$ tangent + $(1-\alpha)$ risk-free with $\alpha = \sigma_p / \sigma_t$.
   - feynman-kac formula identification: heat-kernel convolution equals $\mathbb{E}[g(x + B_t)]$ via `Measure.map` transfer + lebesgue translation invariance (`FeynmanKacHeatEquation.lean`)
   - quadratic variation of brownian motion in $L^1$ form (`BrownianQuadraticVariation.lean`)
   - standard normal CDF derivative $\Phi'(x) = \phi(x)$ via FTC on $\text{Iic}$ decomposition (`GaussianCDFDeriv.lean`). mathlib doesn't ship this; it doesn't ship `Real.erf` either.
