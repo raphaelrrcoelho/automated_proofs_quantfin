@@ -50,6 +50,7 @@ import HybridVerify.Foundations.StatePrices
 import HybridVerify.Foundations.TriangleArbitrage
 import HybridVerify.Foundations.CarrMadan
 import HybridVerify.Foundations.AlmgrenChriss
+import HybridVerify.Foundations.ConvexPricingFunctional
 
 -- BlackScholes
 import HybridVerify.BlackScholes.Call
