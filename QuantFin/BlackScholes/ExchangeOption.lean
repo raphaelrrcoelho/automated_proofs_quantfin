@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
+import QuantFin.BlackScholes.GarmanNormalForm
 
 /-!
 # Margrabe's exchange option: a two-asset option that is a one-asset BS problem
@@ -83,5 +84,39 @@ theorem exchange_payoff_eq_ratio (a b : ℝ) (hb : 0 < b) :
     max (a - b) 0 = b * max (a / b - 1) 0 := by
   rw [mul_max_of_nonneg _ _ hb.le, mul_zero,
       show b * (a / b - 1) = a - b from by field_simp]
+
+/-! ## Margrabe price is a Garman-normal-form instance
+
+The exchange-option closed form is the *one* BS-family formula
+`V = A·Φ(d₁) − K·DF·Φ(d₂)` at `A = S¹₀`, `K = S²₀`, `DF = 1` (the
+S²-numeraire / forward measure carries no discounting), and effective vol
+`σ = √(σ₁² + σ₂² − 2ρσ₁σ₂)`. So Margrabe joins Black-Scholes, Black-76,
+BS-Merton, Garman-Kohlhagen, and KMV-Merton as instances of `bsVGarman`. -/
+
+/-- **Margrabe `d₁`**: `(log(S¹₀/S²₀) + σ²T/2) / (σ√T)`, with `σ` the
+effective volatility of the log-spread. -/
+noncomputable def margrabeD1 (S1 S2 σ T : ℝ) : ℝ :=
+  (Real.log (S1 / S2) + σ ^ 2 * T / 2) / (σ * Real.sqrt T)
+
+/-- **Margrabe `d₂`**: `d₁ − σ√T`. -/
+noncomputable def margrabeD2 (S1 S2 σ T : ℝ) : ℝ :=
+  margrabeD1 S1 S2 σ T - σ * Real.sqrt T
+
+/-- **Margrabe exchange-option price**: `S¹₀·Φ(d₁) − S²₀·Φ(d₂)`. -/
+noncomputable def margrabePrice (S1 S2 σ T : ℝ) : ℝ :=
+  S1 * Phi (margrabeD1 S1 S2 σ T) - S2 * Phi (margrabeD2 S1 S2 σ T)
+
+/-- **Margrabe is a Garman-normal-form instance**: the exchange-option price
+equals `bsVGarman` at `A = S¹₀`, `K = S²₀`, `DF = 1`, effective vol `σ`. The
+second asset plays the role of the discounted strike and `DF = 1` because the
+S²-numeraire measure carries no discounting. So a *multivariate* option is the
+same closed form `V = A·Φ(d₁) − K·DF·Φ(d₂)` as every BS-family price — one
+more consumer of the `GarmanNormalForm` principle. -/
+theorem margrabe_eq_bsVGarman (S1 S2 σ T : ℝ) :
+    margrabePrice S1 S2 σ T = bsVGarman S1 S2 1 σ T := by
+  have hd1 : margrabeD1 S1 S2 σ T = gbsd1 S1 S2 1 σ T := by
+    unfold margrabeD1 gbsd1; rw [mul_one]
+  unfold margrabePrice bsVGarman margrabeD2 gbsd2
+  rw [hd1, mul_one]
 
 end QuantFin

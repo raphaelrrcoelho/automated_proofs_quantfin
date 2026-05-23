@@ -119,6 +119,9 @@ namespace QuantFin.AxiomAudit
 /-- info: 'QuantFin.exchange_payoff_eq_ratio' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in #print axioms QuantFin.exchange_payoff_eq_ratio
 
+/-- info: 'QuantFin.margrabe_eq_bsVGarman' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in #print axioms QuantFin.margrabe_eq_bsVGarman
+
 /-! ## Convex pricing functional + FTAP / state-price wiring -/
 
 /-- info: 'QuantFin.statePricePricing_convexOn' depends on axioms: [propext, Classical.choice, Quot.sound] -/
