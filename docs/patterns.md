@@ -1,13 +1,13 @@
 # Learnings
 
-Notes from the 2026-05-22 session that pushed `MATH_DEPTH_ROADMAP.md`'s
+Notes from the 2026-05-22 session that pushed `docs/roadmap.md`'s
 three depth-theorem candidates to completion (continuous K-convexity bridge,
 multi-step Merton tree, full reflection-principle bijection — Phases 15
 and 16). This document captures what worked, what was harder than expected,
 and patterns worth reusing.
 
 It is *not* a reference for what's in the library — that's `README.md`,
-`FORMALIZATION_STATUS.md`, and the source itself. It is a record of the
+`docs/coverage.md`, and the source itself. It is a record of the
 *how*: idioms, traps, and structural intuitions.
 
 ## Structural patterns

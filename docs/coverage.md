@@ -29,7 +29,7 @@ Report `reduced_core` and `placeholder` separately. **Spec-with-axiomatized-conc
 Refresh with:
 
 ```bash
-python3 -m python.coverage_report
+python3 -m tools.verify.coverage_report
 ```
 
 Coverage as of 2026-05-20 (extended quant-finance pass: put greeks, higher-order BS greeks, Bachelier greeks, digital greeks, BS-Merton with dividends, Garman-Kohlhagen FX, Black-76 greeks; second pass: Bachelier γ/θ, asset-or-nothing γ, BS-Merton δ/γ/vega, American options in binomial tree; third pass: CRR drift-quotient limit closing the analytic content of CRR-to-BS; fifth pass: cash-or-nothing digital gamma closing the previously deferred quotient-rule item; sixth pass: full digital ρ/vega/θ matrix for cash and asset variants — 6 theorems closing the remaining digital Greek gap; seventh pass: Black-76 ρ and θ closing the futures-options Greek set; eighth pass: CRR drift limit n-form `n·(2p_n−1)·σ·√(T/n) → (r−σ²/2)T` closing the previously deferred substitution work; ninth pass: Phase 5 broader quant-finance — fixed-income ZCB pricing/yield/duration/convexity, two-asset Markowitz portfolio theory with completing-the-square factorization, CAPM beta + portfolio linearity — 12 theorems extending the project beyond derivatives pricing into fixed income and portfolio theory; tenth pass: Phase 6 quant-risk + N-asset portfolio + bond immunization — Gaussian VaR/CVaR closed forms with affine/scaling identities, bond portfolio rate sensitivity + Redington-style first-order immunization, N-asset Markowitz variance via Finset double sum with diagonal/iid/PSD/two-asset specializations — 15 theorems; eleventh pass: Phase 7 performance / coherent risk / fixed-income depth / static bounds / two-fund separation — Sharpe (√T scaling + scale invariance) + Kelly criterion, gaussian VaR/CVaR coherent risk-measure axioms (translation, homogeneity, monotonicity, gaussian subadditivity via joint-stdev triangle inequality), annuity geometric-series closed form + forward/spot consistency + coupon-bond YTM monotonicity, Phi ≤ 1 + BS call/put price upper bounds + box-spread arbitrage identity, capital market line equation + Sharpe invariance + two-fund decomposition — 23 theorems extending the project into performance measurement, axiomatic risk, and multi-fund portfolio theory; twelfth pass: Phase 8 extended performance / second-order immunization / Asian option inequality — Sortino/Treynor/Information ratios + tracking-error decomposition, second-derivative bond rate sensitivity ∂²P/∂r² = C_P·P + Redington second-order convexity-matching immunization, two-element and equal-weight n-element AM-GM with two-date geometric ≤ arithmetic Asian payoff bound — 13 theorems; **thirteenth pass: Phase 9 credit-risk + strike Greeks + multi-period Kelly** — reduced-form credit spread under constant hazard with survival monotonicity, BS strike-direction derivatives (∂_K bsV, ∂_K bsP, ∂²_K bsV) via magic-identity collapse + put-call parity, multi-period Kelly criterion with myopia + fraction sign analysis — 14 theorems):
@@ -254,7 +254,7 @@ lands:
   `BrownianMotion/StochasticIntegral/LocalMartingale.lean`. Sorry-free.
   `#print axioms` confirmed clean:
   `[propext, Classical.choice, Quot.sound]`. Lives at
-  `lean/HybridVerify/StoppedContinuousMartingale.lean`.
+  `HybridVerify/StoppedContinuousMartingale.lean`.
 
 A second NNReal-restructure candidate `cm-prop-4.3.6` (hitting time of an
 open set) was scoped but did NOT promote: the Degenne wrap
@@ -267,7 +267,7 @@ sorries.
 
 **Doob L^p complete (2026-05-13 session)**: `mart-thm-2.4.6` promoted
 from `reduced_core` to `full`. End-to-end formal proof in
-`lean/HybridVerify/DoobLp.lean`. `#print axioms` confirms clean:
+`HybridVerify/DoobLp.lean`. `#print axioms` confirms clean:
 `[propext, Classical.choice, Quot.sound]`. Coverage **41 → 42**
 delivery-ready (18 full + 24 library), 23 reduced.
 
@@ -333,7 +333,7 @@ Resolution applied 2026-05-08:
   - `dist-exp-memoryless`, `dist-exp-min`: rewritten using `cdf (expMeasure r)` + `cdf_expMeasure_eq` and the renamed `isProbabilityMeasure_expMeasure`. The textbook claims (memoryless property and min-of-independents survival function) are unchanged.
   - `mart-thm-2.4.3`, `mart-thm-2.4.6`: mechanical rename `Finset.nonempty_range_succ` → `Finset.nonempty_range_add_one`.
 - **Mathlib pin added** (`hybrid_verify.toml` → `mathlib_rev = "f23306121184"`):
-  - `python.config.LeanConfig` and `python.lean_backend.LeanBackend` now accept `mathlib_rev`. When set, lean-interact pulls Mathlib at exactly that commit instead of resolving the bare string `"mathlib"` to whatever master is at fetch time.
+  - `tools.verify.config.LeanConfig` and `tools.verify.lean_backend.LeanBackend` now accept `mathlib_rev`. When set, lean-interact pulls Mathlib at exactly that commit instead of resolving the bare string `"mathlib"` to whatever master is at fetch time.
   - The pin matches Degenne's `brownian-motion @ 51807683` lake-manifest, which itself targets `leanprover/lean4:v4.30.0-rc1` (matching our `lean-toolchain`). Without this pin, Mathlib master had drifted past Degenne's tested version (master is now on rc2), breaking the transitive Brownian-motion build.
   - The lean-interact temp project log confirms `info: mathlib: checking out revision 'f23306121184...'` after the pin took effect.
 - **Recovered** under the Mathlib pin (3 entries):
@@ -357,7 +357,7 @@ The two Lean-side-only breaks in `conditional_expectation.json` and `cross_valid
 
 ### Docker layering
 
-`docker/Dockerfile.verify` was reorganised so that pip / Python source layers live AFTER the heavy Isabelle (HOL-Probability) and AFP (Ergodic_Theory + Markov_Models + Stochastic_Matrices) heap builds. Future edits to `pyproject.toml` / `python/` invalidate only the ~1-2 min pip layer instead of the ~60 min Isabelle stack. The `verify` image now installs `[all,dev]`, so `pytest` runs inside the container; static lints are documented in `CLAUDE.md` to use `docker compose run --rm --entrypoint python3 verify -m pytest tests/test_router.py` rather than host pytest. `docker/docker-compose.yml` mounts `tests/` for this purpose.
+`docker/Dockerfile.verify` was reorganised so that pip / Python source layers live AFTER the heavy Isabelle (HOL-Probability) and AFP (Ergodic_Theory + Markov_Models + Stochastic_Matrices) heap builds. Future edits to `pyproject.toml` / `tools/verify/` invalidate only the ~1-2 min pip layer instead of the ~60 min Isabelle stack. The `verify` image now installs `[all,dev]`, so `pytest` runs inside the container; static lints are documented in `CLAUDE.md` to use `docker compose run --rm --entrypoint python3 verify -m pytest tests/test_router.py` rather than host pytest. `docker/docker-compose.yml` mounts `tests/` for this purpose.
 
 ## BM Port (2026-05-09)
 
@@ -374,7 +374,7 @@ All 10 BM theorems verify under the docker image (full file run 2026-05-09: 10 v
 
 ### Degenne build via `TempRequireProject` (2026-05-09)
 
-The prior `FORMALIZATION_STATUS.md` note that "BrownianMotion fails to build under `TempRequireProject` even with manifest pins" is **superseded** — that failure was a 180s timeout cutting off Lake mid-build, not a real build error. With all four transitive deps pinned in `hybrid_verify.toml` (Mathlib `f23306121184`, subverso `52b9dfbd2658`, checkdecls `3d425859e73f`, kolmogorov_extension4 `e236e968c2b0`) — matching Degenne's lake-manifest exactly — `TempRequireProject` produces hash `63469b53...` and Lake builds the BM-specific files (~12 min once Mathlib is cached, 3168 jobs). The compiled BrownianMotion oleans persist in the `lean_interact_cache` Docker volume across runs. Each docker session pays a one-time ~3-minute import cost when the first BM-importing benchmark theorem hits the lean-interact REPL; subsequent BM theorems in the same session are cached.
+The prior `docs/coverage.md` note that "BrownianMotion fails to build under `TempRequireProject` even with manifest pins" is **superseded** — that failure was a 180s timeout cutting off Lake mid-build, not a real build error. With all four transitive deps pinned in `hybrid_verify.toml` (Mathlib `f23306121184`, subverso `52b9dfbd2658`, checkdecls `3d425859e73f`, kolmogorov_extension4 `e236e968c2b0`) — matching Degenne's lake-manifest exactly — `TempRequireProject` produces hash `63469b53...` and Lake builds the BM-specific files (~12 min once Mathlib is cached, 3168 jobs). The compiled BrownianMotion oleans persist in the `lean_interact_cache` Docker volume across runs. Each docker session pays a one-time ~3-minute import cost when the first BM-importing benchmark theorem hits the lean-interact REPL; subsequent BM theorems in the same session are cached.
 
 ## Strong Markov AFP wrap (2026-05-09)
 
@@ -395,7 +395,7 @@ to v4.30.0-rc2 unblocked:
 - `Mathlib/Probability/Independence/Process/HasIndepIncrements/*`.
 
 In addition, the project now vendors `RemyDegenne/brownian-motion` (pinned
-commit `51807683` on `master`) via Lake `require` in `lean/lakefile.lean`
+commit `51807683` on `master`) via Lake `require` in `lakefile.lean`
 and an `[[hybrid-verify.lean.extra_requires]]` entry in `hybrid_verify.toml`,
 which lean-interact's `TempRequireProject` reads. That dependency provides
 the concrete `brownian` Brownian-motion construction together with
@@ -458,7 +458,7 @@ stochastic_calculus.json:     11 verified, 0 partial, 0 failed
 - `mart-thm-2.6.7` — **FTAP, ⇒ direction** (Tier A.12); embeds the martingale-transform helper. Recovered for v4.30 with the same cascade fixes plus two additional `Adapted → StronglyAdapted` renames in the FTAP struct (`S_adapted`) and predicate (`hφ_pred`). End-to-end validation pending the in-flight `verify` rebuild.
 - `mc-thm-1.1.2` — **Markov-chain path factorization** (Tier A.13); constructive `pathProb` def, theorem is `rfl`.
 - `dist-exp-min` — **minimum of independent exponentials** (Tier A.5). Real derivation of the survival-function identity `μ{ω | t < min_i τ_i ω} = exp(-(∑rates) t)` for `t ≥ 0` from joint independence (`iIndepFun.meas_iInter`) + individual exponential laws via `cdf_expMeasure_eq` and `isProbabilityMeasure_expMeasure` (rewritten for v4.30).
-- `bm-thm-5.1.5` — **Brownian motion is a martingale w.r.t. its filtration** (real derivation, 2026-05-09 LocalProject spike). Proof in `lean/HybridVerify/BrownianMartingale.lean` (Lake-built library); benchmark snippet imports the compiled lemma and re-exports it. Uses Mathlib `condExp_indep_eq` + `condExp_of_stronglyMeasurable` + `condExp_add` + Degenne `IsPreBrownian.integrable_eval` + `IsPreBrownian.hasLaw_sub`. The hypothesis structure `BrownianMartingaleHyp` is `IsPreBrownian + StronglyAdapted + (B_t − B_s ⊥ 𝓕 s)` — the standard textbook "BM w.r.t. filtration" condition. Three drafts of this proof OOM'd Lean's elaborator under `TempRequireProject` (the inline-snippet model); moving the proof out to a Lake file resolved that. Axioms-clean per `#print axioms`: `[propext, Classical.choice, Quot.sound]`.
+- `bm-thm-5.1.5` — **Brownian motion is a martingale w.r.t. its filtration** (real derivation, 2026-05-09 LocalProject spike). Proof in `HybridVerify/BrownianMartingale.lean` (Lake-built library); benchmark snippet imports the compiled lemma and re-exports it. Uses Mathlib `condExp_indep_eq` + `condExp_of_stronglyMeasurable` + `condExp_add` + Degenne `IsPreBrownian.integrable_eval` + `IsPreBrownian.hasLaw_sub`. The hypothesis structure `BrownianMartingaleHyp` is `IsPreBrownian + StronglyAdapted + (B_t − B_s ⊥ 𝓕 s)` — the standard textbook "BM w.r.t. filtration" condition. Three drafts of this proof OOM'd Lean's elaborator under `TempRequireProject` (the inline-snippet model); moving the proof out to a Lake file resolved that. Axioms-clean per `#print axioms`: `[propext, Classical.choice, Quot.sound]`.
 
 23 `library_wrapper` (direct Mathlib / Isabelle / Degenne library invocation):
 
@@ -503,7 +503,7 @@ Added in the Degenne Doob L¹ continuous-time wrap (1):
 
 Use wording like:
 
-> We built a reproducible Lean 4 / Isabelle verification artifact covering 65 stochastic-process benchmark statements. All active prover obligations type-check under Mathlib v4.30 / Lean v4.30.0-rc1 with Mathlib pinned to commit `f23306121184` (validated 2026-05-09). Under a strict faithfulness audit, 37 entries are full or direct library-backed theorem formalizations: 14 derive the conclusion from honest hypotheses (or are structural definitions), 23 directly invoke a named Mathlib / Isabelle-AFP / Degenne `brownian-motion` library theorem whose statement matches the benchmark. Every Degenne-derived wrapper has been `#print axioms`-audited to confirm axioms-clean status. Complex Lean derivations that would overrun the REPL elaborator's memory budget live as real files in a Lake-built library (`lean/HybridVerify/`) so `lake build` gives Lean the full incremental-compilation budget per file; benchmark snippets re-export by name. The remaining 28 entries are `reduced_core`: the active code is honest but is either a narrower algebraic/analytic check or a Lean specification structure that pins down the textbook STATEMENT (so any inhabitant satisfies it by construction) without DERIVING the conclusion. There are zero placeholders. The artifact identifies precisely where current Lean/Isabelle libraries support the course material, where a meaningful real proof is achievable in the near term, and where genuine new stochastic-process infrastructure is required (Itô-integral layer, BM reflection principle / nowhere-differentiability / law of iterated logarithm, Doob L^p, conditional Gaussian, continuous-time hitting times of open sets).
+> We built a reproducible Lean 4 / Isabelle verification artifact covering 65 stochastic-process benchmark statements. All active prover obligations type-check under Mathlib v4.30 / Lean v4.30.0-rc1 with Mathlib pinned to commit `f23306121184` (validated 2026-05-09). Under a strict faithfulness audit, 37 entries are full or direct library-backed theorem formalizations: 14 derive the conclusion from honest hypotheses (or are structural definitions), 23 directly invoke a named Mathlib / Isabelle-AFP / Degenne `brownian-motion` library theorem whose statement matches the benchmark. Every Degenne-derived wrapper has been `#print axioms`-audited to confirm axioms-clean status. Complex Lean derivations that would overrun the REPL elaborator's memory budget live as real files in a Lake-built library (`HybridVerify/`) so `lake build` gives Lean the full incremental-compilation budget per file; benchmark snippets re-export by name. The remaining 28 entries are `reduced_core`: the active code is honest but is either a narrower algebraic/analytic check or a Lean specification structure that pins down the textbook STATEMENT (so any inhabitant satisfies it by construction) without DERIVING the conclusion. There are zero placeholders. The artifact identifies precisely where current Lean/Isabelle libraries support the course material, where a meaningful real proof is achievable in the near term, and where genuine new stochastic-process infrastructure is required (Itô-integral layer, BM reflection principle / nowhere-differentiability / law of iterated logarithm, Doob L^p, conditional Gaussian, continuous-time hitting times of open sets).
 
 Avoid:
 
@@ -515,4 +515,4 @@ That claim is not supported. The honest version is:
 
 ## Path Forward
 
-See `QUANTFIN_ROADMAP.md` for the current roadmap.
+See `docs/roadmap.md` for the current roadmap.

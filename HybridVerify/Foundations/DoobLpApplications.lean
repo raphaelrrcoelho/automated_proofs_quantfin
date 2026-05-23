@@ -20,7 +20,7 @@ machinery, culminating in `lp_continuous_martingale_full`:
 
 This file gives the machinery its **first downstream financial use** —
 applying it to discounted-price processes under a risk-neutral measure.
-Per the `BRIDGE_AUDIT.md`, the 725 LOC of Doob L^p convergence sat
+Per the `docs/bridges.md`, the 725 LOC of Doob L^p convergence sat
 previously unused by any pricing module; this phase activates it.
 
 ## Financial applications

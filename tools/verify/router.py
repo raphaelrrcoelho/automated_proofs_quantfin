@@ -1,4 +1,11 @@
-"""Domain-based routing to verification backends."""
+"""Domain-based routing to verification backends.
+
+All active routes are Lean-only. The historical Isabelle entries (CLT,
+Markov chains, ergodic theory) have been removed; SymPy is kept as an
+explicit/manual fallback but no default route uses it. See
+``docs/superpowers/specs/2026-05-23-repo-reorganization-design.md`` for the
+rationale.
+"""
 
 from __future__ import annotations
 
@@ -6,38 +13,24 @@ from dataclasses import dataclass
 
 from .models import Backend, Domain
 
-# Default routing table: domain → ordered list of backends to try.
-# Based on current formalization coverage:
-# - Lean+Isabelle: Markov chains and ergodic-theory reduced cores where present
-# - Isabelle: CLT (AFP/HOL-Probability libraries)
-# - Lean: Martingales, stopping times, Brownian motion (Mathlib)
-# - Both: Measure theory, Poisson processes
 DEFAULT_ROUTING: dict[Domain, list[Backend]] = {
-    # Markov chains: Mathlib has Kernel.IsMarkovKernel; AFP/HOL-Probability has full
-    # Markov_Models. Try Lean first (faster + works on smaller heaps), then Isabelle.
-    Domain.MARKOV_CHAINS:       [Backend.LEAN, Backend.ISABELLE],
-    Domain.ERGODIC_THEORY:      [Backend.ISABELLE, Backend.LEAN],
-    Domain.CLT:                 [Backend.ISABELLE],
-    Domain.MARTINGALES:         [Backend.LEAN],
-    Domain.STOPPING_TIMES:      [Backend.LEAN],
-    Domain.BROWNIAN_MOTION:     [Backend.LEAN],
-    Domain.MEASURE_THEORY:      [Backend.LEAN, Backend.ISABELLE],
-    # Stochastic calculus / SDEs / finance: Mathlib still lacks the full Brownian
-    # motion / Itô integral / Black-Scholes development, but many benchmark
-    # entries contain a formally checkable algebraic or analytic core. Try Lean
-    # first when such code is present, then Isabelle where code exists.
-    Domain.STOCHASTIC_CALCULUS: [Backend.LEAN, Backend.ISABELLE],
-    Domain.SDES:                [Backend.LEAN, Backend.ISABELLE],
-    Domain.MATHEMATICAL_FINANCE:[Backend.LEAN, Backend.ISABELLE],
-    # Poisson process: Mathlib's `poissonMeasure`/`poissonPMF` formalization (no full process yet).
-    Domain.POISSON_PROCESSES:   [Backend.LEAN, Backend.ISABELLE],
+    Domain.MARKOV_CHAINS:        [Backend.LEAN],
+    Domain.ERGODIC_THEORY:       [Backend.LEAN],
+    Domain.CLT:                  [Backend.LEAN],
+    Domain.MARTINGALES:          [Backend.LEAN],
+    Domain.STOPPING_TIMES:       [Backend.LEAN],
+    Domain.BROWNIAN_MOTION:      [Backend.LEAN],
+    Domain.MEASURE_THEORY:       [Backend.LEAN],
+    Domain.STOCHASTIC_CALCULUS:  [Backend.LEAN],
+    Domain.SDES:                 [Backend.LEAN],
+    Domain.MATHEMATICAL_FINANCE: [Backend.LEAN],
+    Domain.POISSON_PROCESSES:    [Backend.LEAN],
 }
 
-# Domains where parallel dispatch to multiple formal provers is useful
-PARALLEL_DOMAINS: set[Domain] = {
-    Domain.MEASURE_THEORY,
-    Domain.POISSON_PROCESSES,
-}
+# Domains where parallel dispatch was useful in the hybrid era. Now Lean-only;
+# the flag is retained for legacy benchmark consumers but degenerates to
+# single-backend dispatch.
+PARALLEL_DOMAINS: set[Domain] = set()
 
 
 @dataclass
@@ -65,7 +58,7 @@ class Router:
 
     def route(self, domain: Domain) -> RoutingDecision:
         """Determine which backends to use for a given domain."""
-        backends = self._routing.get(domain, [Backend.LEAN, Backend.ISABELLE])
+        backends = self._routing.get(domain, [Backend.LEAN])
         parallel = domain in self._parallel_domains and len(backends) > 1
         return RoutingDecision(backends=backends, parallel=parallel)
 

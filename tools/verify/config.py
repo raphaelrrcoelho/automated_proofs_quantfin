@@ -17,31 +17,13 @@ class LeanConfig:
     # reference compiled lemmas by name.
     #
     # Path is relative to the CWD when the verifier runs (in Docker that's
-    # ``/app``, so ``lean`` resolves to ``/app/lean`` — the bind-mounted
-    # source dir).
-    local_project: str = "lean"
+    # ``/app``, which is the repo root with ``lakefile.lean`` + ``HybridVerify/``
+    # directly under it).
+    local_project: str = "."
 
     @classmethod
     def from_dict(cls, d: dict[str, Any]) -> LeanConfig:
         return cls(local_project=d.get("local_project", cls.local_project))
-
-
-@dataclass
-class IsabelleConfig:
-    session: str = "HOL-Probability"
-    # Optional secondary session (typically a HybridVerifyAFP heap that
-    # bundles Ergodic_Theory / Markov_Models). Theorems can opt into it via
-    # metadata.isabelle_session, or by importing an AFP-namespaced theory.
-    afp_session: str | None = None
-    use_connector: bool = True
-
-    @classmethod
-    def from_dict(cls, d: dict[str, Any]) -> IsabelleConfig:
-        return cls(
-            session=d.get("session", cls.session),
-            afp_session=d.get("afp_session", cls.afp_session),
-            use_connector=d.get("use_connector", cls.use_connector),
-        )
 
 
 @dataclass
@@ -60,14 +42,12 @@ class OrchestratorConfig:
 @dataclass
 class HybridVerifyConfig:
     lean: LeanConfig = field(default_factory=LeanConfig)
-    isabelle: IsabelleConfig = field(default_factory=IsabelleConfig)
     orchestrator: OrchestratorConfig = field(default_factory=OrchestratorConfig)
 
     @classmethod
     def from_dict(cls, d: dict[str, Any]) -> HybridVerifyConfig:
         return cls(
             lean=LeanConfig.from_dict(d.get("lean", {})),
-            isabelle=IsabelleConfig.from_dict(d.get("isabelle", {})),
             orchestrator=OrchestratorConfig.from_dict(d.get("orchestrator", {})),
         )
 

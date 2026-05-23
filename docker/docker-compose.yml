@@ -38,24 +38,23 @@ services:
     environment:
       - LEAN_NUM_THREADS=${LEAN_NUM_THREADS:-1}
     volumes:
-      - ../python:/app/python:ro
+      - ../tools:/app/tools:ro
       - ../benchmarks:/app/benchmarks:ro
       - ../tests:/app/tests:ro
       - ../hybrid_verify.toml:/app/hybrid_verify.toml:ro
       - lean_interact_cache:/usr/local/lib/python3.12/dist-packages/lean_interact/cache
-      # `lean/` is the project root for `LocalProject` mode (see
-      # `python.config.LeanConfig.local_project`). Sources are bind-mounted
-      # RW so authoring on host (VS Code + Lean LSP) propagates into the
-      # container with no rebuild. Lake build artifacts (`.lake/`) end up on
-      # the host as well — gitignored.
-      #
-      # When the image is next rebuilt, Dockerfile.verify will prebuild the
-      # olean cache at /app/lean/.lake/ (via `lake exe cache get && lake
-      # build`). To make that prebuild survive the bind mount, add a named
-      # volume shadow on /app/lean/.lake/ at that point — see commit history
-      # for the spec. The bind-mount-only path below already works because
-      # the host's lean/.lake/ retains caches across runs.
-      - ../lean:/app/lean
+      # The repo root is the Lake project root (see
+      # `tools.verify.config.LeanConfig.local_project`, default ".").
+      # The lake-relevant pieces (lakefile.lean, lean-toolchain,
+      # lake-manifest.json, HybridVerify/, HybridVerify.lean) are
+      # bind-mounted RW so authoring on host (VS Code + Lean LSP) propagates
+      # into the container with no rebuild. Lake build artifacts (`.lake/`)
+      # end up on the host as well — gitignored.
+      - ../HybridVerify:/app/HybridVerify
+      - ../HybridVerify.lean:/app/HybridVerify.lean
+      - ../lakefile.lean:/app/lakefile.lean
+      - ../lake-manifest.json:/app/lake-manifest.json
+      - ../lean-toolchain:/app/lean-toolchain
     working_dir: /app
     command: ["benchmarks/cross_validated.json", "-v", "--config", "hybrid_verify.toml", "--timeout", "120"]
     # The same `verify` service can run the fast static lints inside docker by
@@ -64,17 +63,17 @@ services:
     #   docker compose -f docker/docker-compose.yml run --rm \
     #       --entrypoint python3 verify -m pytest tests/test_router.py -q
     #   docker compose -f docker/docker-compose.yml run --rm \
-    #       --entrypoint python3 verify -m python.coverage_report
+    #       --entrypoint python3 verify -m tools.verify.coverage_report
 
   # Persistent Lean-interact REPL daemon. Pays the ~5-min Mathlib + BrownianMotion
   # + HybridVerify olean-load cost ONCE at startup, then handles each lake-check
-  # request in 5-30 sec instead of 5-15 min. See `python/lean_repl.py` for the
-  # protocol (TCP 7878, send raw .lean text, receive JSON response).
+  # request in 5-30 sec instead of 5-15 min. See `tools/verify/lean_repl.py` for
+  # the protocol (TCP 7878, send raw .lean text, receive JSON response).
   #
   # Usage:
   #   docker compose -f docker/docker-compose.yml up -d lean-repl
   #   docker compose -f docker/docker-compose.yml logs -f lean-repl   # wait for READY
-  #   ./scripts/lean-check.sh lean/HybridVerify/<file>.lean            # fast iteration
+  #   ./scripts/lean-check.sh HybridVerify/<Section>/<Module>.lean    # fast iteration
   #   docker compose -f docker/docker-compose.yml down lean-repl       # tear down
   lean-repl:
     image: ghcr.io/raphaelrrcoelho/quantfin-verify:latest
@@ -85,33 +84,19 @@ services:
     environment:
       - LEAN_NUM_THREADS=${LEAN_NUM_THREADS:-1}
     volumes:
-      - ../python:/app/python:ro
-      - ../lean:/app/lean
+      - ../tools:/app/tools:ro
+      - ../HybridVerify:/app/HybridVerify
+      - ../HybridVerify.lean:/app/HybridVerify.lean
+      - ../lakefile.lean:/app/lakefile.lean
+      - ../lake-manifest.json:/app/lake-manifest.json
+      - ../lean-toolchain:/app/lean-toolchain
       - ../hybrid_verify.toml:/app/hybrid_verify.toml:ro
       - lean_interact_cache:/usr/local/lib/python3.12/dist-packages/lean_interact/cache
     working_dir: /app
-    entrypoint: ["python3", "-m", "python.lean_repl"]
+    entrypoint: ["python3", "-m", "tools.verify.lean_repl"]
     ports:
       - "127.0.0.1:7878:7878"
     restart: "no"
-
-  lean:
-    build:
-      context: ..
-      dockerfile: docker/Dockerfile.lean
-    volumes:
-      - ../benchmarks:/app/benchmarks:ro
-      - ../hybrid_verify.toml:/app/hybrid_verify.toml:ro
-    working_dir: /app
-
-  isabelle:
-    build:
-      context: ..
-      dockerfile: docker/Dockerfile.isabelle
-    volumes:
-      - ../benchmarks:/app/benchmarks:ro
-      - ../hybrid_verify.toml:/app/hybrid_verify.toml:ro
-    working_dir: /app
 
 volumes:
   lean_interact_cache:

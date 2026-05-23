@@ -1,8 +1,8 @@
 import json
 from pathlib import Path
 
-from python.models import Backend, Domain
-from python.router import Router
+from tools.verify.models import Backend, Domain
+from tools.verify.router import Router
 
 
 ALLOWED_FORMALIZATION_STATUSES = {

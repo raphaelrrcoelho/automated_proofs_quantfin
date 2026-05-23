@@ -1,7 +1,7 @@
 # Mathlib / BrownianMotion-Package Bridge Audit
 
 **Date:** 2026-05-22
-**Scope:** All 22 modules under `lean/HybridVerify/Foundations/` (4664 LOC)
+**Scope:** All 22 modules under `HybridVerify/Foundations/` (4664 LOC)
 plus pricing-module consumption of Mathlib's probability surface.
 
 ## Executive summary

@@ -4,7 +4,7 @@ phase 35, adapted from Nagy 2026) to give the *structural drift formula*
 for `f(X_t)` when `X_t` is an Itô process. The full L²-limit Itô lemma
 requires the Taylor-remainder bound + simple-process density argument,
 which is gated on Mathlib's Itô-integral completeness (currently
-incomplete; see `BRIDGE_AUDIT.md`).
+incomplete; see `docs/bridges.md`).
 
 The structural drift formula — `μ_X · f' + (1/2) σ_X² · f''` — is the
 *per-unit-time* coefficient of `dt` in `df(X_t)` and is everything you
@@ -55,7 +55,7 @@ integral identity `f(X_T) − f(X_0) = ∫ f' dX + (1/2) ∫ f'' σ_X² dt`. The
 integral identity follows from `Foundations/DiscreteIto.lean` (phase 35)
 plus a limit argument bounding the Taylor remainder (Nagy §5, marked
 †, structurally verified). The full L²-limit construction is gated on
-Mathlib's complete Itô-integral pipeline; see `BRIDGE_AUDIT.md`.
+Mathlib's complete Itô-integral pipeline; see `docs/bridges.md`.
 
 The drift formula here is *all that is needed* for the downstream
 applications in this library (GBM drift derivation, BS PDE, log-payoff

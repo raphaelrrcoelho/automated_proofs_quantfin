@@ -29,7 +29,7 @@ This file contains:
 4. Multi-period (`N`-step) backward-induction price `binomialPrice`.
 
 The bridge to Black-Scholes (CRR convergence) is left as future upstream
-work — see `QUANTFIN_ROADMAP.md` Phase 3.
+work — see `docs/roadmap.md` Phase 3.
 -/
 
 namespace HybridVerify

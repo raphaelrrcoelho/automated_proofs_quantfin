@@ -9,7 +9,6 @@ from concurrent.futures import ThreadPoolExecutor
 from typing import Any
 
 from .confidence import annotate_cross_validation, compute_overall_confidence
-from .isabelle_backend import IsabelleBackend
 from .lean_backend import LeanBackend
 from .models import (
     Backend,
@@ -31,7 +30,6 @@ class Orchestrator:
         self,
         router: Router | None = None,
         lean: LeanBackend | None = None,
-        isabelle: IsabelleBackend | None = None,
         sympy: SymPyVerifier | None = None,
         max_workers: int = 3,
         default_timeout: float = 60.0,
@@ -41,16 +39,12 @@ class Orchestrator:
         self._default_timeout = default_timeout
         self._executor = ThreadPoolExecutor(max_workers=max_workers)
 
-        # Register available backends
+        # Register available backends. Lean is the only formal backend;
+        # SymPy is kept as a legacy/manual fallback (no active route uses it).
         if lean is not None:
             self._backends[Backend.LEAN] = lean
         else:
             self._backends[Backend.LEAN] = LeanBackend()
-
-        if isabelle is not None:
-            self._backends[Backend.ISABELLE] = isabelle
-        else:
-            self._backends[Backend.ISABELLE] = IsabelleBackend()
 
         if sympy is not None:
             self._backends[Backend.SYMPY] = sympy

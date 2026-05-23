@@ -6,18 +6,9 @@
 # ``lake-manifest.json`` (transitive freeze) + ``lean-toolchain`` are
 # authoritative. Benchmark snippets just `import HybridVerify.X` and reference
 # compiled lemmas. Path is relative to the CWD when the verifier runs (in
-# Docker that's ``/app``, so ``lean`` resolves to ``/app/lean`` — the
-# bind-mounted source dir).
-local_project = "lean"
-
-[hybrid-verify.isabelle]
-# Default session for benchmarks that only need HOL-Probability. Individual
-# theorems can override this via metadata.isabelle_session = "HybridVerifyAFP"
-# (or any other registered session) when their code imports AFP entries such
-# as Ergodic_Theory or Markov_Models. See docker/AFP_NOTES.md.
-session = "HOL-Probability"
-afp_session = "HybridVerifyAFP"
-use_connector = false
+# Docker that's ``/app``, which is the repo root with ``lakefile.lean`` and
+# ``HybridVerify/`` directly under it).
+local_project = "."
 
 [hybrid-verify.orchestrator]
 max_workers = 3

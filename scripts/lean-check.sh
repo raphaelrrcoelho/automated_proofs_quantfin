@@ -17,12 +17,12 @@
 #   docker compose -f docker/docker-compose.yml down lean-repl
 #
 # Usage:
-#   scripts/lean-check.sh lean/HybridVerify/BrownianMartingale.lean
+#   scripts/lean-check.sh HybridVerify/Foundations/BrownianMartingale.lean
 set -euo pipefail
 
 if [[ $# -lt 1 ]]; then
   echo "usage: $0 <path-to-lean-file>" >&2
-  echo "  e.g. $0 lean/HybridVerify/BrownianMartingale.lean" >&2
+  echo "  e.g. $0 HybridVerify/Foundations/BrownianMartingale.lean" >&2
   exit 2
 fi
 
@@ -72,4 +72,4 @@ case "$FILE" in
 esac
 
 exec docker compose -f "$COMPOSE" run --rm --entrypoint bash verify -c \
-  "cd lean && lake env lean $IN_FILE $* 2>&1"
+  "lake env lean $IN_FILE $* 2>&1"

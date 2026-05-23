@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "hybrid-verify"
 version = "0.1.0"
-description = "Hybrid Lean 4 + Isabelle verification system for stochastic processes"
+description = "Lean 4 verification runner for the HybridVerify quant-finance library"
 requires-python = ">=3.11"
 dependencies = [
     "sympy>=1.13",
@@ -13,10 +13,8 @@ dependencies = [
 
 [project.optional-dependencies]
 lean = ["lean-interact>=0.11.0"]
-isabelle = ["isabelle-client>=1.0.0"]
 all = [
     "lean-interact>=0.11.0",
-    "isabelle-client>=1.0.0",
 ]
 dev = [
     "pytest>=8.0",
@@ -24,10 +22,12 @@ dev = [
 ]
 
 [project.scripts]
-hybrid-verify = "python.cli:main"
+hybrid-verify = "tools.verify.cli:main"
 
-[tool.setuptools]
-packages = ["python"]
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["tools*"]
+namespaces = true
 
 [tool.hybrid-verify]
 [tool.hybrid-verify.lean]
@@ -40,10 +40,6 @@ mathlib = true
 name = "BrownianMotion"
 git = "https://github.com/RemyDegenne/brownian-motion.git"
 rev = "51807683c5130238fd4013b2fbee314135e3d8d9"
-
-[tool.hybrid-verify.isabelle]
-session = "HOL-Probability"
-use_connector = false
 
 [tool.hybrid-verify.orchestrator]
 max_workers = 3

@@ -22,9 +22,9 @@ Usage from host:
     docker compose -f docker/docker-compose.yml logs -f lean-repl  # watch for READY
 
     # per iteration: send a file, read the JSON response
-    cat lean/HybridVerify/Foo.lean | nc localhost 7878
+    cat HybridVerify/Foo.lean | nc localhost 7878
     # or via the wrapper:
-    ./scripts/lean-check.sh lean/HybridVerify/Foo.lean
+    ./scripts/lean-check.sh HybridVerify/Foo.lean
 
     # tear down
     docker compose -f docker/docker-compose.yml down lean-repl

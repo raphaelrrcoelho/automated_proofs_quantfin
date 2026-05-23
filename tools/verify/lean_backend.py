@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 class LeanBackend:
     """Lean 4 backend driving lean-interact's AutoLeanServer against the
-    in-repo Lake project (``lean/`` by default).
+    in-repo Lake project (repo root by default).
 
     All authoritative project state lives in the Lake project: ``lakefile.lean``
     declares the dependency set, ``lake-manifest.json`` freezes transitive
@@ -33,7 +33,7 @@ class LeanBackend:
     by name.
     """
 
-    def __init__(self, local_project: str = "lean"):
+    def __init__(self, local_project: str = "."):
         self._local_project = local_project
         self._server: Any = None
         self._project: Any = None

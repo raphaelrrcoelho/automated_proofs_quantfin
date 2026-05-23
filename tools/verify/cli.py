@@ -1,7 +1,7 @@
-"""CLI entry point for the hybrid verification system.
+"""CLI entry point for the Lean verification runner.
 
 Usage:
-    python -m python.cli benchmarks/stochastic_calculus.json [-v] [--config hybrid_verify.toml] [--timeout 120]
+    python -m tools.verify.cli benchmarks/stochastic_calculus.json [-v] [--config hybrid_verify.toml] [--timeout 120]
 """
 
 from __future__ import annotations
@@ -14,7 +14,6 @@ import sys
 from pathlib import Path
 
 from .config import load_config
-from .isabelle_backend import IsabelleBackend
 from .lean_backend import LeanBackend
 from .models import Backend, TheoremStatement, VerificationStatus
 from .orchestrator import Orchestrator
@@ -75,7 +74,7 @@ def format_result(vr) -> str:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         prog="hybrid-verify",
-        description="Hybrid Lean 4 + Isabelle verification for stochastic processes",
+        description="Lean 4 verification runner for the HybridVerify quant-finance library",
     )
     parser.add_argument(
         "theorems",
@@ -127,20 +126,15 @@ def main(argv: list[str] | None = None) -> int:
     theorems = load_theorems(theorem_path)
     print(f"Loaded {len(theorems)} theorems from {theorem_path}")
 
-    # Create backends
+    # Create backends. Lean is the only formal backend; SymPy is kept as a
+    # legacy/manual fallback (no active route uses it).
     lean = LeanBackend(local_project=config.lean.local_project)
-    isabelle = IsabelleBackend(
-        session=config.isabelle.session,
-        use_connector=config.isabelle.use_connector,
-        afp_session=config.isabelle.afp_session,
-    )
     sympy_backend = SymPyVerifier()
 
     # Create orchestrator
     orchestrator = Orchestrator(
         router=Router(),
         lean=lean,
-        isabelle=isabelle,
         sympy=sympy_backend,
         max_workers=config.orchestrator.max_workers,
         default_timeout=timeout,

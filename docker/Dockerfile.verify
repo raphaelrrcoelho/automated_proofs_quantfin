@@ -1,147 +1,55 @@
 FROM ubuntu:24.04
 
 ENV DEBIAN_FRONTEND=noninteractive
-ENV PATH="/root/.elan/bin:/opt/Isabelle2025-2/bin:${PATH}"
-ENV ISABELLE_HOME_USER="/root/.isabelle/Isabelle2025-2"
-
-# Set to "0" to skip the AFP layer entirely (faster builds, no Ergodic_Theory /
-# Markov_Models). Defaults to "1" so AFP-dependent benchmarks Just Work.
-ARG INSTALL_AFP=1
-ENV INSTALL_AFP=${INSTALL_AFP}
+ENV PATH="/root/.elan/bin:${PATH}"
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     curl \
     git \
-    libfontconfig1 \
     libgomp1 \
     libgmp-dev \
-    perl \
     python3 \
     python3-pip \
     python3-venv \
     tar \
     wget \
-    zstd \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Lean via elan. The repo's lean-toolchain controls the version used by Lake.
+# Install Lean via elan. The repo's lean-toolchain controls the version used
+# by Lake.
 RUN curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh \
     | sh -s -- -y --default-toolchain none
 
-# Install Isabelle.
-WORKDIR /opt
-RUN wget -q https://isabelle.in.tum.de/dist/Isabelle2025-2_linux.tar.gz \
-    && tar -xzf Isabelle2025-2_linux.tar.gz \
-    && rm Isabelle2025-2_linux.tar.gz \
-    && isabelle version
-
-# Keep Isabelle's JVM below the default 4 GiB heap. Poly/ML also needs memory,
-# and this project usually runs on developer machines rather than large builders.
-RUN mkdir -p /root/.isabelle/Isabelle2025-2/etc \
-    && printf '%s\n' \
-      'ISABELLE_TOOL_JAVA_OPTIONS="-Djava.awt.headless=true -Xms512m -Xmx2g -Xss8m"' \
-      > /root/.isabelle/Isabelle2025-2/etc/settings
-
 WORKDIR /app
 
-# Layer ordering rationale (revised 2026-05-09):
-#
-# The Isabelle HOL-Probability heap and the AFP pre-build below are the
-# slowest steps (~30 min each) and depend ONLY on `isabelle/` source. We
-# place them BEFORE the Lean COPY + lake prebuild so that changes to
-# `lean/lakefile.lean`, `lean/HybridVerify/*.lean`, or the lake-build RUN
-# command do not invalidate the Isabelle layers.
-#
-# The earlier ordering put `COPY lean/` first, which meant any Lean edit
-# busted the cache for HOL-Probability + AFP — costing ~60 min per Lean
-# iteration. That cost was paid once on 2026-05-09 to validate; the new
-# ordering avoids it for all future Lean-only rebuilds.
-COPY isabelle/ isabelle/
-# `-o threads=2` runs Poly/ML with 2 worker threads inside the single
-# HOL-Probability session. The threads share the session heap (Poly/ML
-# is ~7 GiB peak on HOL-Analysis), so total memory is similar to
-# `threads=1`; CPU utilisation goes up (~30% wall-clock reduction on
-# HOL-Analysis, the dominant sub-build). `-j 1` because HOL-Probability's
-# dep chain is sequential — increasing `-j` here doesn't help and would
-# multiply memory if it did.
-RUN isabelle build -b -j 1 -o threads=2 HOL-Probability
-
-# ---------------------------------------------------------------------------
-# AFP (Archive of Formal Proofs) layer.
-#
-# Placed AFTER the HOL-Probability build so that toggling/refreshing AFP does
-# not invalidate the expensive HOL-Probability heap cache.
-#
-# We download `afp-current.tar.gz` (the AFP release tracking the current
-# stable Isabelle, which as of Isabelle 2025-2 is the matching release) and
-# register it as an Isabelle component via `isabelle components -u`. We then
-# pre-build only the two sessions we actually need:
-#
-#   * Ergodic_Theory       -- Birkhoff's ergodic theorem (in Invariants) and
-#                             Hasselblatt-style ergodic theory.
-#   * Markov_Models        -- discrete/continuous-time Markov chains, MDPs.
-#   * Stochastic_Matrices  -- stationary-distribution existence/uniqueness via
-#                             Perron-Frobenius (pulls in Perron_Frobenius and
-#                             Jordan_Normal_Form transitively).
-#
-# Their AFP dependencies (Coinductive, Gauss-Jordan_Elim_Fun, Perron_Frobenius,
-# Jordan_Normal_Form, etc.) are pulled in transitively by `isabelle build -b`.
-# We deliberately do NOT pre-build the rest of the AFP -- a full AFP heap
-# build is multi-hour and tens of GB, which blows past the -Xmx2g build cap
-# and the disk budget for this image.
-#
-# Build uses `-j 1 -o threads=2`: single session at a time, two Poly/ML
-# worker threads per session. The aggressive `-j 2` was attempted on
-# 2026-05-08 and OOM-killed during HOL-Probability — Poly/ML peaks at
-# ~7 GiB RSS for HOL-Analysis, so two parallel sessions exceed the 12 GiB
-# host budget. The single-session-with-thread-parallelism path keeps the
-# CPU win (~30%) without the memory blowup. Pass `--build-arg INSTALL_AFP=0`
-# to skip this layer entirely.
-# ---------------------------------------------------------------------------
-RUN if [ "$INSTALL_AFP" = "1" ]; then \
-      mkdir -p /opt/afp \
-      && wget -q https://www.isa-afp.org/release/afp-current.tar.gz -O /tmp/afp-current.tar.gz \
-      && tar -xzf /tmp/afp-current.tar.gz -C /opt/afp --strip-components=1 \
-      && rm /tmp/afp-current.tar.gz \
-      && isabelle components -u /opt/afp/thys \
-      && isabelle build -b -j 1 -o threads=2 Ergodic_Theory Markov_Models Stochastic_Matrices ; \
-    else \
-      echo "Skipping AFP install (INSTALL_AFP=$INSTALL_AFP)" ; \
-    fi
-
-# Lean toolchain + Lake project prebuild.
-# Comes AFTER Isabelle so editing lean/ never invalidates the Isabelle/AFP
-# layers above. `lake exe cache get` downloads precompiled Mathlib oleans
-# from the leanprover-community reservoir (~3 min download vs ~30 min Mathlib
-# build from source). `lake build` then elaborates the HybridVerify library +
-# its direct deps (BrownianMotion etc.). This bakes the olean tree into the
-# image at /app/lean/.lake/, so the first verify call no longer pays for a
-# cold Lake build.
-COPY lean/ lean/
-RUN elan toolchain install "$(cat lean/lean-toolchain)" \
-    && cd lean \
+# Lean toolchain + Lake project prebuild. `lake exe cache get` downloads
+# precompiled Mathlib oleans from the leanprover-community reservoir (~3 min
+# download vs ~30 min Mathlib build from source). `lake build` then elaborates
+# the HybridVerify library + its direct deps (BrownianMotion etc.). This bakes
+# the olean tree into the image at /app/.lake/, so the first verify call no
+# longer pays for a cold Lake build.
+COPY lakefile.lean lean-toolchain lake-manifest.json HybridVerify.lean ./
+COPY HybridVerify/ HybridVerify/
+RUN elan toolchain install "$(cat lean-toolchain)" \
     && lean --version \
     && lake --version \
     && lake exe cache get \
     && lake build
 
-# Runtime defaults. Keep this after both heavy build layers so changing
-# runtime caps does not invalidate the expensive Isabelle/AFP/Lean builds.
-RUN elan default "$(cat lean/lean-toolchain)" \
-    && printf '%s\n' \
-      'ISABELLE_TOOL_JAVA_OPTIONS="-Djava.awt.headless=true -Xms512m -Xmx3g -Xss8m"' \
-      > /root/.isabelle/Isabelle2025-2/etc/settings
+# Runtime defaults. Keep after the Lean prebuild layer so changing runtime
+# caps does not invalidate the expensive build above.
+RUN elan default "$(cat lean-toolchain)"
 
-# Python deps last so editing pyproject.toml / python/ does NOT invalidate the
-# Isabelle / AFP / Lean prebuild layers above. The `[dev]` extra brings
-# pytest + pytest-asyncio so the static lints (`pytest tests/test_router.py`,
-# `python -m python.coverage_report`) run inside this container too.
+# Python deps last so editing pyproject.toml / tools/ does NOT invalidate the
+# Lean prebuild layer above. The `[dev]` extra brings pytest + pytest-asyncio
+# so the static lints (`pytest tests/test_router.py`,
+# `python -m tools.verify.coverage_report`) run inside this container too.
 COPY pyproject.toml requirements.txt ./
-COPY python/ python/
+COPY tools/ tools/
 RUN python3 -m pip install --break-system-packages -e ".[all,dev]"
 
 COPY benchmarks/ benchmarks/
 COPY hybrid_verify.toml ./
 
-ENTRYPOINT ["python3", "-m", "python.cli"]
+ENTRYPOINT ["python3", "-m", "tools.verify"]
