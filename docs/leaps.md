@@ -94,22 +94,41 @@ distinct, harder result. Leap 1 is exactly that grounding for the 1-D
 hypothesis-form theorem is committed unless its hypotheses are discharged in
 the same arc or are the standard library-level pricing primitive.
 
-## What's gated (leap 4 and the deeper groundings)
+## Leap 4 — the adapted Itô isometry (done, discrete)
 
-The remaining frontier shares a single prerequisite: **increment-independence
-/ gaussian-vector structure extracted from `IsPreBrownian`**.
+`QuantFin/Foundations/ItoIsometryAdapted.lean`.
 
-- **Leap 4 — path-wise Itô.** The L² Wiener integral for deterministic
-  integrands already exists (`Foundations/WienerIntegralL2.lean`:
-  `wienerIntegralLp`, `wiener_assembly_isometry`). The gap is the *adapted*
-  (random) integrand — the actual Itô integral — and its isometry, which need
-  increment independence (`E[ΔBₖΔBⱼ] = E[ΔBₖ]E[ΔBⱼ] = 0`). `BrownianQuadratic-
-  Variation` proves `E[ΔB²]=t−s` and `E[ΔB]=0` but does *not* encode
-  independence; that lives in `IsPreBrownian` (Degenne's package, whose
-  stochastic integral is WIP upstream).
+The Wiener integral (`Foundations/WienerIntegralL2.lean`) handles
+*deterministic* integrands, where cross-terms vanish by the BM covariance.
+That is **not** the Itô integral. Leap 4 builds the genuinely-stochastic
+core: a **random, adapted** integrand `φ`, where the cross-terms vanish for a
+deeper reason — the next increment `B_{t₁} − B_{t₀}` is *independent of the
+past* `𝓕_{t₀}` (the weak Markov property `IsPreBrownian.indepFun_shift`) and
+has mean zero.
+
+The increment-independence this was long thought to wait on is **not** WIP:
+it is `IsPreBrownian.hasIndepIncrements` and `IsPreBrownian.indepFun_shift`,
+fully proven in Degenne's package. The deductive chain:
+
+| Theorem | Content |
+|---|---|
+| `adapted_indepFun_increment` | An integrand adapted to `𝓕_{t₀}` is independent of the forward increment `B_{t₁} − B_{t₀}` (via `indepFun_shift`). |
+| `integral_adapted_mul_increment` | **Martingale-difference property.** `E[φ·(B_{t₁}−B_{t₀})] = 0` for adapted `φ` — the reason the Itô integral is a martingale, and it holds for *random* `φ`. |
+| `integral_adapted_sq_mul_increment_sq` | **Isometry kernel.** `E[φ²·(B_{t₁}−B_{t₀})²] = E[φ²]·(t₁−t₀)`. |
+| `adaptedAt_eval`/`.mono`/`.mul`/`.sub` | The adaptedness algebra (the natural Brownian filtration `𝓕_{t₀}` as a closure), used to certify the cross-term factors are `𝓕_{tₖ}`-measurable. |
+| **`ito_isometry_discrete`** | **The discrete Itô isometry.** `E[(Σₖ φₖ·ΔBₖ)²] = Σₖ E[φₖ²]·(t_{k+1}−t_k)` for adapted `L²` integrands. Diagonal = variance kernel; off-diagonal = 0 by the martingale-difference property. |
+| **`ito_isometry_brownian_self`** | **The `∫₀ᵀ B dB` Riemann-sum isometry**, `E[(Σₖ B(tₖ)·ΔBₖ)²] = Σₖ tₖ·Δtₖ` — a fully-discharged instance (no remaining hypotheses beyond measurability + a monotone partition). |
+
+All build-enforced axioms-clean (`QuantFin/AxiomAudit.lean`).
+
+## What's still gated (the continuous frontier + Margrabe grounding)
+
+- **Leap 4, continuous.** The remaining step is the L²(adapted) Cauchy
+  completion over adapted processes — density of adapted simple integrands in
+  the adapted `L²`, the analogue of `WienerIntegralL2`'s completion for the
+  deterministic case. This — *not* increment independence — is the open piece,
+  and is what would clear the remaining Itô-gated `reduced_core`s in
+  [`coverage.md`](coverage.md).
 - **Margrabe `BSCallHyp`-grounding** — the ratio's risk-neutral lognormality
-  from a joint two-GBM model needs the same gaussian-vector machinery.
-
-These are honest dedicated builds, not bolt-ons. The cornerstone they unblock
-(the Itô isometry, and the full Itô integral) is what would also clear the
-~12 Itô-gated `reduced_core`s in [`coverage.md`](coverage.md).
+  from a joint two-GBM model needs the same gaussian-vector machinery
+  (`IsGaussianProcess.iIndepFun''`).

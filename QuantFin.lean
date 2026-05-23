@@ -69,6 +69,8 @@ import QuantFin.Foundations.VarianceSwapLimit
 import QuantFin.Foundations.DiscreteIto
 -- Phase 36: Itô integral for simple processes (adapted from Nagy 2026)
 import QuantFin.Foundations.ItoIntegralSimple
+-- The adapted Itô isometry (increment-independence cornerstone)
+import QuantFin.Foundations.ItoIsometryAdapted
 -- Phase 37: FTAP both directions, two-state market (adapted from Nagy 2026)
 import QuantFin.Foundations.FTAPTwoState
 -- Phase 38: Constant-product AMM (adapted from Pusceddu-Bartoletti FMBC 2024)

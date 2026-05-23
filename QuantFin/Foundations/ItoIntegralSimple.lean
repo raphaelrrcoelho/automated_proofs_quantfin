@@ -35,8 +35,11 @@ construction. Key algebraic properties:
 
 * **Linearity**: `Σ (a·c_k + b·d_k) · ΔB_k = a · Σ c_k·ΔB_k + b · Σ d_k·ΔB_k`.
 * **Isometry (constant integrand)**: `Σ c² · Δt_k = c² · Σ Δt_k = c² · T`.
-  The full Itô isometry `E[(∫f dB)²] = E[∫f² dt]` requires the
-  independent-increment hypothesis (deferred; uses `BrownianQuadraticVariation`).
+  The full Itô isometry `E[(∫f dB)²] = E[∫f² dt]` for *adapted random*
+  integrands is proved in `Foundations/ItoIsometryAdapted.lean`
+  (`ito_isometry_discrete`), grounded on `IsPreBrownian.hasIndepIncrements`
+  and the weak Markov property `IsPreBrownian.indepFun_shift` — not on any
+  unavailable upstream machinery.
 
 The `L²` extension via Cauchy completeness (Mathlib's `MemLp` API) reuses
 our `Foundations/WienerIntegralL2.lean` infrastructure.

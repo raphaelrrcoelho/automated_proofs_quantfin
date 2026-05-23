@@ -303,21 +303,32 @@ three "big leaps" pushed past the static ceiling. full narrative in
 
 all build-enforced axioms-clean via `QuantFin/AxiomAudit.lean`.
 
-### gated frontier (leap 4 + the deeper groundings)
+### leap 4 — the adapted Itô isometry (done, discrete) + the continuous frontier
 
-one shared prerequisite: **increment-independence / gaussian-vector structure
-from `IsPreBrownian`**.
+the increment-independence this was long said to wait on is **not** WIP: it is
+`IsPreBrownian.hasIndepIncrements` / `IsPreBrownian.indepFun_shift`, fully
+proven in Degenne's package. Building directly on it:
 
-- **leap 4 — path-wise Itô.** the L² Wiener integral for *deterministic*
-  integrands exists (`WienerIntegralL2.lean`). the *adapted*-integrand Itô
-  integral + its isometry need increment independence (`E[ΔBₖΔBⱼ]=0`), which
-  `BrownianQuadraticVariation` does not encode — it lives in `IsPreBrownian`
-  (Degenne's stochastic integral, WIP upstream). this is also what would clear
-  the ~12 itô-gated `reduced_core`s.
+- **leap 4 (discrete) — done.** `Foundations/ItoIsometryAdapted.lean`: the Itô
+  isometry for *adapted random* simple integrands,
+  `E[(Σ φₖ·ΔBₖ)²] = Σ E[φₖ²]·(t_{k+1}−t_k)` (`ito_isometry_discrete`). the
+  cross-terms vanish by the weak Markov property (`ΔBₖ ⊥ 𝓕_{tₖ}`), **not** by
+  deterministic covariance — that distinction *is* what separates the Itô
+  integral from the Wiener integral (`WienerIntegralL2.lean`, deterministic
+  integrands). capstone: the fully-discharged `∫₀ᵀ B dB` Riemann-sum isometry
+  `ito_isometry_brownian_self`. build-enforced axioms-clean.
+- **continuous frontier.** what remains is the L²(adapted) Cauchy completion
+  over adapted processes (density of adapted simple integrands in the adapted
+  L²), the analogue of `WienerIntegralL2`'s completion for the deterministic
+  case. this — *not* increment independence — is the open step, and what would
+  clear the remaining itô-gated `reduced_core`s once finished.
 - **Margrabe `BSCallHyp`-grounding** — the ratio's risk-neutral lognormality
-  from a joint two-GBM model via the numeraire change; same gaussian-vector
-  machinery. the Margrabe-analog of leap 1.
+  from a joint two-GBM model via the numeraire change; uses the same
+  gaussian-vector machinery (`IsGaussianProcess.iIndepFun''`). the
+  Margrabe-analog of leap 1.
 
 these are honest dedicated builds, not bolt-ons. a hypothesis-form Itô isometry
-was drafted and **reverted** this session precisely because its orthogonality
-hypothesis had no available discharge — the no-slop line.
+was drafted and **reverted** earlier precisely because its orthogonality
+hypothesis had no available discharge; leap 4 (discrete) is now the genuine
+discharge of exactly that orthogonality, via the weak Markov property — the
+no-slop line, held.

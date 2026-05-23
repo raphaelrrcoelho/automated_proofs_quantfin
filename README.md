@@ -77,7 +77,7 @@ See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the full development workflow.
 | **Risk measures** | Gaussian VaR / CVaR closed forms; coherent axioms (translation, homogeneity, monotonicity, subadditivity) **derived from concave utility**; joint-stdev triangle; VaR/CVaR additivity at ρ=1; **Rockafellar-Uryasev** form; **spectral risk measures**; **Herfindahl-Hirschman** with Cauchy-Schwarz lower bound. |
 | **Actuarial** | Annuity-due closed form; net premium principle; **Gompertz** cumulative force of mortality. |
 | **DeFi** | Constant-product AMM (Uniswap v2) invariants — adapted from Pusceddu-Bartoletti. |
-| **Foundations** | **Static Girsanov** — the risk-neutral measure *derived* from the physical measure via an Esscher density, making `BSCallHyp` a theorem and the discounted asset a proven `Q`-martingale ([`docs/leaps.md`](docs/leaps.md)); Brownian motion martingales (square-sub-time, Wald exponential); Wiener integral + L² version; quadratic variation; Doob L^p continuous-time convergence; conditional Jensen; **discrete Itô lemma** (after Nagy); simple Itô integral; FTAP (two-state explicit EMM + multi-state forward); pricing kernels; state prices; Itô structural drift (GBM log-drift, log return mean); BS PDE from Itô + no-arbitrage. |
+| **Foundations** | **Static Girsanov** — the risk-neutral measure *derived* from the physical measure via an Esscher density, making `BSCallHyp` a theorem and the discounted asset a proven `Q`-martingale ([`docs/leaps.md`](docs/leaps.md)); Brownian motion martingales (square-sub-time, Wald exponential); Wiener integral + L² version; **the adapted Itô isometry** — the genuinely-stochastic `E[(Σ φₖ·ΔBₖ)²]=Σ E[φₖ²]·Δtₖ` for *random adapted* integrands, cross-terms killed by the weak Markov property (`∫B dB` capstone) ([`docs/leaps.md`](docs/leaps.md)); quadratic variation; Doob L^p continuous-time convergence; conditional Jensen; **discrete Itô lemma** (after Nagy); simple Itô integral; FTAP (two-state explicit EMM + multi-state forward); pricing kernels; state prices; Itô structural drift (GBM log-drift, log return mean); BS PDE from Itô + no-arbitrage. |
 
 The library leans on seven **structural-principle modules** where one named
 fact generates dozens of one-line corollaries (Garman normal form, price
@@ -102,7 +102,7 @@ gaussian MGF, exponential discount, Snell envelope). See
 
 The 16 remaining `reduced_core` theorems are Mathlib-gated:
 
-- **Itô calculus** (~12 theorems including Itô's lemma path-wise form, time-dependent Itô, Lévy's martingale characterisation, SDE existence + uniqueness, the four Girsanov entries): Mathlib does not yet ship the Itô integral.
+- **Itô calculus** (~12 theorems including Itô's lemma path-wise form, time-dependent Itô, Lévy's martingale characterisation, SDE existence + uniqueness, the four Girsanov entries): the deterministic Wiener integral and the **discrete adapted Itô isometry** are now built (`Foundations/ItoIsometryAdapted.lean`, on `IsPreBrownian.hasIndepIncrements`); what remains is the continuous-time L²(adapted) Itô integral — the Cauchy completion over adapted processes.
 - **Continuous-time Poisson processes** (3 theorems: interarrival exponential, superposition, thinning): Mathlib has only the discrete `PoissonPMF`.
 - **Fine BM path machinery** (3 theorems: reflection principle on Brownian paths, nowhere-differentiability, law of iterated logarithm).
 

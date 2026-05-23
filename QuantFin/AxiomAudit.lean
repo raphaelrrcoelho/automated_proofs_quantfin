@@ -149,6 +149,20 @@ namespace QuantFin.AxiomAudit
 /-- info: 'QuantFin.tendsto_expected_bsLogPrice_equipartition_sum' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in #print axioms QuantFin.tendsto_expected_bsLogPrice_equipartition_sum
 
+/-! ## Adapted Itô isometry (increment-independence cornerstone) -/
+
+/-- info: 'QuantFin.ItoIsometryAdapted.integral_adapted_mul_increment' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in #print axioms QuantFin.ItoIsometryAdapted.integral_adapted_mul_increment
+
+/-- info: 'QuantFin.ItoIsometryAdapted.integral_adapted_sq_mul_increment_sq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in #print axioms QuantFin.ItoIsometryAdapted.integral_adapted_sq_mul_increment_sq
+
+/-- info: 'QuantFin.ItoIsometryAdapted.ito_isometry_discrete' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in #print axioms QuantFin.ItoIsometryAdapted.ito_isometry_discrete
+
+/-- info: 'QuantFin.ItoIsometryAdapted.ito_isometry_brownian_self' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in #print axioms QuantFin.ItoIsometryAdapted.ito_isometry_brownian_self
+
 /-! ## Portfolio / risk / performance -/
 
 /-- info: 'QuantFin.portfolioVarTwo_ge_min' depends on axioms: [propext, Classical.choice, Quot.sound] -/
