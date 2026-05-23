@@ -72,6 +72,12 @@ import HybridVerify.Foundations.ItoIntegralSimple
 import HybridVerify.Foundations.FTAPTwoState
 -- Phase 38: Constant-product AMM (adapted from Pusceddu-Bartoletti FMBC 2024)
 import HybridVerify.DeFi.ConstantProductAMM
+-- Phase 39: Itô structural drift formula + GBM log-drift (after Nagy 2026)
+import HybridVerify.Foundations.ItoLemma
+-- Phase 45: Variance swap log-payoff and QV-limit form equivalence
+import HybridVerify.Foundations.VarianceSwapEquivalence
+-- Phase 53: Pricing kernel from two-state FTAP (state-prices composition)
+import HybridVerify.Foundations.PricingKernel
 
 -- BlackScholes
 import HybridVerify.BlackScholes.Call
@@ -132,6 +138,8 @@ import HybridVerify.BlackScholes.GreekSigns
 import HybridVerify.Binomial.PathReflection
 -- Phase 19: Snell envelope characterization of americanPrice
 import HybridVerify.Binomial.SnellEnvelope
+-- Phase 43: Binomial up-probability as two-state FTAP EMM
+import HybridVerify.Binomial.BinomialFromFTAP
 -- Phase 20: first-principles core derivations
 import HybridVerify.Foundations.NoArbitrageDerivations
 import HybridVerify.BlackScholes.RiskNeutralProbabilities
@@ -141,6 +149,8 @@ import HybridVerify.BlackScholes.StockNumeraire
 import HybridVerify.BlackScholes.PowerCall
 -- Phase 25: chooser option as call + put portfolio via PCP at chooser date
 import HybridVerify.BlackScholes.ChooserComposition
+-- Phase 46: BS PDE derived from Itô drift + no-arbitrage
+import HybridVerify.BlackScholes.PDEFromIto
 
 -- FixedIncome
 import HybridVerify.FixedIncome.ZCB
@@ -165,6 +175,8 @@ import HybridVerify.FixedIncome.ConvexitySensitivity
 import HybridVerify.FixedIncome.KMVMertonStructural
 -- Phase 28: CDS fair spread under time-varying hazard (cash-flow balance)
 import HybridVerify.FixedIncome.CDSTimeVarying
+-- Phase 41: Vasicek SDE closed-form (full SDE, mean + variance)
+import HybridVerify.FixedIncome.VasicekSDE
 
 -- Portfolio
 import HybridVerify.Portfolio.Markowitz
