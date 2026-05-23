@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.Binomial.CRRDiscreteIto
+import QuantFin.Binomial.CRRDiscreteIto
 
 /-!
 # CRR distributional convergence transfer (phase 44c, hypothesis-form)
@@ -52,7 +52,7 @@ single application of `Filter.Tendsto.comp` with the continuous map
 hypothesis.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Filter
 open scoped Topology
@@ -118,4 +118,4 @@ theorem bs_lognormal_limit_from_log_return_CLT
     Continuous (fun y : ℝ => S_0 * Real.exp y) :=
   lognormal_transfer_continuous_map S_0 r σ T hS_0
 
-end HybridVerify
+end QuantFin

@@ -32,7 +32,7 @@ Results:
   bounded above by the arithmetic Asian payoff.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Real
 
@@ -83,4 +83,4 @@ lemma geom_mean_le_arith_mean_n {n : ℕ} (f : Fin n → ℝ)
   rw [h_rhs_simp] at h_mul
   exact h_mul
 
-end HybridVerify
+end QuantFin

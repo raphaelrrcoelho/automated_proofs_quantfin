@@ -28,7 +28,7 @@ Result:
 * `modifiedNumerator_eq_macaulayNumerator_div`: the algebraic identity.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Finset
 
@@ -58,4 +58,4 @@ lemma modifiedNumerator_eq_macaulayNumerator_div
   rw [pow_succ]
   field_simp
 
-end HybridVerify
+end QuantFin

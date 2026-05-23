@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.BlackScholes.Call
-import HybridVerify.BlackScholes.Forward
-import HybridVerify.Foundations.StandardGaussianMGF
+import QuantFin.BlackScholes.Call
+import QuantFin.BlackScholes.Forward
+import QuantFin.Foundations.StandardGaussianMGF
 
 /-!
 # Power options under the BS lognormal hypothesis
@@ -36,7 +36,7 @@ Results:
 * `powerForward_price`: discounted power-forward price.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory ProbabilityTheory Real
 open scoped NNReal ENNReal
@@ -113,4 +113,4 @@ theorem powerForward_price
   congr 2
   ring
 
-end HybridVerify
+end QuantFin

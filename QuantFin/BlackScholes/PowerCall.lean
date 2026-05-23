@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.BlackScholes.Call
+import QuantFin.BlackScholes.Call
 
 /-!
 # Powered call option closed form (first-principles)
@@ -54,7 +54,7 @@ additional Gaussian work.
 * `bs_power_call_formula`: the closed-form discounted price.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory ProbabilityTheory Real
 open scoped NNReal ENNReal
@@ -151,4 +151,4 @@ lemma bsPowerEffectiveSpot_one (S_0 r σ T : ℝ) :
     push_cast; ring
   rw [h_arg, Real.exp_zero, pow_one, mul_one]
 
-end HybridVerify
+end QuantFin

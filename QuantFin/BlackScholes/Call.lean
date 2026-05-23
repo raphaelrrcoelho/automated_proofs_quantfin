@@ -1,5 +1,5 @@
 /-
-  HybridVerify.BlackScholes.Call
+  QuantFin.BlackScholes.Call
 
   Derivation of the Black-Scholes European call pricing formula from the
   risk-neutral lognormal hypothesis:
@@ -64,7 +64,7 @@
 -/
 import Mathlib
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory ProbabilityTheory Real
 open scoped NNReal ENNReal
@@ -373,4 +373,4 @@ theorem bs_call_formula {Ω : Type*} {mΩ : MeasurableSpace Ω}
     _ = 1 * (S_0 * Phi d_1) - K * Real.exp (-r * T) * Phi d_2 := by rw [h_exp_combine]
     _ = S_0 * Phi d_1 - K * Real.exp (-r * T) * Phi d_2 := by rw [one_mul]
 
-end HybridVerify
+end QuantFin

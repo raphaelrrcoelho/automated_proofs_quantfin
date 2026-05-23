@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.BlackScholes.Call
-import HybridVerify.BlackScholes.Forward
+import QuantFin.BlackScholes.Call
+import QuantFin.BlackScholes.Forward
 
 /-!
 # Variance swap fair strike (Demeterfi-Derman-Kamal)
@@ -35,7 +35,7 @@ Results:
 * `varianceSwap_fairStrike`: the headline `(2/T) · E_Q[...] = σ²`.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory ProbabilityTheory Real
 open scoped NNReal ENNReal
@@ -95,4 +95,4 @@ theorem varianceSwap_log_contribution {S_0 : ℝ} (hS : 0 < S_0)
   rw [integral_log_forward_div_bsTerminal_eq hS]
   field_simp
 
-end HybridVerify
+end QuantFin

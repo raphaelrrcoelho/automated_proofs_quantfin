@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.BlackScholes.Call
+import QuantFin.BlackScholes.Call
 
 /-!
 # Black–Scholes put pricing formula
@@ -23,7 +23,7 @@ We also derive **put-call parity**
 `Phi_add_Phi_neg`.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory ProbabilityTheory Real
 open scoped NNReal ENNReal
@@ -204,4 +204,4 @@ theorem bs_put_call_parity {Ω : Type*} {mΩ : MeasurableSpace Ω}
   -- C - P = S_0 (Phi(d_1) + Phi(-d_1)) - K e^{-rT} (Phi(d_2) + Phi(-d_2)) = S_0 - K e^{-rT}
   linear_combination S_0 * h_d1 - K * Real.exp (-r * T) * h_d2
 
-end HybridVerify
+end QuantFin

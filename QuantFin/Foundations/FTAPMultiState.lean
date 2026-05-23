@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.Foundations.FTAPTwoState
+import QuantFin.Foundations.FTAPTwoState
 
 /-!
 # Multi-state FTAP backward direction (phase 42, hypothesis-form)
@@ -54,7 +54,7 @@ two-state case from Phase 37**.
   finite assets.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Finset
 
@@ -125,4 +125,4 @@ theorem hasEMM_multi_of_candidate {N M : ℕ} (z : Fin M → Fin N → ℝ)
     HasEMM_multi_state z :=
   ⟨q, hq_pos, hq_sum, hq_z⟩
 
-end HybridVerify
+end QuantFin

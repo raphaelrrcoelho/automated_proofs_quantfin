@@ -39,7 +39,7 @@ Results:
   the initial gap.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Real
 
@@ -93,4 +93,4 @@ theorem vasicekDeterministic_at_halfLife (r₀ θ κ : ℝ) (hκ : 0 < κ) :
   rw [h_exp]
   ring
 
-end HybridVerify
+end QuantFin

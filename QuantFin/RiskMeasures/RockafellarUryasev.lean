@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.RiskMeasures.Gaussian
+import QuantFin.RiskMeasures.Gaussian
 
 /-!
 # Rockafellar-Uryasev CVaR identity for gaussian losses
@@ -33,7 +33,7 @@ Result:
   the Rockafellar-Uryasev decomposition of CVaR for gaussian losses.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open ProbabilityTheory Real
 
@@ -53,4 +53,4 @@ lemma gaussianCVaR_rockafellarUryasev (μ σ z α : ℝ) :
   unfold gaussianCVaR gaussianVaR
   ring
 
-end HybridVerify
+end QuantFin

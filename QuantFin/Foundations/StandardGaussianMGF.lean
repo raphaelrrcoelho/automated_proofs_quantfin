@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.BlackScholes.Call
-import HybridVerify.BlackScholes.Forward
+import QuantFin.BlackScholes.Call
+import QuantFin.BlackScholes.Forward
 
 /-!
 # Standard normal moment-generating function: the one computation in BS
@@ -57,7 +57,7 @@ of the form `S_0^k · exp(α + β · Z)`, factors `S_0^k · exp(α)` out, and ap
 this identity at `β`.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory ProbabilityTheory Real
 open scoped NNReal ENNReal
@@ -78,4 +78,4 @@ lemma integral_exp_affine_gaussianPDFReal_univ (α β : ℝ) :
   -- exp(α) · exp(β²/2) = exp(α + β²/2)
   rw [← Real.exp_add]
 
-end HybridVerify
+end QuantFin

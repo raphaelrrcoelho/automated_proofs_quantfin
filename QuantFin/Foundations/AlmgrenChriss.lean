@@ -43,7 +43,7 @@ function-space machinery beyond Mathlib's current pin.
 * `almgrenChrissPath_satisfies_EL`: `X''(t) = κ² · X(t)`.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Real
 
@@ -114,4 +114,4 @@ theorem almgrenChrissPath_satisfies_EL (X_0 κ T : ℝ)
   convert h_neg using 1
   field_simp
 
-end HybridVerify
+end QuantFin

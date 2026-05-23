@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.Portfolio.CAPMEquilibrium
+import QuantFin.Portfolio.CAPMEquilibrium
 
 /-!
 # Risk-parity portfolios from the log-barrier Lagrangian (first-principles)
@@ -50,7 +50,7 @@ risk-budget property. The 2-asset closed form `σ_2 / (σ_1 + σ_2)` is a
   characterisation.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Finset
 
@@ -145,4 +145,4 @@ theorem riskContribution_eq_variance_div_card_of_riskParity
   field_simp
   linarith
 
-end HybridVerify
+end QuantFin

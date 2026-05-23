@@ -26,7 +26,7 @@ Result:
   contributions to portfolio variance are equal.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 /-- Risk-parity weight on asset 1 in the two-asset case. The other asset gets
 the complementary weight `σ₁ / (σ₁ + σ₂)`. -/
@@ -56,4 +56,4 @@ lemma riskParity_weights_sum_one (σ₁ σ₂ : ℝ) (hσ : σ₁ + σ₂ ≠ 0)
   field_simp
   ring
 
-end HybridVerify
+end QuantFin

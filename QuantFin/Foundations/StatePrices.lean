@@ -40,7 +40,7 @@ specific `q` given by the model.
   price non-negative (no-arb monotonicity).
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Finset
 
@@ -112,4 +112,4 @@ theorem statePricePricing_nonneg
   intros i hi
   exact mul_nonneg (hq i hi) (hX i hi)
 
-end HybridVerify
+end QuantFin

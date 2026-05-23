@@ -25,7 +25,7 @@ Results:
 * `beta_of_riskFree`: the risk-free asset's beta is `0` (zero covariance with the market).
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 /-- CAPM beta: `β = Cov(R, R_M) / Var(R_M)`. Defined algebraically as a ratio. -/
 noncomputable def beta (covRRm varRm : ℝ) : ℝ := covRRm / varRm
@@ -83,4 +83,4 @@ lemma beta_linearity_finset
   intro i _
   rw [mul_div_assoc]
 
-end HybridVerify
+end QuantFin

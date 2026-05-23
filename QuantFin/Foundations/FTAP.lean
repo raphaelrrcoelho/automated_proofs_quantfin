@@ -1,12 +1,12 @@
 /-
-  HybridVerify.Foundations.FTAP
+  QuantFin.Foundations.FTAP
   Theorem 2.6.7: First Fundamental Theorem of Asset Pricing (⇒ direction).
-  EMM existence ⇒ no arbitrage. Uses HybridVerify.MartingaleTransform.
+  EMM existence ⇒ no arbitrage. Uses QuantFin.MartingaleTransform.
 -/
 import Mathlib
-import HybridVerify.Foundations.MartingaleTransform
+import QuantFin.Foundations.MartingaleTransform
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory ProbabilityTheory
 
@@ -47,4 +47,4 @@ theorem emm_implies_no_arbitrage
       (ae_iff.mp hV_T_zero_Q)
   exact hPQ h_pos_Q_zero
 
-end HybridVerify
+end QuantFin

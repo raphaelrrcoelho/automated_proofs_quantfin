@@ -33,7 +33,7 @@ Results:
   survival in horizon `T`.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Real
 
@@ -97,4 +97,4 @@ theorem cds_leg_equality (hh R factor c : ℝ) (h_factor_ne : factor ≠ 0) :
   · intro hc
     rw [hc]; ring
 
-end HybridVerify
+end QuantFin

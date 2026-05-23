@@ -32,7 +32,7 @@ The bridge to Black-Scholes (CRR convergence) is left as future upstream
 work — see `docs/roadmap.md` Phase 3.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 /-! ### Risk-neutral up-probability -/
 
@@ -217,4 +217,4 @@ theorem binomialPrice_const (u d r c : ℝ) (h : BinomialNoArb u d r) (n : ℕ) 
       _ = Real.exp (-r) * Real.exp (-(n : ℝ) * r) * c * 1 := by rw [h_q_complement]
       _ = Real.exp (-((n + 1 : ℕ) : ℝ) * r) * c := by rw [mul_one, h_factor]
 
-end HybridVerify
+end QuantFin

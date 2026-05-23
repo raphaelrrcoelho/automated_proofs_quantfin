@@ -30,7 +30,7 @@ Results:
 * `net_premium_principle`: equivalent algebraic statement.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Finset
 
@@ -53,4 +53,4 @@ theorem net_premium_principle (P A B : ℝ) (hA : A ≠ 0) :
   · intro h; rw [← h]; field_simp
   · intro h; rw [h]; field_simp
 
-end HybridVerify
+end QuantFin

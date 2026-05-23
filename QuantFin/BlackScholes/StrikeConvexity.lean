@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.BlackScholes.StrikeGreeks
+import QuantFin.BlackScholes.StrikeGreeks
 
 /-!
 # Strike-direction convexity at every scale
@@ -48,7 +48,7 @@ hierarchy is visible.
   (continuous BS price level).
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Set Real ProbabilityTheory
 
@@ -155,4 +155,4 @@ theorem bsV_strike_convexOn {S r σ τ : ℝ} (hS : 0 < S) (hσ : 0 < σ) (hτ :
       mul_pos (mul_pos h_pos hσ) (Real.sqrt_pos.mpr hτ)
     exact div_nonneg (mul_nonneg h_exp_pos.le h_pdf_nn) h_den_pos.le
 
-end HybridVerify
+end QuantFin

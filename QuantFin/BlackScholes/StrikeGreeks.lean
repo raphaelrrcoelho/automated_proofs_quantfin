@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.BlackScholes.Call
-import HybridVerify.BlackScholes.PDE
-import HybridVerify.BlackScholes.PutGreeks
+import QuantFin.BlackScholes.Call
+import QuantFin.BlackScholes.PDE
+import QuantFin.BlackScholes.PutGreeks
 
 /-!
 # Black-Scholes price monotonicity and convexity in the strike `K`
@@ -31,7 +31,7 @@ Results:
 * `hasDerivAt_bsV_KK`: `∂²_K bsV = e^{-rτ} · ϕ(d₂) / (K σ √τ)` (convexity in K).
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Real ProbabilityTheory
 
@@ -175,4 +175,4 @@ lemma hasDerivAt_bsV_KK {S r σ : ℝ} (hS : 0 < S) (hσ : 0 < σ)
   have hK_ne : K ≠ 0 := hK.ne'
   field_simp
 
-end HybridVerify
+end QuantFin

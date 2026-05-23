@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.BlackScholes.Call
+import QuantFin.BlackScholes.Call
 
 /-!
 # Derivative of the standard normal CDF: `Φ'(x) = ϕ(x)`
@@ -21,7 +21,7 @@ into an interval integral plus a constant, then `intervalIntegral.integral_hasDe
 * `hasDerivAt_Phi` — `HasDerivAt Phi (gaussianPDFReal 0 1 x) x` for every `x : ℝ`.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory ProbabilityTheory Real
 open scoped NNReal ENNReal
@@ -78,4 +78,4 @@ theorem hasDerivAt_Phi (x : ℝ) :
       h_pdf_int.integrableOn h_pdf_int.integrableOn]
   exact h_shifted.congr_of_eventuallyEq h_eq_nhds
 
-end HybridVerify
+end QuantFin

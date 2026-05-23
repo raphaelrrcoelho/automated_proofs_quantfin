@@ -7,7 +7,7 @@ module
 
 public import Mathlib
 public import BrownianMotion.Gaussian.BrownianMotion
-public import HybridVerify.Foundations.WienerIntegral
+public import QuantFin.Foundations.WienerIntegral
 
 /-!
 # Wiener integral on L²([0, T])
@@ -48,7 +48,7 @@ via the standard density / `LinearMap.extendOfNorm` construction.
   `∫ ω, (I f ω)² ∂μ = ∫ s in (0, T], (f s)² ∂volume`.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 namespace WienerIntegralL2
 
 open MeasureTheory ProbabilityTheory Finset
@@ -447,4 +447,4 @@ theorem wienerIntegralLp_integral_sq (T : ℝ≥0)
       Lp_real_two_norm_sq (volume.restrict (Set.Ioc (0 : ℝ) (T : ℝ))) f]
 
 end WienerIntegralL2
-end HybridVerify
+end QuantFin

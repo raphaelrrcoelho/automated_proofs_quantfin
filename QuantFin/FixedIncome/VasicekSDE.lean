@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.FixedIncome.Vasicek
+import QuantFin.FixedIncome.Vasicek
 
 /-!
 # Vasicek SDE closed-form solution (phase 41)
@@ -59,7 +59,7 @@ explicitly so that downstream consumers can use it without re-deriving.
 * `vasicekSDE_mean_asymptotic`: as `t → ∞`, mean → `θ` (mean reversion).
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Real
 
@@ -111,4 +111,4 @@ lemma vasicekSDE_variance_pos (σ κ t : ℝ)
     exact mul_self_pos.mpr hσ
   positivity
 
-end HybridVerify
+end QuantFin

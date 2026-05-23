@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.BlackScholes.Call
-import HybridVerify.BlackScholes.GarmanNormalForm
+import QuantFin.BlackScholes.Call
+import QuantFin.BlackScholes.GarmanNormalForm
 
 /-!
 # KMV-Merton structural credit (as a Garman-form specialisation)
@@ -39,7 +39,7 @@ PD-as-probability bounds.
 * `kmv_survival_eq_Phi_d2`: `1 − PD = Φ(d_2)`.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory ProbabilityTheory Real
 open scoped NNReal ENNReal
@@ -86,4 +86,4 @@ theorem kmv_survival_eq_Phi_d2 (V_0 F r σ_V T : ℝ) :
   have := Phi_add_Phi_neg (kmvDistanceToDefault V_0 F r σ_V T)
   linarith
 
-end HybridVerify
+end QuantFin

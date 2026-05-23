@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.Binomial.Model
+import QuantFin.Binomial.Model
 
 /-!
 # Cox-Ross-Rubinstein convergence to Black-Scholes
@@ -44,7 +44,7 @@ on mean and variance of one log-return increment. These are the substantive
 textbook computations that lead to the CLT application.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Filter
 open scoped Topology
@@ -340,4 +340,4 @@ A drift-matching theorem `n · (2 p_n − 1) · σ √Δt → (r − σ²/2) T` 
 second-order Taylor on the numerator `2 e^{r Δt} − e^{σ√Δt} − e^{-σ√Δt}` and is
 left as further analytic work. -/
 
-end HybridVerify
+end QuantFin

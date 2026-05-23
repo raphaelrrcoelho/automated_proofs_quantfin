@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.Foundations.BrownianQuadraticVariation
+import QuantFin.Foundations.BrownianQuadraticVariation
 
 /-!
 # Variance-swap log-price increment from Brownian quadratic variation (phase 32)
@@ -46,7 +46,7 @@ QV-style derivation of the variance-swap fair strike.
   BS log-price.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory ProbabilityTheory Real
 
@@ -129,4 +129,4 @@ theorem expected_bsLogPrice_sq_increment
   rw [a_def]
   ring
 
-end HybridVerify
+end QuantFin

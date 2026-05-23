@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.BlackScholes.Call
-import HybridVerify.BlackScholes.PDE
-import HybridVerify.BlackScholes.PriceBounds
+import QuantFin.BlackScholes.Call
+import QuantFin.BlackScholes.PDE
+import QuantFin.BlackScholes.PriceBounds
 
 /-!
 # Black-Scholes Greek sign constraints
@@ -42,7 +42,7 @@ increasing in rate, decreasing in dividends.
 * `bsV_partial_KK_nonneg`: `∂²_K V ≥ 0` (call convex in strike).
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory ProbabilityTheory Real
 open scoped NNReal ENNReal
@@ -110,4 +110,4 @@ theorem bsV_partial_KK_nonneg {K σ τ : ℝ} (hK : 0 < K) (hσ : 0 < σ) (hτ :
     mul_pos (mul_pos hK hσ) (Real.sqrt_pos.mpr hτ)
   exact div_nonneg h_num_nn h_den_pos.le
 
-end HybridVerify
+end QuantFin

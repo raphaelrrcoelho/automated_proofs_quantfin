@@ -383,7 +383,7 @@ The result is generic — applies to any adapted continuous process — but live
 here because the canonical application is to Brownian motion paths.
 Corresponds to Saporito Proposition 4.3.6. -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory ProbabilityTheory
 
@@ -470,4 +470,4 @@ theorem isStoppingTime_hittingAfter_of_open
   isStoppingTime_of_measurableSet_lt_of_isRightContinuous fun i =>
     measurableSet_hittingAfter_lt_of_open hX_cont hX_adapted hA_open i
 
-end HybridVerify
+end QuantFin

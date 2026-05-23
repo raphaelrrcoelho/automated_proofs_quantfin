@@ -17,7 +17,7 @@ Adapted from Theorem 5.1 ("Itô's Lemma") and Theorem 5.2 ("GBM Drift") of:
   Lean 4", SSRN Working Paper 6336503, March 2026.
   <https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6336503>
 
-Author of this HybridVerify Lean 4 adaptation: Raphael Coelho.
+Author of this QuantFin Lean 4 adaptation: Raphael Coelho.
 Original Lean derivation: Tamás Nagy (SSRN 6336503, 2026).
 Copyright (c) 2026 Raphael Coelho (this adaptation).
 Mathematical content and original Lean code © Tamás Nagy 2026, used here
@@ -25,7 +25,7 @@ under academic fair use for derivative work with attribution.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
 import Mathlib
-import HybridVerify.Foundations.DiscreteIto
+import QuantFin.Foundations.DiscreteIto
 
 /-!
 # Itô's lemma structural drift formula (phase 39, after Nagy 2026)
@@ -62,7 +62,7 @@ applications in this library (GBM drift derivation, BS PDE, log-payoff
 variance swap).
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 /-- **Itô drift coefficient**: for `f` `C²` and `X_t` an Itô process with
 local drift `μ_X` and local volatility `σ_X`, the drift coefficient of
@@ -107,4 +107,4 @@ lemma gbm_log_volatility (σ S : ℝ) (hS : S ≠ 0) :
     σ * S * (1 / S) = σ := by
   field_simp
 
-end HybridVerify
+end QuantFin

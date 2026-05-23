@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.BlackScholes.Call
+import QuantFin.BlackScholes.Call
 
 /-!
 # Probabilistic interpretation of `bsd2`: the exercise-probability identity
@@ -49,7 +49,7 @@ measure w.r.t. the risk-neutral measure) which is downstream work.
   probabilistic interpretation of `Φ(d_2)` in the BS formula.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory ProbabilityTheory Real
 open scoped NNReal ENNReal
@@ -86,4 +86,4 @@ theorem riskNeutralProb_S_T_gt_K
   rw [gaussianReal_Ioi_toReal]
   congr 1; ring
 
-end HybridVerify
+end QuantFin

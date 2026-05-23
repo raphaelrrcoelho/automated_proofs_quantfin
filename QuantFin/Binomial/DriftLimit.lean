@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.Binomial.CRRConvergence
+import QuantFin.Binomial.CRRConvergence
 
 /-!
 # CRR drift limit (Phase 3 closeout)
@@ -30,7 +30,7 @@ CLT).
 * `crr_drift_limit`: the headline `n · (2 p_n − 1) · σ √(T/n) → (r − σ²/2) T`.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Real Filter
 open scoped Topology
@@ -213,4 +213,4 @@ theorem crr_drift_limit_n {σ T r : ℝ} (hσ : 0 < σ) (hT : 0 < T) :
     -(2 * Real.exp (r * crrStep T n) - Real.exp (σ * Real.sqrt (crrStep T n))
         - Real.exp (-(σ * Real.sqrt (crrStep T n)))) * h_n_step
 
-end HybridVerify
+end QuantFin

@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.Foundations.FTAPTwoState
-import HybridVerify.Binomial.Model
+import QuantFin.Foundations.FTAPTwoState
+import QuantFin.Binomial.Model
 
 /-!
 # Binomial price as iterated two-state FTAP (phase 43)
@@ -48,7 +48,7 @@ no-arbitrage principle, not a stand-alone definition.
   excess-return market `(z_u, z_d)`.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 /-- **Excess-return signs from `BinomialNoArb`**: under `d < e^r < u`,
 the up-state excess return `z_u = u − e^r > 0` and the down-state
@@ -92,4 +92,4 @@ theorem binomial_no_arbitrage {u d r : ℝ} (h : BinomialNoArb u d r) :
     ¬ HasArbitrage_two_state (u - Real.exp r) (d - Real.exp r) :=
   noArbitrage_of_emm _ _ (binomial_emm_exists h)
 
-end HybridVerify
+end QuantFin

@@ -30,7 +30,7 @@ Results:
 * `kellyGrowth_deriv_at_kelly`: first-order optimality `g'(f*) = 0`.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Real
 
@@ -173,4 +173,4 @@ lemma kellyGrowth_deriv_at_kelly {p b : ℝ}
   field_simp
   ring
 
-end HybridVerify
+end QuantFin

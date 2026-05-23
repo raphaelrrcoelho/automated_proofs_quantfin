@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.BlackScholes.Call
-import HybridVerify.BlackScholes.Forward
-import HybridVerify.BlackScholes.PowerOption
+import QuantFin.BlackScholes.Call
+import QuantFin.BlackScholes.Forward
+import QuantFin.BlackScholes.PowerOption
 
 /-!
 # Second moment and variance of the terminal asset price
@@ -31,7 +31,7 @@ Results:
 * `variance_terminal`: `Var_Q[S_T] = S_0² · exp(2rT) · (exp(σ²T) − 1)`.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory ProbabilityTheory Real
 open scoped NNReal ENNReal
@@ -76,4 +76,4 @@ theorem variance_terminal
     rw [mul_pow, h_exp_sq]
   rw [h_sq_exp, Real.exp_add]; ring
 
-end HybridVerify
+end QuantFin

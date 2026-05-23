@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.Portfolio.TangentPortfolio
+import QuantFin.Portfolio.TangentPortfolio
 
 /-!
 # Markowitz cross-product FOC derived from Sharpe-ratio maximization
@@ -45,7 +45,7 @@ loop between the optimization-theoretic and algebraic perspectives.
   characterisation (`E ≠ 0, V > 0` regime).
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 /-- Two-asset expected excess return parameterised by weight `w` on asset 1
 (with `1 − w` on asset 2). -/
@@ -216,4 +216,4 @@ theorem sharpeSqTwo_critical_iff_crossProduct_FOC
     rw [← h_zero_div]
     exact h_deriv
 
-end HybridVerify
+end QuantFin

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.BlackScholes.StrikeConvexity
+import QuantFin.BlackScholes.StrikeConvexity
 
 /-!
 # Static spread no-arbitrage relations (bull-call, butterfly)
@@ -27,7 +27,7 @@ non-negativity of the second `K`-derivative of the European call price —
 i.e. the Breeden-Litzenberger implied PDF.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 /-- **Bull-call spread payoff non-negativity**: for `K₁ ≤ K₂`,
 `max(S − K₂, 0) ≤ max(S − K₁, 0)`. Antitone face of the call payoff in `K`. -/
@@ -59,4 +59,4 @@ lemma butterfly_payoff_nonneg (S K₁ K₃ : ℝ) (_h : K₁ ≤ K₃) :
   -- Multiply by 2 and rearrange.
   linarith
 
-end HybridVerify
+end QuantFin

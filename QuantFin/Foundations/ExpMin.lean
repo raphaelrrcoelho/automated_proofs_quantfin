@@ -1,12 +1,12 @@
 /-
-  HybridVerify.Foundations.ExpMin
+  QuantFin.Foundations.ExpMin
   Appendix B.2: minimum of independent exponentials has Exp(sum of rates),
   derived from joint independence (`iIndepFun.meas_iInter`) and individual
   exponential laws (`expMeasure` CDF formula).
 -/
 import Mathlib
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory ProbabilityTheory Finset
 
@@ -71,4 +71,4 @@ theorem minimum_survival
   rw [Finset.sum_neg_distrib]
   simp [Finset.sum_mul]
 
-end HybridVerify
+end QuantFin

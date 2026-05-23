@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.BlackScholes.Chooser
-import HybridVerify.BlackScholes.PDE
-import HybridVerify.BlackScholes.PutGreeks
+import QuantFin.BlackScholes.Chooser
+import QuantFin.BlackScholes.PDE
+import QuantFin.BlackScholes.PutGreeks
 
 /-!
 # Chooser option as call-plus-put portfolio (first-principles composition)
@@ -41,7 +41,7 @@ proved in full.
 * `chooser_integral_decomp`: the linearity-of-expectation step.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory ProbabilityTheory Real
 open scoped NNReal ENNReal
@@ -103,4 +103,4 @@ theorem chooserPrice_expanded (S_0 K r σ T t_1 : ℝ) :
   unfold chooserPrice bsV bsP
   ring
 
-end HybridVerify
+end QuantFin

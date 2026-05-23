@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.BlackScholes.ImpliedVolatility
+import QuantFin.BlackScholes.ImpliedVolatility
 
 /-!
 # Implied volatility: bisection bracket existence
@@ -28,7 +28,7 @@ follows from the standard halving lemma and is left as a calculus exercise on
 the abstract real-valued problem.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Real
 
@@ -63,4 +63,4 @@ lemma impliedVol_bracket_exists
   have hσ_mem : σ ∈ Set.Icc σ_lo σ_hi := hσmem
   exact h_mono.injOn hσ'_mem hσ_mem (hval'.trans hσval.symm)
 
-end HybridVerify
+end QuantFin

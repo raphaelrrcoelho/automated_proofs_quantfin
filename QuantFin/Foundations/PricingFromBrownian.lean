@@ -4,14 +4,14 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.Foundations.BSCallHypFromBrownian
-import HybridVerify.BlackScholes.Put
-import HybridVerify.BlackScholes.Forward
-import HybridVerify.BlackScholes.Digital
-import HybridVerify.BlackScholes.PowerCall
-import HybridVerify.BlackScholes.StockNumeraire
-import HybridVerify.BlackScholes.Dividends
-import HybridVerify.FixedIncome.KMVMertonStructural
+import QuantFin.Foundations.BSCallHypFromBrownian
+import QuantFin.BlackScholes.Put
+import QuantFin.BlackScholes.Forward
+import QuantFin.BlackScholes.Digital
+import QuantFin.BlackScholes.PowerCall
+import QuantFin.BlackScholes.StockNumeraire
+import QuantFin.BlackScholes.Dividends
+import QuantFin.FixedIncome.KMVMertonStructural
 
 /-!
 # Pricing entry points from a pre-Brownian motion (phase 31)
@@ -44,7 +44,7 @@ single foundational entry point: "supply a Brownian motion."
 * `bachelier_call_formula_via_brownian`: Bachelier call price formula from BM.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory ProbabilityTheory Real
 open scoped NNReal ENNReal
@@ -207,4 +207,4 @@ theorem merton_equity_eq_bs_call_via_brownian
         F * Real.exp (-r * T) * Phi (bsd2 V_0 F r σ_V T) :=
   merton_equity_eq_bs_call (BSCallHyp.of_isPreBrownian Q W hV hF hσ hT)
 
-end HybridVerify
+end QuantFin

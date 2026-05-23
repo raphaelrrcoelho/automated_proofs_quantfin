@@ -1,5 +1,5 @@
 /-
-  HybridVerify.Foundations.LpContinuousMartingaleConvergence
+  QuantFin.Foundations.LpContinuousMartingaleConvergence
   Theorem 4.3.10 (Saporito): A continuous martingale `(M_t)` bounded in
   `L^p` (`p ≥ 1`) converges almost surely to an integrable `M_∞`; for
   `p > 1` it also converges in `L^p`.
@@ -56,11 +56,11 @@
   for right-continuous martingales.
 -/
 import Mathlib
-import HybridVerify.Foundations.MathlibLp
+import QuantFin.Foundations.MathlibLp
 import BrownianMotion.StochasticIntegral.UniformIntegrable
 import BrownianMotion.StochasticIntegral.DoobLp
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory ProbabilityTheory Filter
 open scoped Topology ENNReal NNReal
@@ -722,4 +722,4 @@ theorem lp_continuous_martingale_full
   · exact discreteSample_ae_tendsto_limitProcess hp.le hM hR
   · exact lp_continuous_martingale_tendstoInMeasure hp hM hM_cont hR
 
-end HybridVerify
+end QuantFin

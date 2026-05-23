@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.BlackScholes.Call
-import HybridVerify.Foundations.GaussianCDFDeriv
+import QuantFin.BlackScholes.Call
+import QuantFin.Foundations.GaussianCDFDeriv
 
 /-!
 # Black–Scholes PDE — forward direction
@@ -31,7 +31,7 @@ The proof leverages:
 * `bs_pde_satisfied` — the BS price satisfies the BS PDE.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory ProbabilityTheory Real
 open scoped NNReal ENNReal
@@ -515,4 +515,4 @@ theorem bs_pde_holds {K T r σ : ℝ} (hσ : 0 < σ)
   field_simp
   ring
 
-end HybridVerify
+end QuantFin

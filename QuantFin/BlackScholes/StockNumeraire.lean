@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.BlackScholes.Call
-import HybridVerify.BlackScholes.Forward
+import QuantFin.BlackScholes.Call
+import QuantFin.BlackScholes.Forward
 
 /-!
 # Delta as stock-numeraire probability: `Φ(d_1) = Q^(S)(S_T > K)`
@@ -56,7 +56,7 @@ Each Φ is now identified with the exercise probability under one of the
 two natural numeraires (money market vs. stock).
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory ProbabilityTheory Real
 open scoped NNReal ENNReal
@@ -218,4 +218,4 @@ theorem stockNumeraire_exercise_probability
     field_simp]
   rw [div_self hS_0.ne', mul_one, h_exp, one_mul]
 
-end HybridVerify
+end QuantFin

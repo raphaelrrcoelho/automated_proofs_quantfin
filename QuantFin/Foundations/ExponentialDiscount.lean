@@ -51,7 +51,7 @@ identity as `rate_eq_neg_log_deriv` below.
   decreases in cumulative rate).
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Real
 
@@ -90,4 +90,4 @@ lemma discount_strictAnti {H₁ H₂ : ℝ} (h : H₁ < H₂) :
     Real.exp (-H₂) < Real.exp (-H₁) :=
   Real.exp_lt_exp.mpr (by linarith)
 
-end HybridVerify
+end QuantFin

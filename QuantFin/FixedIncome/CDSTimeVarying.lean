@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.FixedIncome.HazardCurve
+import QuantFin.FixedIncome.HazardCurve
 
 /-!
 # CDS fair spread under time-varying hazard (first-principles)
@@ -48,7 +48,7 @@ any deterministic hazard curve.
   application stated in finance variables).
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Real MeasureTheory intervalIntegral Finset
 open scoped NNReal ENNReal
@@ -87,4 +87,4 @@ theorem survival_product_eq_exp_sum (n : ℕ) (h Δt : Fin n → ℝ) :
   congr 1
   rw [Finset.sum_neg_distrib]
 
-end HybridVerify
+end QuantFin

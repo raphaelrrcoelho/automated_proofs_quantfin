@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.Portfolio.CAPMEquilibrium
+import QuantFin.Portfolio.CAPMEquilibrium
 
 /-!
 # N-asset Markowitz from constrained-variance Lagrangian (first principles)
@@ -77,7 +77,7 @@ the constrained variance-minimization problem. The 2-asset version
 with budget + target-return constraints (the standard textbook setup).
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Finset
 
@@ -197,4 +197,4 @@ theorem isTangent_of_lagrangian_no_budget
   rw [h i hi, h j hj]
   ring
 
-end HybridVerify
+end QuantFin

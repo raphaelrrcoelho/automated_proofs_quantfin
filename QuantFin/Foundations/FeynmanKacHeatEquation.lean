@@ -38,7 +38,7 @@ This proof does **not** use Itô calculus. The mechanism is:
 open MeasureTheory ProbabilityTheory Filter Real
 open scoped NNReal ENNReal
 
-namespace HybridVerify
+namespace QuantFin
 namespace FeynmanKacHeatEquation
 
 /-! ### Heat-kernel PDE on `gaussianPDFReal 0 t y`
@@ -283,4 +283,4 @@ theorem feynmanKac_boundary [IsProbabilityMeasure μ]
   rw [integral_congr_ae h_pt, integral_const, probReal_univ, one_smul]
 
 end FeynmanKacHeatEquation
-end HybridVerify
+end QuantFin

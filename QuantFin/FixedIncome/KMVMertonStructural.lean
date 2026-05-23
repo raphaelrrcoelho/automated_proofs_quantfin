@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.FixedIncome.KMVMerton
-import HybridVerify.BlackScholes.RiskNeutralProbabilities
+import QuantFin.FixedIncome.KMVMerton
+import QuantFin.BlackScholes.RiskNeutralProbabilities
 
 /-!
 # KMV-Merton structural model: probabilistic content of `kmvPD`
@@ -38,7 +38,7 @@ with finance-specific variable renaming.
   (`bs_call_formula` with `(S_0, K) ↦ (V_0, F)` and `σ ↦ σ_V`).
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory ProbabilityTheory Real
 open scoped NNReal ENNReal
@@ -87,4 +87,4 @@ theorem merton_equity_eq_bs_call
         F * Real.exp (-r * T) * Phi (bsd2 V_0 F r σ_V T) :=
   bs_call_formula h
 
-end HybridVerify
+end QuantFin

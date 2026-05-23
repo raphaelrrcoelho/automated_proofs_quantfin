@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.BlackScholes.PDE
+import QuantFin.BlackScholes.PDE
 
 /-!
 # Implied volatility uniqueness
@@ -27,7 +27,7 @@ on an interval is strictly monotone there, hence injective.
   unique whenever it exists.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory ProbabilityTheory Real
 open scoped NNReal ENNReal Topology
@@ -94,4 +94,4 @@ theorem newtonStep_error_via_root
   unfold newtonStep
   ring
 
-end HybridVerify
+end QuantFin

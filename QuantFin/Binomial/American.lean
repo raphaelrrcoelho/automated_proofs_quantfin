@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.Binomial.Model
+import QuantFin.Binomial.Model
 
 /-!
 # American option pricing in the binomial tree
@@ -31,7 +31,7 @@ This file defines `americanPrice` and proves:
 No new infrastructure beyond `BinomialModel` is needed.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Real
 
@@ -128,4 +128,4 @@ theorem binomialPrice_le_americanPrice {u d r : ℝ} (h : BinomialNoArb u d r)
           binomialOptionPriceOnePeriod_mono h (ih (S * u)) (ih (S * d))
       _ ≤ americanPrice u d r g (n + 1) S := americanPrice_supermartingale u d r g n S
 
-end HybridVerify
+end QuantFin

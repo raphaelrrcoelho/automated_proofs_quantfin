@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.BlackScholes.PDE
-import HybridVerify.BlackScholes.Put
+import QuantFin.BlackScholes.PDE
+import QuantFin.BlackScholes.Put
 
 /-!
 # Black–Scholes put Greeks
@@ -30,7 +30,7 @@ constant/identity derivatives + put-call symmetry `Φ(d) + Φ(-d) = 1`.
 * `hasDerivAt_bsP_r` — ρ_P = -K τ e^{-rτ} Φ(-d₂).
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory ProbabilityTheory Real
 open scoped NNReal ENNReal
@@ -141,4 +141,4 @@ lemma hasDerivAt_bsP_r {K σ τ : ℝ} (hK : 0 < K) (hσ : 0 < σ) (hτ : 0 < τ
   have h_phi := Phi_add_Phi_neg (bsd2 S K r σ τ)
   linear_combination -(K * τ * Real.exp (-(r * τ))) * h_phi
 
-end HybridVerify
+end QuantFin

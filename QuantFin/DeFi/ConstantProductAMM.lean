@@ -21,7 +21,7 @@ abstraction. The mathematical content (constant-product invariant + swap
 output formula + invariant preservation + arbitrage gain) is adapted
 from their work.
 
-Author of this HybridVerify Lean 4 adaptation: Raphael Coelho.
+Author of this QuantFin Lean 4 adaptation: Raphael Coelho.
 Original mathematical framework: Bartoletti-Chiang-Lluch-Lafuente (2022),
 Pusceddu-Bartoletti Lean formalisation (2024).
 Copyright (c) 2026 Raphael Coelho (this adaptation).
@@ -79,7 +79,7 @@ liquidity provision.
   `Δx → 0⁺`.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 namespace DeFi
 
@@ -164,4 +164,4 @@ def arbitragePresent (x y p_oracle : ℝ) : Prop :=
 
 end DeFi
 
-end HybridVerify
+end QuantFin

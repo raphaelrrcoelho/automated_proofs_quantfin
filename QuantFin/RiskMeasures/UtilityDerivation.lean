@@ -57,7 +57,7 @@ the concavity of utility (risk aversion). That's the textbook derivation
 in von Neumann-Morgenstern / expected-utility theory.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 /-- A position `X : ι → ℝ` is **acceptable under utility `u` and baseline
 `W`** if expected utility with the position dominates the baseline:
@@ -159,4 +159,4 @@ theorem acceptableUnderUtility_zero
   simp only [add_zero]
   rw [← Finset.sum_mul, h_p_sum, one_mul]
 
-end HybridVerify
+end QuantFin

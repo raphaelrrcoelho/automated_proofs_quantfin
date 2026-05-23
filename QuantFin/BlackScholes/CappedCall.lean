@@ -21,7 +21,7 @@ Result:
 * `cappedCall_eq_bull_spread`: case-by-case over `S` vs `K₁, K₂`.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 /-- **Capped call as a bull call spread**: for `K₁ ≤ K₂`,
 `min(max(S − K₁, 0), K₂ − K₁) = max(S − K₁, 0) − max(S − K₂, 0)`. -/
@@ -45,4 +45,4 @@ lemma cappedCall_eq_bull_spread (S K₁ K₂ : ℝ) (h : K₁ ≤ K₂) :
     rw [e1, e2]
     rw [min_eq_right (by linarith : K₂ - K₁ ≤ S - K₁)]; ring
 
-end HybridVerify
+end QuantFin

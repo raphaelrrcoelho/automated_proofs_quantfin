@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.BlackScholes.PDE
-import HybridVerify.BlackScholes.Bachelier
+import QuantFin.BlackScholes.PDE
+import QuantFin.BlackScholes.Bachelier
 
 /-!
 # Black–Scholes digital option Greeks
@@ -26,7 +26,7 @@ which collapses the `S · ϕ(d₁) · ∂_S d₁` chain-rule term, and uses the
 clean identity `σ√τ − d₁ = -d₂`.)
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory ProbabilityTheory Real
 open scoped NNReal ENNReal
@@ -78,7 +78,7 @@ lemma hasDerivAt_bsAssetDigital_S {K r σ : ℝ} (hK : 0 < K) (hσ : 0 < σ)
 private lemma hasDerivAt_pdf_digital (z : ℝ) :
     HasDerivAt (fun z' : ℝ => gaussianPDFReal 0 1 z')
       (-(z * gaussianPDFReal 0 1 z)) z := by
-  have h := (HybridVerify.hasDerivAt_neg_gaussianPDFReal_zero_one z).neg
+  have h := (QuantFin.hasDerivAt_neg_gaussianPDFReal_zero_one z).neg
   have h_eq : ((-fun z' : ℝ => -gaussianPDFReal 0 1 z') : ℝ → ℝ)
             = fun z' : ℝ => gaussianPDFReal 0 1 z' := by funext z'; simp
   rw [h_eq] at h
@@ -275,4 +275,4 @@ lemma hasDerivAt_bsCashDigital_SS {K r σ : ℝ} (hK : 0 < K) (hσ : 0 < σ)
   rw [show Real.sqrt τ ^ 2 = τ from h_sqrt_sq]
   ring
 
-end HybridVerify
+end QuantFin

@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.BlackScholes.Bachelier
-import HybridVerify.BlackScholes.PDE
+import QuantFin.BlackScholes.Bachelier
+import QuantFin.BlackScholes.PDE
 
 /-!
 # Bachelier model Greeks
@@ -23,7 +23,7 @@ These parallel the Black–Scholes Greeks but with much simpler algebra
 `(S − K)/(σ √T) = d`.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory ProbabilityTheory Real
 open scoped NNReal ENNReal
@@ -177,4 +177,4 @@ lemma hasDerivAt_bachelierV_T {K σ : ℝ} (hσ : 0 < σ) {S T : ℝ} (hT : 0 < 
   field_simp
   ring
 
-end HybridVerify
+end QuantFin

@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.Foundations.ItoLemma
-import HybridVerify.BlackScholes.PDE
+import QuantFin.Foundations.ItoLemma
+import QuantFin.BlackScholes.PDE
 
 /-!
 # Black-Scholes PDE derived via the Itô-drift formula (phase 46)
@@ -55,7 +55,7 @@ The discount + drift algebra:
 i.e., `∂_t V + r S ∂_S V + (1/2) σ² S² ∂_SS V = r V`,
 i.e., the BS PDE. -/
 
-namespace HybridVerify
+namespace QuantFin
 
 /-- **BS Itô-drift coefficient** of `V(S, t)` under risk-neutral GBM
 `dS_t = r S_t dt + σ S_t dB_t`. Specialises Phase 39's `itoDrift` to
@@ -104,4 +104,4 @@ lemma bsItoDrift_no_time_eq_itoDrift (r σ S V_S V_SS : ℝ) :
   unfold bsItoDrift itoDrift
   ring
 
-end HybridVerify
+end QuantFin

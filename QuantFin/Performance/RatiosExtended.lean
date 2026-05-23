@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.Performance.Ratios
+import QuantFin.Performance.Ratios
 
 /-!
 # Extended performance ratios: Sortino, Treynor, Information ratio
@@ -33,7 +33,7 @@ Results:
 * `trackingErrorSq`, `trackingErrorSq_self`, `trackingErrorSq_ge_diff_sq`.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Real
 
@@ -103,4 +103,4 @@ lemma trackingErrorSq_ge_diff_sq (σ_p σ_b cov : ℝ) (h_cs : cov ≤ σ_p * σ
   unfold trackingErrorSq
   nlinarith [h_cs]
 
-end HybridVerify
+end QuantFin

@@ -13,7 +13,7 @@ the paper, restricted to the one-period, one-asset, two-state case for
 concreteness. The general finite-state forward direction is in our
 existing `Foundations/NoArbitrageDerivations.lean`.
 
-Author of this HybridVerify Lean 4 adaptation: Raphael Coelho.
+Author of this QuantFin Lean 4 adaptation: Raphael Coelho.
 Original Lean derivation: Tamás Nagy (SSRN 6336503, 2026).
 Copyright (c) 2026 Raphael Coelho (this adaptation).
 Mathematical content and original Lean code © Tamás Nagy 2026, used here
@@ -53,7 +53,7 @@ negative and strictly positive in at least one state.
   no arbitrage).
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 /-- **EMM existence in a two-state market**: there exists a strictly
 positive probability `(q_up, q_down)` summing to `1` such that
@@ -129,4 +129,4 @@ theorem emm_of_trivial_market :
     HasEMM_two_state 0 0 :=
   ⟨1 / 2, 1 / 2, by norm_num, by norm_num, by norm_num, by norm_num⟩
 
-end HybridVerify
+end QuantFin

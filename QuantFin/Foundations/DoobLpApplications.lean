@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.Foundations.LpContinuousMartingaleConvergence
+import QuantFin.Foundations.LpContinuousMartingaleConvergence
 
 /-!
 # Doob L^p applications in finance (phase 52)
@@ -54,7 +54,7 @@ related — and is fed to the adapter as a hypothesis.
   derived from `Q`-martingale + L^p boundedness.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory Filter
 open scoped Topology
@@ -107,4 +107,4 @@ theorem discounted_price_long_run_bounded
     discounted_price_long_run_limit hp h_martingale h_right_cont h_Lp_bounded
   exact ⟨M_inf, h_int⟩
 
-end HybridVerify
+end QuantFin

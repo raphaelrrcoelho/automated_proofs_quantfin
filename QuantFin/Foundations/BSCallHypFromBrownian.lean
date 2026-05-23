@@ -5,8 +5,8 @@ Authors: Raphael Coelho
 -/
 import Mathlib
 import BrownianMotion.Gaussian.BrownianMotion
-import HybridVerify.BlackScholes.Call
-import HybridVerify.BlackScholes.Bachelier
+import QuantFin.BlackScholes.Call
+import QuantFin.BlackScholes.Bachelier
 
 /-!
 # Bridge: `BSCallHyp` / `BachelierHyp` from a Brownian motion
@@ -40,7 +40,7 @@ The two `of_isPreBrownian` constructors are then one-line wrappers.
 ## Why this is a "bridge"
 
 The `Foundations/` BM machinery (`BrownianMotion.Gaussian.BrownianMotion`,
-`HybridVerify.Foundations.BrownianMartingale`, etc.) was previously
+`QuantFin.Foundations.BrownianMartingale`, etc.) was previously
 **structurally disconnected** from the pricing modules: pricing took
 `Z ~ N(0,1)` as axiom and never invoked the BM construction. This file
 makes the connection explicit — any BM construction (via `IsPreBrownian`)
@@ -55,7 +55,7 @@ discharges the BS / Bachelier hypothesis automatically.
   motion (same scaled `Z`).
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory ProbabilityTheory Real
 open scoped NNReal ENNReal
@@ -149,4 +149,4 @@ lemma bachelierTerminal_via_brownian
   have h_sqrt_ne : Real.sqrt T ≠ 0 := h_sqrt_pos.ne'
   field_simp
 
-end HybridVerify
+end QuantFin

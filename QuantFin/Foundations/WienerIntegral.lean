@@ -24,10 +24,10 @@ Itô isometry for step-function integrands against a pre-Brownian motion
 
 This file contains the step-function kernel. The extension to
 `Lp ℝ 2 (volume.restrict (Set.Ioc 0 T))` is developed in
-`HybridVerify.Foundations.WienerIntegralL2`.
+`QuantFin.Foundations.WienerIntegralL2`.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory ProbabilityTheory
 open scoped NNReal ENNReal Topology
@@ -127,4 +127,4 @@ theorem wiener_finset_isometry
 
 end IsPreBrownian
 
-end HybridVerify
+end QuantFin

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.FixedIncome.Immunization
+import QuantFin.FixedIncome.Immunization
 
 /-!
 # Second-order bond portfolio immunization
@@ -33,7 +33,7 @@ Results:
   `∂² (A − L)/∂r² = 0`.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Real
 
@@ -114,4 +114,4 @@ lemma bondPortfolio_immunization_second_order
   rw [h_match_conv]
   ring
 
-end HybridVerify
+end QuantFin

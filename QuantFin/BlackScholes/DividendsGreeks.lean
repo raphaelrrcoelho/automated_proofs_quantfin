@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.BlackScholes.PDE
+import QuantFin.BlackScholes.PDE
 
 /-!
 # Black-Scholes-Merton (continuous dividends) Greeks
@@ -21,7 +21,7 @@ and derive the Greeks via existing call Greeks at effective drift `r − q`.
 * `hasDerivAt_bsVDiv_sigma` — vega_q = e^{-qT} · S · ϕ(d₁') · √τ.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory ProbabilityTheory Real
 open scoped NNReal ENNReal
@@ -142,4 +142,4 @@ lemma hasDerivAt_bsVDiv_tau {K r q σ : ℝ} (hK : 0 < K) (hσ : 0 < σ)
   convert h_full using 1
   ring
 
-end HybridVerify
+end QuantFin

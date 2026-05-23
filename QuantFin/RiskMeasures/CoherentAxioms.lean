@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.RiskMeasures.Gaussian
+import QuantFin.RiskMeasures.Gaussian
 
 /-!
 # Coherent risk measure axioms (gaussian case)
@@ -36,7 +36,7 @@ Results:
 * `gaussianVaR_subadditive`, `gaussianCVaR_subadditive`: subadditivity.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Real ProbabilityTheory
 
@@ -123,4 +123,4 @@ lemma gaussianCVaR_subadditive {μ₁ μ₂ σ₁ σ₂ ρ z α : ℝ}
     mul_le_mul_of_nonneg_right h_stdev h_factor_nn
   linarith
 
-end HybridVerify
+end QuantFin

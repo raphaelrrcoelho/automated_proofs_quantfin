@@ -29,7 +29,7 @@ Result:
 * `tangentTwo_satisfies_FOC`: the FOC identity at the tangent weight.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 /-- Two-asset tangent portfolio weight on asset 1.
 
@@ -77,4 +77,4 @@ theorem isTangent_of_proportional {ι : Type*} (s : Finset ι) (μ_excess : ι �
   rw [h i hi, h j hj]
   ring
 
-end HybridVerify
+end QuantFin

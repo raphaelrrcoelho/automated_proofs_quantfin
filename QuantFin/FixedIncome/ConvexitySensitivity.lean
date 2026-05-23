@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.FixedIncome.DurationSensitivity
+import QuantFin.FixedIncome.DurationSensitivity
 
 /-!
 # Convexity as the second derivative of bond price (first-principles)
@@ -43,7 +43,7 @@ second derivative of price, not a separately-defined moment.
   the derivative of `P'(y) = −ModNum(y)`).
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Finset
 
@@ -118,4 +118,4 @@ theorem bondPriceDisc_secondDeriv_eq_convexity_times_price
   refine ⟨convexityNumerator s t c y,
           hasDerivAt_bondPriceDisc_secondDeriv s t c hy, rfl⟩
 
-end HybridVerify
+end QuantFin

@@ -34,7 +34,7 @@ Results:
   inverse-sum-of-precisions form.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 /-- One-dimensional Black-Litterman posterior mean. -/
 noncomputable def posteriorMean1d (π Q s0sq s1sq : ℝ) : ℝ :=
@@ -79,4 +79,4 @@ theorem blackLitterman_mean_convex_combination
   field_simp
   ring
 
-end HybridVerify
+end QuantFin

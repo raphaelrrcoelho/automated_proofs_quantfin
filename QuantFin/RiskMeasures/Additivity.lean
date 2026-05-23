@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.RiskMeasures.Gaussian
-import HybridVerify.RiskMeasures.CoherentAxioms
+import QuantFin.RiskMeasures.Gaussian
+import QuantFin.RiskMeasures.CoherentAxioms
 
 /-!
 # Gaussian VaR/CVaR additivity at perfect positive correlation
@@ -21,7 +21,7 @@ Results:
 * `gaussianCVaR_additive_at_rho_one`: at `ρ = 1`, CVaR is additive.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Real
 
@@ -53,4 +53,4 @@ lemma gaussianCVaR_additive_at_rho_one {μ₁ μ₂ σ₁ σ₂ z α : ℝ}
   rw [Real.sqrt_sq h_sum_nn]
   ring
 
-end HybridVerify
+end QuantFin

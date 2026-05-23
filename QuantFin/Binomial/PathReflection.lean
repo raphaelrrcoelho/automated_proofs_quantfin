@@ -52,7 +52,7 @@ to both sides, and the suffix-sign-flip is what produces the
   hits `a` at `τ` and ends at `b`, the reflected ends at `2a − b`.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 variable {n : ℕ}
 
@@ -544,4 +544,4 @@ lemma firstHit?_isSome_iff (ω : Fin n → Bool) (a : ℤ) :
     exact Bool.false_ne_true h
   · unfold firstHit?; rw [dif_pos h_hit]; rfl
 
-end HybridVerify
+end QuantFin

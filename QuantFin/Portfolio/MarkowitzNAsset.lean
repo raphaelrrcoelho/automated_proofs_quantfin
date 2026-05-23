@@ -31,7 +31,7 @@ Results:
   the explicit form matches the two-asset formula in `Markowitz.lean`.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 /-- N-asset portfolio variance: `Var(w) = ∑_{i,j} w_i · w_j · σ_{ij}`. -/
 noncomputable def portfolioVarN
@@ -110,4 +110,4 @@ lemma portfolioVarN_two_asset_compat (w σ₁ σ₂ ρ : ℝ) :
   simp [Finset.sum_insert, Finset.mem_singleton, Finset.sum_singleton]
   ring
 
-end HybridVerify
+end QuantFin

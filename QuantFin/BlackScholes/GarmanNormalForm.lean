@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.BlackScholes.Call
-import HybridVerify.BlackScholes.PDE
+import QuantFin.BlackScholes.Call
+import QuantFin.BlackScholes.PDE
 
 /-!
 # The Garman normal form: every BS-family closed form is one formula
@@ -63,7 +63,7 @@ by `(A, DF)`", which is exactly what this file says.
   `DF = e^{−rT}`.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Real
 
@@ -203,4 +203,4 @@ theorem bs_dividends_RHS_eq_bsVGarman (S K r q σ T : ℝ) (hS : 0 < S) (hK : 0 
   rw [← bsd1_eq_gbsd1_dividends S K r q σ T hS hK,
       ← bsd2_eq_gbsd2_dividends S K r q σ T hS hK]
 
-end HybridVerify
+end QuantFin

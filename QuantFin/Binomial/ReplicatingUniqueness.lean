@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.Binomial.Model
+import QuantFin.Binomial.Model
 
 /-!
 # Uniqueness of the binomial replicating portfolio
@@ -42,7 +42,7 @@ The proof is pure linear algebra: the coefficient matrix has determinant
   is uniquely determined by the target payoffs `(V_u, V_d)`.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Real
 
@@ -117,4 +117,4 @@ theorem binomial_replicatingPortfolio_unique
       ring
     exact Prod.ext h_Δ_eq h_B_eq
 
-end HybridVerify
+end QuantFin

@@ -25,7 +25,7 @@ Results:
 * `bermudan_sandwich`: the two-sided combination.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Finset
 
@@ -58,4 +58,4 @@ lemma bermudan_sandwich
   ⟨european_le_bermudan hEB hEurNE v,
    bermudan_le_american hBA (hEurNE.mono hEB) v⟩
 
-end HybridVerify
+end QuantFin

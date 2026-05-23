@@ -36,7 +36,7 @@ Results:
   is zero.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Real
 
@@ -115,4 +115,4 @@ lemma bondPortfolio_immunization_first_order
   rw [h_match]
   ring
 
-end HybridVerify
+end QuantFin

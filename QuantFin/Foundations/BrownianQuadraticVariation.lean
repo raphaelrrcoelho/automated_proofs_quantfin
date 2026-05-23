@@ -32,7 +32,7 @@ marginal moment computation via `variance_id_gaussianReal`.
 open MeasureTheory ProbabilityTheory Filter
 open scoped NNReal
 
-namespace HybridVerify
+namespace QuantFin
 
 /-- Hypotheses on a real-indexed process `B : ℝ → Ω → ℝ` that suffice for
 the quadratic-variation identity at expectation (Saporito Theorem 6.1.1).
@@ -184,4 +184,4 @@ theorem qv_equals_t (hB : BrownianQuadraticVariation μ B)
 
 end BrownianQuadraticVariation
 
-end HybridVerify
+end QuantFin

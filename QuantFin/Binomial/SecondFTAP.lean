@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.Binomial.Model
+import QuantFin.Binomial.Model
 
 /-!
 # Second Fundamental Theorem of Asset Pricing (single-period binomial form)
@@ -32,7 +32,7 @@ So in the single-period binomial: **no-arbitrage ⟹ unique EMM ⟺ completeness
   up-probability `q` is uniquely determined.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Real
 
@@ -96,4 +96,4 @@ theorem multi_period_FTAP_marginals {u d r : ℝ} (h : BinomialNoArb u d r) (n :
   funext k
   exact ExistsUnique.unique (second_FTAP_single_period h) (hq k) h_p
 
-end HybridVerify
+end QuantFin

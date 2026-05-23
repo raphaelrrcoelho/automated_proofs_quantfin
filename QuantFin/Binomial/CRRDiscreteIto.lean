@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.Foundations.DiscreteIto
-import HybridVerify.Binomial.CRRConvergence
-import HybridVerify.Binomial.DriftLimit
+import QuantFin.Foundations.DiscreteIto
+import QuantFin.Binomial.CRRConvergence
+import QuantFin.Binomial.DriftLimit
 
 /-!
 # CRR binomial scheme as a discrete-Itô process (phase 44a+b)
@@ -60,7 +60,7 @@ future work in `CRRConvergence.lean` line 36 already.
   `crr_variance_limit`).
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Filter
 open scoped Topology
@@ -167,4 +167,4 @@ theorem binomial_discrete_ito_convergence
   ⟨tendsto_sum_drift_atTop_BS_drift hσ hT,
    tendsto_sum_QV_atTop_BS_QV hσ hT⟩
 
-end HybridVerify
+end QuantFin

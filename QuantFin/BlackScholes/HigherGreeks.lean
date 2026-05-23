@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.BlackScholes.PDE
-import HybridVerify.BlackScholes.Bachelier
+import QuantFin.BlackScholes.PDE
+import QuantFin.BlackScholes.Bachelier
 
 /-!
 # Higher-order Black–Scholes Greeks: vanna and volga
@@ -22,7 +22,7 @@ quotient-rule expression. Combined with `ϕ'(z) = -z · ϕ(z)`, both Greeks
 follow from one chain rule + one product/scalar rule.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory ProbabilityTheory Real
 open scoped NNReal ENNReal
@@ -97,4 +97,4 @@ lemma hasDerivAt_bsV_volga {K r : ℝ} (hK : 0 < K)
   convert h_full using 1
   field_simp
 
-end HybridVerify
+end QuantFin

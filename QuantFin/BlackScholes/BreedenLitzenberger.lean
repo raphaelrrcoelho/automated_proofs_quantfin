@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.BlackScholes.StrikeGreeks
-import HybridVerify.BlackScholes.StrikeConvexity
-import HybridVerify.BlackScholes.Call
+import QuantFin.BlackScholes.StrikeGreeks
+import QuantFin.BlackScholes.StrikeConvexity
+import QuantFin.BlackScholes.Call
 
 /-!
 # Breeden-Litzenberger: implied risk-neutral PDF from option prices
@@ -53,7 +53,7 @@ Results:
   `butterfly_payoff_nonneg`).
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory ProbabilityTheory Real
 open scoped NNReal ENNReal
@@ -203,4 +203,4 @@ theorem lognormalTerminalPDF_change_of_variables
     (mul_pos (mul_pos hK hσ) hsqrtT_pos).ne'
   field_simp
 
-end HybridVerify
+end QuantFin

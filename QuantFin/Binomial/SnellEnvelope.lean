@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.Binomial.American
+import QuantFin.Binomial.American
 
 /-!
 # Snell envelope characterization of `americanPrice`
@@ -52,7 +52,7 @@ Together: `americanPrice` is *the* smallest supermartingale dominating `g`.
   lemmas in `Binomial.American`, gives the Snell envelope theorem.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 /-- **Snell envelope upper bound**: any function `V : ℕ → ℝ → ℝ` that
 dominates the payoff (`hV_g`) and satisfies the one-step supermartingale
@@ -115,4 +115,4 @@ theorem americanPrice_is_snell_envelope
    americanPrice_supermartingale u d r g,
    americanPrice_le_of_supermartingale_dominating h g⟩
 
-end HybridVerify
+end QuantFin

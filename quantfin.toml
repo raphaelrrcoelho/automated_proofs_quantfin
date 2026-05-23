@@ -1,15 +1,15 @@
-[hybrid-verify]
+[quantfin]
 
-[hybrid-verify.lean]
+[quantfin.lean]
 # Path to the Lake project the Lean backend elaborates against. The project's
 # own ``lakefile.lean`` (Mathlib pin, BrownianMotion pin, etc.) +
 # ``lake-manifest.json`` (transitive freeze) + ``lean-toolchain`` are
-# authoritative. Benchmark snippets just `import HybridVerify.X` and reference
+# authoritative. Benchmark snippets just `import QuantFin.X` and reference
 # compiled lemmas. Path is relative to the CWD when the verifier runs (in
 # Docker that's ``/app``, which is the repo root with ``lakefile.lean`` and
-# ``HybridVerify/`` directly under it).
+# ``QuantFin/`` directly under it).
 local_project = "."
 
-[hybrid-verify.orchestrator]
+[quantfin.orchestrator]
 max_workers = 3
 default_timeout = 60.0

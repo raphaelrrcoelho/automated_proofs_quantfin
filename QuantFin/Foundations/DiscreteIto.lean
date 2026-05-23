@@ -14,7 +14,7 @@ code. Modifications: renamed `taylor_remainder` → `discreteTaylorRemainder`
 type ascription, restructured the proof to use `Finset.sum_congr` for the
 per-summand rewrite. Mathematical content is unchanged.
 
-Author of this HybridVerify Lean 4 adaptation: Raphael Coelho.
+Author of this QuantFin Lean 4 adaptation: Raphael Coelho.
 Original Lean derivation: Tamás Nagy (SSRN 6336503, 2026).
 Copyright (c) 2026 Raphael Coelho (this adaptation).
 Mathematical content and original Lean code © Tamás Nagy 2026, used here
@@ -58,7 +58,7 @@ provides the probabilistic content needed for the limit.
 * `discrete_ito_formula`: the main identity.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 /-- **Discrete Taylor remainder** at sub-interval `[X_k, X_{k+1}]`: the
 deviation of `f(X_{k+1}) − f(X_k)` from its second-order Taylor expansion
@@ -116,4 +116,4 @@ theorem discrete_ito_formula
   -- Distribute the three-term sum and pull the (1/2) constant out
   rw [Finset.sum_add_distrib, Finset.sum_add_distrib, ← Finset.mul_sum]
 
-end HybridVerify
+end QuantFin

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.BlackScholes.Call
+import QuantFin.BlackScholes.Call
 
 /-!
 # Bachelier model option pricing
@@ -28,7 +28,7 @@ Key new primitive: **truncated mean of `N(0, 1)`** —
 proved via FTC since `(−ϕ)' = z · ϕ`.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory ProbabilityTheory Real Filter
 open scoped NNReal ENNReal Topology
@@ -267,4 +267,4 @@ theorem bachelier_call_formula {Ω : Type*} {mΩ : MeasurableSpace Ω}
   rw [h_pdf_neg]
   ring
 
-end HybridVerify
+end QuantFin

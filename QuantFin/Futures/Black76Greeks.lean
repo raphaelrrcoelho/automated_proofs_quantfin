@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.Futures.Black76
-import HybridVerify.BlackScholes.PDE
+import QuantFin.Futures.Black76
+import QuantFin.BlackScholes.PDE
 
 /-!
 # Black-76 Greeks
@@ -19,7 +19,7 @@ Greeks evaluated at `r = 0` and post-multiplied by the discount factor `e^{-rT}`
 * `hasDerivAt_blackV_sigma` — vega = e^{-rT} · F · ϕ(d₁) · √T.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory ProbabilityTheory Real
 open scoped NNReal ENNReal
@@ -97,4 +97,4 @@ lemma hasDerivAt_blackV_T {K σ : ℝ} (hK : 0 < K) (hσ : 0 < σ) (r : ℝ)
   simp
   ring
 
-end HybridVerify
+end QuantFin

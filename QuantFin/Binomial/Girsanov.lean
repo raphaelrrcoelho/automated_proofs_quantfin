@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.Binomial.Model
+import QuantFin.Binomial.Model
 
 /-!
 # Discrete Girsanov: measure change in the single-period binomial tree
@@ -43,7 +43,7 @@ is just two-state algebra. We make this discrete Girsanov-machinery explicit.
   `E^Q[V_T] = E^P[Z · V_T] = p · Z_up · V_u + (1 − p) · Z_down · V_d`.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Real
 
@@ -81,4 +81,4 @@ theorem binomial_riskNeutral_via_RN (p q V_u V_d : ℝ)
   have h_1mp_ne : 1 - p ≠ 0 := sub_ne_zero.mpr (Ne.symm hp1)
   field_simp
 
-end HybridVerify
+end QuantFin

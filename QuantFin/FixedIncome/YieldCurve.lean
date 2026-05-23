@@ -39,7 +39,7 @@ Results:
   `B_2 = (P_2 − c · B_1) / (c + F)`.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 /-- Coupon-bond pricing equation expressed in terms of previously-known ZCB
 prices `B : ι → ℝ` and the new ZCB `B_last`. -/
@@ -85,4 +85,4 @@ lemma bootstrap_consistency {ι : Type*} (sprev : Finset ι) (c B : ι → ℝ)
   field_simp
   ring
 
-end HybridVerify
+end QuantFin

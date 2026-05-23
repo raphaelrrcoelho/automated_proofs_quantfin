@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.Foundations.VarianceSwapLimit
-import HybridVerify.BlackScholes.VarianceSwap
+import QuantFin.Foundations.VarianceSwapLimit
+import QuantFin.BlackScholes.VarianceSwap
 
 /-!
 # Variance-swap form equivalence (phase 45)
@@ -48,7 +48,7 @@ Itô-to-log identity, which is gated. The model-parameter equivalence
 proved here is the structural fact downstream consumers actually need.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory ProbabilityTheory Real
 
@@ -87,4 +87,4 @@ theorem varianceSwap_log_eq_QV_limit_value {S_0 : ℝ} (hS : 0 < S_0)
     σ ^ 2 * T = σ ^ 2 * T := by
   refine ⟨varianceSwap_log_contribution hS r σ T hT_pos, rfl⟩
 
-end HybridVerify
+end QuantFin

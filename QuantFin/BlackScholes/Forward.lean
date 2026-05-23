@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.BlackScholes.Call
+import QuantFin.BlackScholes.Call
 
 /-!
 # Forward and futures pricing under the BS lognormal hypothesis
@@ -36,7 +36,7 @@ so `F = E_Q[S_T]`. Combined with `expected_terminal_eq_forward`, this gives
 `F = S_0 · e^{rT}`.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory ProbabilityTheory Real
 open scoped NNReal ENNReal
@@ -119,4 +119,4 @@ theorem discounted_terminal_eq_S0
       ← Real.exp_add,
       show -(r * T) + r * T = 0 from by ring, Real.exp_zero, mul_one]
 
-end HybridVerify
+end QuantFin

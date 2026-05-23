@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.BlackScholes.Call
+import QuantFin.BlackScholes.Call
 
 /-!
 # Black–Scholes digital option pricing formulas
@@ -25,7 +25,7 @@ The standard decomposition `Call = AssetDigital − K · CashDigital` is
 also proved as a corollary.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory ProbabilityTheory Real
 open scoped NNReal ENNReal
@@ -222,4 +222,4 @@ theorem bs_call_eq_asset_minus_K_cash {Ω : Type*} {mΩ : MeasurableSpace Ω}
   rw [bs_call_formula h, bs_asset_or_nothing_formula h, bs_cash_or_nothing_formula h]
   ring
 
-end HybridVerify
+end QuantFin

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.BlackScholes.VarianceSwap
+import QuantFin.BlackScholes.VarianceSwap
 
 /-!
 # Carr-Madan static replication — stub / acknowledgement
@@ -26,7 +26,7 @@ removed. Refer to `BlackScholes/VarianceSwap.lean` for the Carr-Madan-style
 log-payoff replication actually formalised.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 /-- **Carr-Madan log-payoff algebra**: `log(S) − log(F) = log(S/F)`. Recorded
 as an alias for `Real.log_div` for the benchmark-import API. -/
@@ -34,4 +34,4 @@ theorem carrMadan_log_payoff_algebra (S F : ℝ) (hS : 0 < S) (hF : 0 < F) :
     Real.log S - Real.log F = Real.log (S / F) := by
   rw [Real.log_div hS.ne' hF.ne']
 
-end HybridVerify
+end QuantFin

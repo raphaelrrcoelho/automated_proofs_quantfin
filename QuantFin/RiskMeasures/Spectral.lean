@@ -38,7 +38,7 @@ Results:
   weight vectors is itself a normalized weight vector.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Finset
 
@@ -84,4 +84,4 @@ theorem spectralRisk_convex_combination
   refine Finset.sum_congr rfl (fun i _ => ?_)
   ring
 
-end HybridVerify
+end QuantFin

@@ -4,10 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.BlackScholes.Call
-import HybridVerify.BlackScholes.PDE
-import HybridVerify.BlackScholes.PutGreeks
-import HybridVerify.BlackScholes.StrikeGreeks
+import QuantFin.BlackScholes.Call
+import QuantFin.BlackScholes.PDE
+import QuantFin.BlackScholes.PutGreeks
+import QuantFin.BlackScholes.StrikeGreeks
 
 /-!
 # Put-price convexity in strike
@@ -25,7 +25,7 @@ Results:
 * `hasDerivAt_bsP_KK`: `∂²_K bsP = e^{-rτ} · ϕ(d₂) / (K σ √τ)`.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Real ProbabilityTheory
 
@@ -60,4 +60,4 @@ lemma hasDerivAt_bsP_KK {S r σ : ℝ} (hS : 0 < S) (hσ : 0 < σ)
   rw [h_pdf_sym]
   field_simp
 
-end HybridVerify
+end QuantFin

@@ -1,11 +1,11 @@
 /-
-  HybridVerify.Foundations.MartingaleTransform
+  QuantFin.Foundations.MartingaleTransform
   Theorem 2.2.9: the martingale transform of a martingale by a bounded
   predictable process is itself a martingale (discrete stochastic integral).
 -/
 import Mathlib
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory ProbabilityTheory
 
@@ -120,4 +120,4 @@ theorem martingaleTransform_isMartingale
     (integrable_martingaleTransform hM hA hA_bdd)
     (martingaleTransform_step hM hA hA_bdd)
 
-end HybridVerify
+end QuantFin

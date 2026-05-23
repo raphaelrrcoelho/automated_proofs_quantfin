@@ -37,7 +37,7 @@ Results:
   `σ_1, σ_2 > 0`, the minimum variance is exactly zero (perfect hedge).
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 /-- Portfolio variance for a two-asset mix with weight `w` on asset 1 and
 `1 - w` on asset 2. -/
@@ -97,4 +97,4 @@ lemma minPortfolioVarTwo_perfect_anticorr (σ₁ σ₂ : ℝ) :
   rw [h]
   ring
 
-end HybridVerify
+end QuantFin

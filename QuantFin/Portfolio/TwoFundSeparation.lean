@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.Performance.Ratios
+import QuantFin.Performance.Ratios
 
 /-!
 # Capital Market Line and two-fund separation (algebraic)
@@ -30,7 +30,7 @@ Results:
 * `cml_decomposition_unique`: the inverse map `(μ_p, σ_p) ↦ α` is `σ_p / σ_t`.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Real
 
@@ -76,4 +76,4 @@ lemma cml_mean_at_stdev (μ_t σ_t r_f σ_p : ℝ) (hσ_t : σ_t ≠ 0) :
   field_simp
   ring
 
-end HybridVerify
+end QuantFin

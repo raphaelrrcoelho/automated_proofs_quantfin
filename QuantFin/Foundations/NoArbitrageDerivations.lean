@@ -53,7 +53,7 @@ The same template gives the forward price `F = S_0 / DF`.
 * `forward_price_from_no_arbitrage`: the forward price characterisation.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Finset
 
@@ -159,4 +159,4 @@ theorem forward_price_eq_spot_div_discount
   · intro F hF
     exact (forward_price_from_no_arbitrage s q S DF S₀ F hDF h_bond h_stock).mp hF
 
-end HybridVerify
+end QuantFin

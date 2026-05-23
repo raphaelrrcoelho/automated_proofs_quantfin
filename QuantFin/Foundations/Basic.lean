@@ -1,5 +1,5 @@
 /-
-  HybridVerify.Foundations.Basic
+  QuantFin.Foundations.Basic
   Starter formalizations for stochastic processes verification.
 -/
 import Mathlib.MeasureTheory.Measure.MeasureSpace

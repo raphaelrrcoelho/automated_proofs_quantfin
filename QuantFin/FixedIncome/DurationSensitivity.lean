@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.FixedIncome.MacaulayModified
+import QuantFin.FixedIncome.MacaulayModified
 
 /-!
 # Duration as price sensitivity (first-principles derivation)
@@ -38,7 +38,7 @@ exactly the first-principles claim formalized here.
   `P'(y) / P(y) = -D_mod(y)` (for `P(y) ≠ 0`).
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Finset
 
@@ -107,4 +107,4 @@ theorem bondPriceDisc_deriv_eq_neg_modified_duration_times_price
   refine ⟨-modifiedNumerator s t c y, hasDerivAt_bondPriceDisc s t c hy, ?_⟩
   rw [neg_div]
 
-end HybridVerify
+end QuantFin

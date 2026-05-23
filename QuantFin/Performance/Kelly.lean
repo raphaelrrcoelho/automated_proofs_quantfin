@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.Performance.Ratios
+import QuantFin.Performance.Ratios
 
 /-!
 # Multi-period Kelly criterion and Kelly fraction bounds
@@ -35,7 +35,7 @@ Results:
   bounds and sign analysis of the Kelly fraction.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Real
 
@@ -79,4 +79,4 @@ lemma kellyFraction_pos_iff (p : ℝ) {b : ℝ} (hb : 0 < b) :
   rw [lt_div_iff₀ hb]
   refine ⟨?_, ?_⟩ <;> intro h <;> linarith
 
-end HybridVerify
+end QuantFin

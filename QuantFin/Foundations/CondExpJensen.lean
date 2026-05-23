@@ -1,5 +1,5 @@
 /-
-  HybridVerify.Foundations.CondExpJensen
+  QuantFin.Foundations.CondExpJensen
   Proposition 2.1.11(9): conditional Jensen's inequality, parametrized by an
   explicit subgradient (Mathlib v4.30 has no general subgradient API for
   convex functions on ℝ; any convex `φ` has such a `g`, e.g. its right
@@ -7,7 +7,7 @@
 -/
 import Mathlib
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory
 
@@ -92,4 +92,4 @@ theorem conditional_jensen_inequality
   simp only [Pi.zero_apply] at h_mono
   linarith
 
-end HybridVerify
+end QuantFin

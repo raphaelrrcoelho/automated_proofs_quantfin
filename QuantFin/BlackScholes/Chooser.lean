@@ -26,7 +26,7 @@ Results:
   `max C P = C + max 0 (K_disc - S)`.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 /-- Generic chooser-style decomposition: `max C P = C + max 0 (P − C)`. -/
 lemma chooser_payoff_decompose (C P : ℝ) :
@@ -44,4 +44,4 @@ lemma chooser_via_pcp (C P S K_disc : ℝ) (hPCP : C - P = S - K_disc) :
   have : P - C = K_disc - S := by linarith
   rw [this]
 
-end HybridVerify
+end QuantFin

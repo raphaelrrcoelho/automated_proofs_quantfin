@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.Foundations.VarianceSwapEquipartition
+import QuantFin.Foundations.VarianceSwapEquipartition
 
 /-!
 # Variance-swap QV limit theorem (phase 34)
@@ -33,7 +33,7 @@ characterisations of `σ²` (realised-variance / QV here, log-payoff
 replication there) are different functionals of the same BS price process.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory ProbabilityTheory Real Filter
 
@@ -99,4 +99,4 @@ theorem tendsto_expected_bsLogPrice_equipartition_sum
     fun n => expected_bsLogPrice_equipartition_sum hB S_0 r σ hT n
   exact h_sum.congr (fun n => (h_eq n).symm)
 
-end HybridVerify
+end QuantFin

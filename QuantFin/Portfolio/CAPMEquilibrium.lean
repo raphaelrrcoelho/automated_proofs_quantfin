@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.Portfolio.CAPM
-import HybridVerify.Portfolio.TangentPortfolio
+import QuantFin.Portfolio.CAPM
+import QuantFin.Portfolio.TangentPortfolio
 
 /-!
 # CAPM from market equilibrium (first-principles derivation)
@@ -58,7 +58,7 @@ optimal portfolio choice via `Portfolio.TangentPortfolio`), the CAPM
 pricing identity is a *consequence*, not a definition.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 /-- Marginal variance contribution of asset `i` in portfolio `w` under
 covariance matrix `Sg`: `(Σw)_i = ∑_k Sg(i,k) · w(k)`. For the market
@@ -160,4 +160,4 @@ theorem expectedReturn_eq_SML_from_equilibrium
   rw [h_mu_M] at h
   linarith
 
-end HybridVerify
+end QuantFin

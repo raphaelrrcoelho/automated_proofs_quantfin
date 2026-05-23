@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.Foundations.VarianceSwapFromQV
+import QuantFin.Foundations.VarianceSwapFromQV
 
 /-!
 # Variance-swap equipartition sum from QV (phase 33)
@@ -33,7 +33,7 @@ follow-up; the finite-`n` closed form here makes the limit obvious.
   finite-`n` equipartition-sum identity.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory ProbabilityTheory Real
 
@@ -119,4 +119,4 @@ theorem expected_bsLogPrice_equipartition_sum
   push_cast
   field_simp
 
-end HybridVerify
+end QuantFin

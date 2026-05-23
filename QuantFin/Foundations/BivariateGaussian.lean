@@ -1,5 +1,5 @@
 /-
-  HybridVerify.Foundations.BivariateGaussian
+  QuantFin.Foundations.BivariateGaussian
   Conditional expectation of a bivariate Gaussian.
 
   For (X, Y) jointly Gaussian with positive marginal variances and correlation
@@ -8,7 +8,7 @@
 -/
 import Mathlib
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory ProbabilityTheory
 
@@ -162,4 +162,4 @@ theorem conditional_expectation_formula
 
 end BivariateGaussianHyp
 
-end HybridVerify
+end QuantFin

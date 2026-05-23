@@ -29,7 +29,7 @@ Results:
 * `herfindahl_card_inv_le_of_sum_one`: HHI ≥ 1/n via Cauchy-Schwarz.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Finset
 
@@ -87,4 +87,4 @@ lemma herfindahl_card_inv_le_of_sum_one (s : Finset ι) (w : ι → ℝ)
   rw [inv_le_iff_one_le_mul₀ h_card_pos]
   linarith
 
-end HybridVerify
+end QuantFin

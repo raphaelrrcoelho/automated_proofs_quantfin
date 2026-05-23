@@ -27,7 +27,7 @@ risk-free gain; if `< 1`, the reverse trip is.
   for the other pairs, no-arb is equivalent to `S_AC · S_CB · S_BA = 1`.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 /-- **Triangle no-arbitrage**: three exchange rates `S_AB`, `S_BC`, `S_CA`
 in cyclic order satisfy `S_AB · S_BC · S_CA = 1` (otherwise a riskless
@@ -51,4 +51,4 @@ theorem triangleNoArb_solve_third {S_AB S_BC : ℝ}
     field_simp
     linarith
 
-end HybridVerify
+end QuantFin

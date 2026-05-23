@@ -3,7 +3,7 @@ Copyright (c) 2026 Raphael Coelho. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
-import HybridVerify
+import QuantFin
 
 /-!
 # Examples — a curated tour of five representative results
@@ -23,11 +23,11 @@ this file exists to give a single high-density entry point for visitors.
    `(2/T)·E[log(F/S_T)] = σ²` (`BlackScholes.VarianceSwap.varianceSwap_log_contribution`).
 -/
 
-namespace HybridVerify.Examples
+namespace QuantFin.Examples
 
 open MeasureTheory ProbabilityTheory Real
 open scoped NNReal ENNReal
-open HybridVerify
+open QuantFin
 
 /-! ### 1. Black-Scholes call delta `∂_S V = Φ(d₁)` -/
 
@@ -89,4 +89,4 @@ example {S_0 : ℝ} (hS : 0 < S_0) (r σ T : ℝ) (hT : T ≠ 0) :
         ∂(gaussianReal 0 1)) = σ^2 :=
   varianceSwap_log_contribution hS r σ T hT
 
-end HybridVerify.Examples
+end QuantFin.Examples

@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.Binomial.Model
-import HybridVerify.Binomial.American
+import QuantFin.Binomial.Model
+import QuantFin.Binomial.American
 
 /-!
 # Merton 1973 in the binomial tree
@@ -60,7 +60,7 @@ Merton 1973 across both modelling regimes.
   step `n` and every spot `S ≥ 0`.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Real
 
@@ -298,4 +298,4 @@ theorem americanCallPrice_eq_binomialPrice {u d r K : ℝ} (h : BinomialNoArb u 
     (americanCallPrice_le_binomialPrice (K := K) h hr hK n S)
     (binomialPrice_le_americanPrice h _ n S)
 
-end HybridVerify
+end QuantFin

@@ -4,10 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.BlackScholes.Call
-import HybridVerify.BlackScholes.Put
-import HybridVerify.BlackScholes.PutGreeks
-import HybridVerify.BlackScholes.PDE
+import QuantFin.BlackScholes.Call
+import QuantFin.BlackScholes.Put
+import QuantFin.BlackScholes.PutGreeks
+import QuantFin.BlackScholes.PDE
 
 /-!
 # The no-arbitrage rectangle for European call/put prices
@@ -56,7 +56,7 @@ least the discounted strike minus spot", etc. — sits on the rectangle. Naming
 the rectangle makes the meaning explicit and the proofs trivial.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory ProbabilityTheory Real
 
@@ -254,4 +254,4 @@ theorem noArbBox
   · exact max_le (bsP_nonneg h) (bsP_ge_intrinsic_no_arb h)
   · exact bsP_le_K_disc K r σ S_0 T h.S_0_pos.le h.K_pos.le
 
-end HybridVerify
+end QuantFin

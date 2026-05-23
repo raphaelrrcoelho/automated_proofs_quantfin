@@ -12,7 +12,7 @@ via Cauchy completeness (Nagy Section 4.3) is deferred — see
 `Foundations/WienerIntegralL2.lean` for our existing parallel work via a
 different construction path.
 
-Author of this HybridVerify Lean 4 adaptation: Raphael Coelho.
+Author of this QuantFin Lean 4 adaptation: Raphael Coelho.
 Original Lean derivation: Tamás Nagy (SSRN 6336503, 2026).
 Copyright (c) 2026 Raphael Coelho (this adaptation).
 Mathematical content and original Lean code © Tamás Nagy 2026, used here
@@ -56,7 +56,7 @@ champions: every step is a finite sum until the final continuous limit.
   identity for constant integrand (no probability assumed).
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 /-- **Itô integral for simple processes** (Nagy 2026, Definition 4.1): the
 finite sum `Σ_{k=0}^{N−1} c_k · ΔB_k`. *Definition*, not an axiom — the
@@ -97,4 +97,4 @@ theorem itoIntegralSimple_scale
   refine Finset.sum_congr rfl (fun k _ => ?_)
   ring
 
-end HybridVerify
+end QuantFin

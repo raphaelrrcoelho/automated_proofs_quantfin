@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.Foundations.StatePrices
-import HybridVerify.BlackScholes.StrikeConvexity
+import QuantFin.Foundations.StatePrices
+import QuantFin.BlackScholes.StrikeConvexity
 
 /-!
 # Convexity is preserved by the linear pricing functional
@@ -60,7 +60,7 @@ kind. This module is one example of the second kind.
   density) the implied-PDF positivity.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Finset
 
@@ -152,4 +152,4 @@ theorem callPrice_finiteState_butterfly_nonneg (s : Finset ι)
   rw [show (1/2 * K₁ + 1/2 * K₃ : ℝ) = (K₁ + K₃) / 2 from by ring] at h
   linarith
 
-end HybridVerify
+end QuantFin

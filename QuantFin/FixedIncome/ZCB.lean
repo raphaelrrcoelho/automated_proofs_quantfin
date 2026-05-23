@@ -27,7 +27,7 @@ The model is purely deterministic; the Vasicek / CIR / HJM stochastic versions
 would need Itô calculus.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Real
 
@@ -80,4 +80,4 @@ lemma zcb_convexity_eq_time_to_maturity_sq (t T r : ℝ) :
   have h_ne : zcb r t T ≠ 0 := (zcb_pos r t T).ne'
   field_simp
 
-end HybridVerify
+end QuantFin

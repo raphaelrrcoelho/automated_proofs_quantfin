@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.Portfolio.BlackLitterman
+import QuantFin.Portfolio.BlackLitterman
 
 /-!
 # N-dimensional Black-Litterman posterior (matrix form, first-principles)
@@ -68,7 +68,7 @@ Specialising `n = 1`, `m = 1`, `P = (1)`, `Sg_inv = (1/s0sq)`, `Om_inv =
   (when posterior precision is invertible).
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Matrix
 
@@ -153,4 +153,4 @@ theorem IsBLPosteriorMean_unique {n m : ℕ}
   rw [Matrix.inv_mul_of_invertible]
   rw [Matrix.one_mulVec]
 
-end HybridVerify
+end QuantFin

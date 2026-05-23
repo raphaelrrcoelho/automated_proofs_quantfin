@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.FixedIncome.ZCB
+import QuantFin.FixedIncome.ZCB
 
 /-!
 # Coupon bonds, annuities, and rate-curve identities
@@ -31,7 +31,7 @@ Results:
   positive coupons at future times.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open Real
 
@@ -103,4 +103,4 @@ lemma couponBondPrice_strictAnti
     Real.exp_lt_exp.mpr h_arg
   exact mul_lt_mul_of_pos_left h_exp_lt (h_pos i hi)
 
-end HybridVerify
+end QuantFin

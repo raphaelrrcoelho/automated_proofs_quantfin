@@ -19,7 +19,7 @@ Result:
 * `lookback_payoff_ge_vanilla`: `max(S − K, 0) ≤ max(M − K, 0)` when `S ≤ M`.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 /-- **Lookback call payoff lower bound**: if `S ≤ M` (the running max), then
 `max(S − K, 0) ≤ max(M − K, 0)`. -/
@@ -27,4 +27,4 @@ lemma lookback_payoff_ge_vanilla (M S K : ℝ) (h : S ≤ M) :
     max (S - K) 0 ≤ max (M - K) 0 :=
   max_le_max (by linarith) le_rfl
 
-end HybridVerify
+end QuantFin

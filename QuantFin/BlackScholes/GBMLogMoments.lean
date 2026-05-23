@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Raphael Coelho
 -/
 import Mathlib
-import HybridVerify.BlackScholes.Call
-import HybridVerify.Foundations.ItoLemma
+import QuantFin.BlackScholes.Call
+import QuantFin.Foundations.ItoLemma
 
 /-!
 # Itô's lemma applied to GBM log (L¹-mean form) — phase 40
@@ -66,7 +66,7 @@ specialisation.
 * `bsLogReturn_mean`: `E_Q[bsLogReturn] = (r − σ²/2)·T`.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open MeasureTheory ProbabilityTheory Real
 
@@ -135,4 +135,4 @@ theorem bsLogReturn_mean
   rw [integral_const, integral_const_mul, integral_id_gaussianReal]
   simp
 
-end HybridVerify
+end QuantFin

@@ -30,7 +30,7 @@ Results:
   (`σ_T = σ · √T`), `VaR_α(L_T) = T · μ + σ · √T · z`.
 -/
 
-namespace HybridVerify
+namespace QuantFin
 
 open ProbabilityTheory Real
 
@@ -77,4 +77,4 @@ lemma gaussianVaR_volatility_scaling (μ σ z T : ℝ) :
   unfold gaussianVaR
   ring
 
-end HybridVerify
+end QuantFin
