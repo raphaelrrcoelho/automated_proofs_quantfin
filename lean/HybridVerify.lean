@@ -150,6 +150,8 @@ import HybridVerify.Portfolio.TangentPortfolioN
 -- Phase 21: first-principles Sharpe-FOC and CAPM-equilibrium derivations
 import HybridVerify.Portfolio.SharpeFOCDerivation
 import HybridVerify.Portfolio.CAPMEquilibrium
+-- Phase 23: N-asset Markowitz Lagrangian FOC (forward direction)
+import HybridVerify.Portfolio.MarkowitzLagrangian
 
 -- Performance
 import HybridVerify.Performance.Ratios
