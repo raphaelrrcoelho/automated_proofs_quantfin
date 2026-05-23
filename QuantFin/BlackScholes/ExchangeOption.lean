@@ -31,9 +31,12 @@ This file establishes the two pieces of the reduction:
   max(S¹/S² − 1, 0)`, exhibiting the exchange option as a (numeraire-scaled)
   vanilla call on the ratio.
 
-The price-level Margrabe formula combines these with a change of numeraire to
-the `S²`-measure (composing with `Foundations/GaussianGirsanov` and
-`BlackScholes/StockNumeraire`) and is the next increment.
+The price-level formula (`margrabe_price_via_call`) prices the exchange option
+in the `S²`-numeraire as a vanilla `bs_call_formula` call on the ratio
+`R = S¹/S²`. Its pricing primitive is `BSCallHyp` for the ratio — the same
+abstraction `bs_call_formula` takes for any underlying. Grounding that
+primitive from a joint two-GBM model via the numeraire change is the
+Margrabe-analog of leap-1 Girsanov (a separate deeper result).
 
 ## Results
 
@@ -41,6 +44,10 @@ the `S²`-measure (composing with `Foundations/GaussianGirsanov` and
 * `margrabe_effective_variance`: substituting `σ₁²T, σ₂²T, ρσ₁σ₂T` gives the
   effective variance `(σ₁² + σ₂² − 2ρσ₁σ₂)·T`.
 * `exchange_payoff_eq_ratio`: `max(a − b, 0) = b · max(a/b − 1, 0)` for `b > 0`.
+* `margrabe_eq_bsVGarman`: Margrabe price is a `GarmanNormalForm` instance.
+* `margrabe_parity`: `Margrabe(S¹,S²) − Margrabe(S²,S¹) = S¹ − S²`.
+* `margrabe_price_via_call`: the exchange option is a `bs_call_formula` call
+  on the ratio (price-level reduction).
 -/
 
 namespace QuantFin
@@ -151,5 +158,49 @@ theorem margrabe_parity (S1 S2 σ T : ℝ)
   unfold margrabePrice
   rw [hd1, hd2, Phi_neg, Phi_neg]
   ring
+
+/-! ## Price-level Margrabe: the exchange option is a call on the ratio
+
+This closes the price-level reduction. The exchange option, valued in the
+`S²`-numeraire, is a vanilla Black-Scholes call on the ratio `R = S¹/S²`
+struck at `1` with zero rate and effective vol `σ`. The pricing primitive is
+`BSCallHyp` for the *ratio* — exactly the abstraction `bs_call_formula` takes
+for any underlying; here the underlying is `R`. The grounding of this
+hypothesis from a joint two-GBM model (via the `S²`-numeraire change of
+measure) is the Margrabe-analog of leap-1 Girsanov — a separate deeper
+result, just as `BSCallHyp` itself was assumed until Girsanov derived it. -/
+
+/-- **Bridge**: standard BS `d₁` of the ratio `R₀ = S¹₀/S²₀` (strike `1`,
+zero rate) is the Margrabe `d₁`. -/
+private lemma bsd1_ratio_eq_margrabeD1 (S1 S2 σ T : ℝ) :
+    bsd1 (S1 / S2) 1 0 σ T = margrabeD1 S1 S2 σ T := by
+  unfold bsd1 margrabeD1
+  rw [div_one]; congr 1; ring
+
+/-- **Bridge** for `d₂`. -/
+private lemma bsd2_ratio_eq_margrabeD2 (S1 S2 σ T : ℝ) :
+    bsd2 (S1 / S2) 1 0 σ T = margrabeD2 S1 S2 σ T := by
+  unfold bsd2 margrabeD2
+  rw [bsd1_ratio_eq_margrabeD1]
+
+/-- **Price-level Margrabe formula** (exchange option as a call on the ratio).
+Given that the ratio `R = S¹/S²` is risk-neutral lognormal under the
+`S²`-numeraire measure `Q` (`BSCallHyp Q (S¹₀/S²₀) 1 0 σ Z` — strike `1`, zero
+rate, effective vol `σ`), the `S²`-numeraire value of the exchange payoff
+`S²₀ · E_Q[max(R_T − 1, 0)]` equals the Margrabe price `margrabePrice`. This
+is a one-line composition of `bs_call_formula` with the algebra `S²₀·R₀ = S¹₀`
+and the `d`-bridges above — no new probability machinery. -/
+theorem margrabe_price_via_call
+    {Ω : Type*} {mΩ : MeasurableSpace Ω}
+    {Q : Measure Ω} [IsProbabilityMeasure Q]
+    {S1 S2 σ T : ℝ} {Z : Ω → ℝ} (hS2 : 0 < S2)
+    (h : BSCallHyp Q (S1 / S2) 1 0 σ T Z) :
+    S2 * ∫ ω, max (bsTerminal (S1 / S2) 0 σ T (Z ω) - 1) 0 ∂Q
+      = margrabePrice S1 S2 σ T := by
+  have hbs := bs_call_formula h
+  simp only [neg_zero, zero_mul, Real.exp_zero, one_mul, mul_one] at hbs
+  rw [hbs, bsd1_ratio_eq_margrabeD1, bsd2_ratio_eq_margrabeD2]
+  unfold margrabePrice
+  field_simp
 
 end QuantFin

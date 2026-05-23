@@ -125,6 +125,9 @@ namespace QuantFin.AxiomAudit
 /-- info: 'QuantFin.margrabe_parity' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in #print axioms QuantFin.margrabe_parity
 
+/-- info: 'QuantFin.margrabe_price_via_call' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in #print axioms QuantFin.margrabe_price_via_call
+
 /-! ## Convex pricing functional + FTAP / state-price wiring -/
 
 /-- info: 'QuantFin.statePricePricing_convexOn' depends on axioms: [propext, Classical.choice, Quot.sound] -/
