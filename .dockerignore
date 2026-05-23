@@ -8,4 +8,11 @@ __pycache__
 *.pyc
 *.pyo
 *.egg-info
-stochastic_notes.pdf
+# Orphaned build cache from pre-hoist layout; root-owned, can't be cleaned
+# without sudo. Skip uploading to the docker context.
+lean/
+# Non-build content: docs, reference PDFs, upstream-PR drafts. Not needed
+# inside the verify image.
+docs/
+references/
+upstream/
