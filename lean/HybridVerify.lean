@@ -78,6 +78,10 @@ import HybridVerify.Foundations.ItoLemma
 import HybridVerify.Foundations.VarianceSwapEquivalence
 -- Phase 53: Pricing kernel from two-state FTAP (state-prices composition)
 import HybridVerify.Foundations.PricingKernel
+-- Phase 42: Multi-state FTAP backward (hypothesis-form, forward direction proved)
+import HybridVerify.Foundations.FTAPMultiState
+-- Phase 52: Doob L^p applications to discounted-price martingales
+import HybridVerify.Foundations.DoobLpApplications
 
 -- BlackScholes
 import HybridVerify.BlackScholes.Call
@@ -142,6 +146,8 @@ import HybridVerify.Binomial.SnellEnvelope
 import HybridVerify.Binomial.BinomialFromFTAP
 -- Phase 44: CRR binomial scheme as discrete-Itô process (drift + QV limits)
 import HybridVerify.Binomial.CRRDiscreteIto
+-- Phase 44c: CRR distributional-convergence transfer (hypothesis-form via continuous-mapping)
+import HybridVerify.Binomial.CRRConvergenceTransfer
 -- Phase 20: first-principles core derivations
 import HybridVerify.Foundations.NoArbitrageDerivations
 import HybridVerify.BlackScholes.RiskNeutralProbabilities
@@ -153,6 +159,8 @@ import HybridVerify.BlackScholes.PowerCall
 import HybridVerify.BlackScholes.ChooserComposition
 -- Phase 46: BS PDE derived from Itô drift + no-arbitrage
 import HybridVerify.BlackScholes.PDEFromIto
+-- Phase 40: Itô lemma L¹-expectation form applied to GBM log (mean + variance)
+import HybridVerify.BlackScholes.GBMLogMoments
 
 -- FixedIncome
 import HybridVerify.FixedIncome.ZCB
