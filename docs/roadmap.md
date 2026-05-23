@@ -333,3 +333,45 @@ was drafted and **reverted** earlier precisely because its orthogonality
 hypothesis had no available discharge; leap 4 (discrete) is now the genuine
 discharge of exactly that orthogonality, via the weak Markov property — the
 no-slop line, held.
+
+## next big build — the continuous L²(adapted) Itô integral
+
+This is the one remaining genuine connection for leap 4, and the gate for the
+itô-gated `reduced_core`s. It is a dedicated multi-session build (≈ the size of
+`WienerIntegralL2.lean`, ~500 lines), **not** a corollary — do not attempt to
+fake it with a leaf lemma.
+
+**Goal.** A continuous linear isometry
+`itoIntegralL2 : {adapted L²(Ω×[0,T])} →L[ℝ] Lp ℝ 2 μ` extending the discrete
+`ito_isometry_discrete`, with `‖itoIntegralL2 φ‖² = ∫₀ᵀ E[φ_t²] dt`.
+
+**Construction (mirror the Wiener case, but the integrand space is adapted).**
+1. Space of *adapted simple processes*: `φ = Σₖ Hₖ · 𝟙_{(tₖ,tₖ₊₁]}` with each
+   `Hₖ` `𝓕_{tₖ}`-measurable + `L²` (reuse `AdaptedAt` / `pastProcess`).
+2. The isometry on simple processes **is** `ito_isometry_discrete` (already
+   built) — that is the algebraic core, done.
+3. **The genuinely new work**: density of adapted simple processes in the
+   adapted `L²` space `L²_𝓕(Ω×[0,T])`. The Wiener proof's orthogonal-complement
+   route (`stepAssembly_denseRange`) does **not** transfer directly — the
+   integrand is jointly measurable in `(ω,t)` and the simple processes must be
+   *adapted*, so the dense-subspace argument runs in the closed subspace of
+   progressively-measurable `L²` functions, not all of `L²`. This is the crux
+   and the bulk of the effort.
+4. `LinearMap.extendOfNorm` then yields the CLM, exactly as `wienerIntegralLp`.
+
+**Prerequisite to check first**: whether Degenne's `StochasticIntegral/`
+tree (predictable processes, `BrownianMotion/StochasticIntegral/`) already
+supplies the adapted-`L²` density or the progressive-measurability scaffolding
+— if so, this reduces to a wrapper + the discrete isometry and is much smaller.
+Reconnoitre that tree before building from scratch.
+
+**Unblocks**: the ~12 itô-gated `reduced_core`s (Itô's lemma path-wise form,
+time-dependent Itô, SDE existence/uniqueness, the general Girsanov entries) —
+each becomes a real consumer of `itoIntegralL2`, finally making the Itô layer
+load-bearing into the pricing modules rather than a standalone cornerstone.
+
+**Out of scope / still genuinely gated** (do not conflate with the above):
+continuous-time Poisson processes (Cox/Credit), BM reflection principle,
+nowhere-differentiability, law of iterated logarithm, and the triangular-array
+CLT for full CRR→BS distributional convergence — none are unblocked by the
+Itô integral; they need their own upstream Mathlib infrastructure.

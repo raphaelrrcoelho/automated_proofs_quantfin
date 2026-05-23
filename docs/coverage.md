@@ -516,3 +516,23 @@ That claim is not supported. The honest version is:
 ## Path Forward
 
 See `docs/roadmap.md` for the current roadmap.
+
+### Itô layer state (2026-05-23)
+
+The Itô-gated `reduced_core`s (Itô's lemma path-wise form, time-dependent Itô,
+SDE existence/uniqueness, the general Girsanov entries) are **not** gated on
+increment independence — that is available and proven upstream
+(`IsPreBrownian.hasIndepIncrements`, `indepFun_shift`). On top of it the
+library now has:
+
+- the deterministic **Wiener** integral + isometry (`WienerIntegralL2.lean`);
+- the discrete **adapted** Itô isometry for random integrands
+  (`Foundations/ItoIsometryAdapted.lean`, `ito_isometry_discrete`, axioms-clean).
+
+The single remaining gate for these `reduced_core`s is the **continuous
+L²(adapted) Itô integral** — the Cauchy completion of adapted simple processes
+(the next big build; see `docs/roadmap.md`). No counts are reclassified here:
+those entries stay `reduced_core` until that integral lands and they become
+real consumers of it. Static Girsanov is already derived (`GaussianGirsanov.lean`,
+leap 1) — the *general* (path-wise) Girsanov is what still waits on the
+continuous integral.
