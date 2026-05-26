@@ -14,8 +14,8 @@ Each has a probabilistic meaning under the risk-neutral measure `Q`:
 
 * `Φ(d_2) = Q(S_T > K)` — the risk-neutral exercise probability.
 * `Φ(d_1) = Q^{(S)}(S_T > K)` — the same probability under the
-  **stock-numeraire measure** (change of numeraire). This requires
-  change-of-measure machinery and is deferred.
+  **stock-numeraire measure** (change of numeraire), formalised in the
+  companion `StockNumeraire.lean` (`stockNumeraire_exercise_probability`).
 
 This file formalises the simpler `Φ(d_2) = Q(S_T > K)` identity. It is the
 probabilistic content of `bsd2`: a parameter that arises algebraically in
@@ -30,9 +30,10 @@ Existing library content treats `bsd2` as a closed-form expression
 log-moneyness threshold, and `Φ(bsd2)` is the risk-neutral exercise
 probability.
 
-The companion `Φ(d_1) = Q^{(S)}(S_T > K)` identity requires change-of-
+The companion `Φ(d_1) = Q^{(S)}(S_T > K)` identity — via the change-of-
 numeraire machinery (Radon-Nikodym derivative of the stock-numeraire
-measure w.r.t. the risk-neutral measure) which is downstream work.
+measure w.r.t. the risk-neutral measure) — is formalised in
+`StockNumeraire.lean` (`stockNumeraire_exercise_probability`).
 
 ## Building blocks (all pre-existing in `BlackScholes.Call`)
 

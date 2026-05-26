@@ -7,6 +7,10 @@ Bermudan / Snell envelope, fixed income with hazard credit and Vasicek SDE,
 portfolio theory from Markowitz to Black-Litterman, coherent risk measures,
 Kelly, mortality, and constant-product AMMs.
 
+The aim is a comprehensive, honest reference for formally-verified
+quantitative finance: broad coverage, and — for every result — an exact
+statement of what is proved and what is assumed.
+
 |  | count |
 |---|---:|
 | total theorems | 251 |
@@ -74,7 +78,7 @@ See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the full development workflow.
 | **Fixed income** | ZCB + duration + convexity; coupon bond pricing + YTM monotonicity; annuity geometric-series closed form; flat + non-flat forward/spot rate consistency; Macaulay vs modified duration; first- + second-order Redington immunization; yield-curve bootstrap; reduced-form credit (constant + time-varying hazard); Vasicek deterministic ODE + SDE terminal distribution; **KMV-Merton** structural default. |
 | **Portfolio theory** | 2-asset Markowitz (completing-the-square); N-asset Markowitz (Finset double sum, diagonal, iid diversification, PSD bound); **N-asset Lagrangian** FOC characterisation; CAPM (β + portfolio linearity) + **equilibrium derivation**; two-fund separation (CML + Sharpe invariance); **risk parity** equal-contribution (log-barrier FOC); **Black-Litterman** 1-D + **N-dim normal-equation** posterior; tangent portfolio FOC. |
 | **Performance ratios** | Sharpe (full affine invariance, √T scaling); Sortino; Treynor; Information ratio; tracking error; Kelly criterion (FOC, horizon myopia, fraction bounds, sign analysis). |
-| **Risk measures** | Gaussian VaR / CVaR closed forms; coherent axioms (translation, homogeneity, monotonicity, subadditivity) **derived from concave utility**; joint-stdev triangle; VaR/CVaR additivity at ρ=1; **Rockafellar-Uryasev** form; **spectral risk measures**; **Herfindahl-Hirschman** with Cauchy-Schwarz lower bound. |
+| **Risk measures** | Gaussian VaR / CVaR closed forms; coherent axioms (translation, homogeneity, monotonicity, subadditivity) **verified on the gaussian closed form** (acceptance-set convexity is separately derived from concave utility in `UtilityDerivation.lean`); joint-stdev triangle; VaR/CVaR additivity at ρ=1; **Rockafellar-Uryasev** algebraic form; spectral risk measures; **Herfindahl-Hirschman** with Cauchy-Schwarz lower bound. |
 | **Actuarial** | Annuity-due closed form; net premium principle; **Gompertz** cumulative force of mortality. |
 | **DeFi** | Constant-product AMM (Uniswap v2) invariants — adapted from Pusceddu-Bartoletti. |
 | **Foundations** | **Static Girsanov** — the risk-neutral measure *derived* from the physical measure via an Esscher density, making `BSCallHyp` a theorem and the discounted asset a proven `Q`-martingale ([`docs/leaps.md`](docs/leaps.md)); Brownian motion martingales (square-sub-time, Wald exponential); Wiener integral + L² version; **the adapted Itô isometry** — the genuinely-stochastic `E[(Σ φₖ·ΔBₖ)²]=Σ E[φₖ²]·Δtₖ` for *random adapted* integrands, cross-terms killed by the weak Markov property (`∫B dB` capstone) ([`docs/leaps.md`](docs/leaps.md)); quadratic variation; Doob L^p continuous-time convergence; conditional Jensen; **discrete Itô lemma** (after Nagy); simple Itô integral; FTAP (two-state explicit EMM + multi-state forward); pricing kernels; state prices; Itô structural drift (GBM log-drift, log return mean); BS PDE from Itô + no-arbitrage. |

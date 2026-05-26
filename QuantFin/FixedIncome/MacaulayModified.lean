@@ -20,8 +20,7 @@ The discrete-compounding identity is
 `ModNum(y) = MacNum(y) / (1 + y)`,
 
 i.e. modified duration differs from Macaulay duration by exactly one factor of
-the discount step. (Under continuous compounding the two coincide, which is
-the lemma `bondMacaulay_eq_modified_continuous` in `FixedIncome/ZCB`.)
+the discount step. (Under continuous compounding the two coincide.)
 
 Result:
 

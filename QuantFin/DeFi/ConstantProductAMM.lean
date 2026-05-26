@@ -54,11 +54,11 @@ This file formalises:
   reserves.
 * `swap_preserves_invariant`: `(x + Δx)·(y − Δy) = x · y` (the **key
   no-arbitrage / no-money-printing property** of the constant product).
-* `marginal_price_at_zero_input`: as `Δx → 0`, the marginal exchange
-  rate `Δy / Δx → y / x` (the **internal price** of the AMM).
-* `arbitrage_gain_two_token`: trader-perspective gain from a round-trip
-  swap when AMM's internal price differs from external oracle (the
-  **arbitrage problem** these models are designed to study).
+* `marginal_exchange_rate`: the marginal rate `Δy / Δx = y / (x + Δx)`,
+  approaching the **internal price** `y / x` as `Δx → 0`.
+* `internalPrice` / `arbitragePresent`: the internal price `y / x` and the
+  predicate for it diverging from an external oracle (the **arbitrage
+  setup** these models study).
 
 ## Why this is quant finance
 
@@ -75,8 +75,9 @@ liquidity provision.
 * `swap_preserves_invariant`: constant-product invariance under swap.
 * `swap_output_pos`: `Δy > 0` when input is positive.
 * `swap_output_lt_y`: `Δy < y` (cannot drain pool).
-* `marginal_price_limit`: marginal exchange rate `Δy / Δx → y / x` as
-  `Δx → 0⁺`.
+* `marginal_exchange_rate`: the marginal rate `Δy / Δx = y / (x + Δx)`.
+* `internalPrice`, `arbitragePresent`: internal price `y / x` and the
+  oracle-divergence predicate (definitions).
 -/
 
 namespace QuantFin

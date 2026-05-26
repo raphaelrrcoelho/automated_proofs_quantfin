@@ -20,10 +20,10 @@ intervalIntegral machinery. The algebraic core (the log-payoff identity
 `BlackScholes/VarianceSwap.lean` (the `varianceSwap_log_contribution`
 theorem there is the substantive Carr-Madan-style result we have).
 
-This file used to record `carrMadan_log_payoff_algebra` as a separate
-theorem. The honest content was a rename of `Real.log_div`; it has been
-removed. Refer to `BlackScholes/VarianceSwap.lean` for the Carr-Madan-style
-log-payoff replication actually formalised.
+This file records `carrMadan_log_payoff_algebra` as a thin alias for
+`Real.log_div`, retained only for the benchmark-import API. The substantive
+Carr-Madan-style log-payoff replication is formalised in
+`BlackScholes/VarianceSwap.lean` (`varianceSwap_log_contribution`).
 -/
 
 namespace QuantFin
