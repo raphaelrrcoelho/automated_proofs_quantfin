@@ -191,6 +191,11 @@ namespace QuantFin.AxiomAudit
 /-- info: 'QuantFin.stochasticIoc.elementaryPredictableSet' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in #print axioms QuantFin.stochasticIoc.elementaryPredictableSet
 
+/-! ## Continuous Itô integral — foundational bridge (AdaptedAt ↔ natural filtration) -/
+
+/-- info: 'QuantFin.ItoIntegralL2.adaptedAt_of_measurable_natural' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in #print axioms QuantFin.ItoIntegralL2.adaptedAt_of_measurable_natural
+
 /-! ## Margrabe BSCallHyp grounding (leap-3 closure via gaussian vector) -/
 
 /-- info: 'QuantFin.normalizedSpread_hasLaw_std' depends on axioms: [propext, Classical.choice, Quot.sound] -/
@@ -215,5 +220,10 @@ namespace QuantFin.AxiomAudit
 
 /-- info: 'QuantFin.sharpeRatio_affine_invariant' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in #print axioms QuantFin.sharpeRatio_affine_invariant
+
+/-! ## Certified bridges -/
+
+/-- info: 'QuantFin.portfolioVarN_diag_eq_herfindahl' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in #print axioms QuantFin.portfolioVarN_diag_eq_herfindahl
 
 end QuantFin.AxiomAudit

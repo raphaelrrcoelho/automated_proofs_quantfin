@@ -73,6 +73,8 @@ import QuantFin.Foundations.ItoIntegralSimple
 import QuantFin.Foundations.ItoIsometryAdapted
 -- Stochastic intervals + elementary-predictable-set lemma (Degenne issue #440)
 import QuantFin.Foundations.StochasticInterval
+-- Continuous L²-adapted Itô integral (construction, anchored on Degenne SimpleProcess)
+import QuantFin.Foundations.ItoIntegralL2
 -- Phase 37: FTAP both directions, two-state market (adapted from Nagy 2026)
 import QuantFin.Foundations.FTAPTwoState
 -- Phase 38: Constant-product AMM (adapted from Pusceddu-Bartoletti FMBC 2024)
@@ -225,6 +227,9 @@ import QuantFin.RiskMeasures.Spectral
 import QuantFin.RiskMeasures.Concentration
 -- Phase 21: first-principles coherent-axiom derivation from concave utility
 import QuantFin.RiskMeasures.UtilityDerivation
+
+-- Bridges (certified cross-domain unifications)
+import QuantFin.Bridges.ConcentrationVariance
 
 -- Actuarial
 import QuantFin.Actuarial.Insurance
