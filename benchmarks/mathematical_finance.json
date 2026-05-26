@@ -1047,7 +1047,7 @@
       "description": "For a gaussian loss L ~ N(μ, σ²), VaR_α(aL + b) = a·VaR_α(L) + b for a ≥ 0.",
       "domain": "mathematical_finance",
       "code": {
-        "lean": "import Mathlib\nimport QuantFin.RiskMeasures.Gaussian\n\nopen QuantFin\n\ntheorem gaussian_var_affine_thm (μ σ z a b : ℝ) (ha : 0 ≤ a) :\n    QuantFin.gaussianVaR (a * μ + b) (a * σ) z =\n      a * QuantFin.gaussianVaR μ σ z + b :=\n  QuantFin.gaussianVaR_affine μ σ z a b ha\n"
+        "lean": "import Mathlib\nimport QuantFin.RiskMeasures.Gaussian\n\nopen QuantFin\n\ntheorem gaussian_var_affine_thm (μ σ z a b : ℝ) (ha : 0 ≤ a) :\n    QuantFin.gaussianVaR (a * μ + b) (|a| * σ) z =\n      a * QuantFin.gaussianVaR μ σ z + b :=\n  QuantFin.gaussianVaR_affine μ σ z a b ha\n"
       },
       "metadata": {
         "chapter": 13,
@@ -1063,7 +1063,7 @@
       "description": "For a gaussian loss L ~ N(μ, σ²), CVaR_α(aL + b) = a·CVaR_α(L) + b for a ≥ 0.",
       "domain": "mathematical_finance",
       "code": {
-        "lean": "import Mathlib\nimport QuantFin.RiskMeasures.Gaussian\n\nopen QuantFin\n\ntheorem gaussian_cvar_affine_thm (μ σ z α a b : ℝ) (ha : 0 ≤ a) :\n    QuantFin.gaussianCVaR (a * μ + b) (a * σ) z α =\n      a * QuantFin.gaussianCVaR μ σ z α + b :=\n  QuantFin.gaussianCVaR_affine μ σ z α a b ha\n"
+        "lean": "import Mathlib\nimport QuantFin.RiskMeasures.Gaussian\n\nopen QuantFin\n\ntheorem gaussian_cvar_affine_thm (μ σ z α a b : ℝ) (ha : 0 ≤ a) :\n    QuantFin.gaussianCVaR (a * μ + b) (|a| * σ) z α =\n      a * QuantFin.gaussianCVaR μ σ z α + b :=\n  QuantFin.gaussianCVaR_affine μ σ z α a b ha\n"
       },
       "metadata": {
         "chapter": 13,
@@ -1367,7 +1367,7 @@
       "description": "VaR(λ·L) = λ·VaR(L) for λ ≥ 0 — positive-homogeneity axiom of coherent risk measures.",
       "domain": "mathematical_finance",
       "code": {
-        "lean": "import Mathlib\nimport QuantFin.RiskMeasures.CoherentAxioms\n\nopen QuantFin\n\ntheorem gaussian_var_pos_homog_thm (μ σ z : ℝ) {l : ℝ} (hl : 0 ≤ l) :\n    QuantFin.gaussianVaR (l * μ) (l * σ) z = l * QuantFin.gaussianVaR μ σ z :=\n  QuantFin.gaussianVaR_positiveHomogeneity μ σ z hl\n"
+        "lean": "import Mathlib\nimport QuantFin.RiskMeasures.CoherentAxioms\n\nopen QuantFin\n\ntheorem gaussian_var_pos_homog_thm (μ σ z : ℝ) {l : ℝ} (hl : 0 ≤ l) :\n    QuantFin.gaussianVaR (l * μ) (|l| * σ) z = l * QuantFin.gaussianVaR μ σ z :=\n  QuantFin.gaussianVaR_positiveHomogeneity μ σ z hl\n"
       },
       "metadata": {
         "chapter": 13,
@@ -1383,7 +1383,7 @@
       "description": "CVaR(λ·L) = λ·CVaR(L) for λ ≥ 0.",
       "domain": "mathematical_finance",
       "code": {
-        "lean": "import Mathlib\nimport QuantFin.RiskMeasures.CoherentAxioms\n\nopen QuantFin\n\ntheorem gaussian_cvar_pos_homog_thm (μ σ z α : ℝ) {l : ℝ} (hl : 0 ≤ l) :\n    QuantFin.gaussianCVaR (l * μ) (l * σ) z α =\n      l * QuantFin.gaussianCVaR μ σ z α :=\n  QuantFin.gaussianCVaR_positiveHomogeneity μ σ z α hl\n"
+        "lean": "import Mathlib\nimport QuantFin.RiskMeasures.CoherentAxioms\n\nopen QuantFin\n\ntheorem gaussian_cvar_pos_homog_thm (μ σ z α : ℝ) {l : ℝ} (hl : 0 ≤ l) :\n    QuantFin.gaussianCVaR (l * μ) (|l| * σ) z α =\n      l * QuantFin.gaussianCVaR μ σ z α :=\n  QuantFin.gaussianCVaR_positiveHomogeneity μ σ z α hl\n"
       },
       "metadata": {
         "chapter": 13,

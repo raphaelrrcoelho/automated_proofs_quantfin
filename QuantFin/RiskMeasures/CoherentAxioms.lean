@@ -50,15 +50,17 @@ lemma gaussianCVaR_translation (μ σ z α c : ℝ) :
     gaussianCVaR (μ + c) σ z α = gaussianCVaR μ σ z α + c := by
   unfold gaussianCVaR; ring
 
-/-- **VaR positive homogeneity**: `VaR(λ·L) = λ·VaR(L)` for `λ ≥ 0`. -/
-lemma gaussianVaR_positiveHomogeneity (μ σ z : ℝ) {l : ℝ} (_hl : 0 ≤ l) :
-    gaussianVaR (l * μ) (l * σ) z = l * gaussianVaR μ σ z := by
-  unfold gaussianVaR; ring
+/-- **VaR positive homogeneity**: `VaR(λ·L) = λ·VaR(L)` for `λ ≥ 0`. The volatility
+scales by `|λ|·σ`, so the hypothesis `0 ≤ λ` is load-bearing (it discharges `|λ| = λ`). -/
+lemma gaussianVaR_positiveHomogeneity (μ σ z : ℝ) {l : ℝ} (hl : 0 ≤ l) :
+    gaussianVaR (l * μ) (|l| * σ) z = l * gaussianVaR μ σ z := by
+  unfold gaussianVaR; rw [abs_of_nonneg hl]; ring
 
-/-- **CVaR positive homogeneity**: `CVaR(λ·L) = λ·CVaR(L)` for `λ ≥ 0`. -/
-lemma gaussianCVaR_positiveHomogeneity (μ σ z α : ℝ) {l : ℝ} (_hl : 0 ≤ l) :
-    gaussianCVaR (l * μ) (l * σ) z α = l * gaussianCVaR μ σ z α := by
-  unfold gaussianCVaR; ring
+/-- **CVaR positive homogeneity**: `CVaR(λ·L) = λ·CVaR(L)` for `λ ≥ 0` (volatility
+scales by `|λ|·σ`, so `0 ≤ λ` is load-bearing). -/
+lemma gaussianCVaR_positiveHomogeneity (μ σ z α : ℝ) {l : ℝ} (hl : 0 ≤ l) :
+    gaussianCVaR (l * μ) (|l| * σ) z α = l * gaussianCVaR μ σ z α := by
+  unfold gaussianCVaR; rw [abs_of_nonneg hl]; ring
 
 /-- **VaR monotonicity in mean** at the same volatility and right-tail quantile:
 if `μ₁ ≤ μ₂` and `σ ≥ 0`, then `VaR(L₁) ≤ VaR(L₂)`. -/

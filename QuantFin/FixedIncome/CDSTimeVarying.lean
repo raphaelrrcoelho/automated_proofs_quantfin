@@ -64,13 +64,7 @@ weighted by default density `h(s) · S(s)` and discount) iff
 For non-zero annuity, this is equivalent to the fair-spread formula
 `c = (1 − R) · losses / annuity`. -/
 theorem cdsFairSpread_TV_cash_flow_balance
-    (c r T R : ℝ) (h : ℝ → ℝ)
-    (annuity losses : ℝ)
-    (_h_ann_def : annuity =
-      ∫ s in (0:ℝ)..T, hazardSurvival h s * Real.exp (-(r * s)))
-    (_h_loss_def : losses =
-      ∫ s in (0:ℝ)..T, h s * hazardSurvival h s * Real.exp (-(r * s)))
-    (h_annuity_ne : annuity ≠ 0) :
+    (c R annuity losses : ℝ) (h_annuity_ne : annuity ≠ 0) :
     c * annuity = (1 - R) * losses ↔ c = (1 - R) * losses / annuity := by
   rw [eq_div_iff h_annuity_ne]
 

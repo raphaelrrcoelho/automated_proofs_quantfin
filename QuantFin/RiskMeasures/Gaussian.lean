@@ -41,17 +41,20 @@ noncomputable def gaussianVaR (μ σ z : ℝ) : ℝ := μ + σ * z
 noncomputable def gaussianCVaR (μ σ z α : ℝ) : ℝ :=
   μ + σ * (gaussianPDFReal 0 1 z / (1 - α))
 
-/-- **VaR affine invariance**: `VaR(a·L + b) = a · VaR(L) + b` for `a ≥ 0`. -/
-lemma gaussianVaR_affine (μ σ z a b : ℝ) (_ha : 0 ≤ a) :
-    gaussianVaR (a * μ + b) (a * σ) z = a * gaussianVaR μ σ z + b := by
+/-- **VaR affine invariance**: `VaR(a·L + b) = a · VaR(L) + b` for `a ≥ 0`. The
+volatility scales by the genuine standard deviation `|a|·σ` of `a·L + b`, so the
+hypothesis `0 ≤ a` is load-bearing — it discharges `|a| = a`. -/
+lemma gaussianVaR_affine (μ σ z a b : ℝ) (ha : 0 ≤ a) :
+    gaussianVaR (a * μ + b) (|a| * σ) z = a * gaussianVaR μ σ z + b := by
   unfold gaussianVaR
-  ring
+  rw [abs_of_nonneg ha]; ring
 
-/-- **CVaR affine invariance**: `CVaR(a·L + b) = a · CVaR(L) + b` for `a ≥ 0`. -/
-lemma gaussianCVaR_affine (μ σ z α a b : ℝ) (_ha : 0 ≤ a) :
-    gaussianCVaR (a * μ + b) (a * σ) z α = a * gaussianCVaR μ σ z α + b := by
+/-- **CVaR affine invariance**: `CVaR(a·L + b) = a · CVaR(L) + b` for `a ≥ 0`
+(volatility scales by `|a|·σ`, so `0 ≤ a` is load-bearing). -/
+lemma gaussianCVaR_affine (μ σ z α a b : ℝ) (ha : 0 ≤ a) :
+    gaussianCVaR (a * μ + b) (|a| * σ) z α = a * gaussianCVaR μ σ z α + b := by
   unfold gaussianCVaR
-  ring
+  rw [abs_of_nonneg ha]; ring
 
 /-- Standard normal VaR collapses to the quantile itself. -/
 lemma gaussianVaR_standard (z : ℝ) : gaussianVaR 0 1 z = z := by
