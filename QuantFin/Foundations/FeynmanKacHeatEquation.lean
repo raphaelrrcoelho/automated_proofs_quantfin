@@ -271,6 +271,123 @@ private lemma ibp_heatKernel {t : ℝ} (ht : 0 < t) {f f' f'' : ℝ → ℝ}
     (fun x _ => hf' x) (fun x _ => hasDerivAt_heatKernel_y ht x) hi_f'_dK hi_f''_K hi_f'_K
   rw [ibp1, ibp2, neg_neg]
 
+/-- The heat kernel is continuous in the space variable (for any fixed time). -/
+private lemma continuous_heatKernel (s : ℝ) : Continuous (fun y => heatKernel s y) := by
+  unfold heatKernel; fun_prop
+
+/-- The polynomial-times-heat-kernel function `(y² + c)·K(s, y)` is integrable (`s > 0`). This
+is the integrable majorant used to dominate `∂_t K(·, y)` over a time-neighbourhood of `t`
+(instantiated at `s = 3t/2`); built directly from the moment integrabilities
+`integrable_sq_mul_heatKernel` / `integrable_heatKernel`, avoiding raw-`rpow` Gaussians. -/
+private lemma integrable_poly_heatKernel {s : ℝ} (hs : 0 < s) (c : ℝ) :
+    Integrable (fun y => (y ^ 2 + c) * heatKernel s y) volume := by
+  refine ((integrable_sq_mul_heatKernel hs).add
+    ((integrable_heatKernel hs).const_mul c)).congr (Filter.Eventually.of_forall fun y => ?_)
+  simp only [Pi.add_apply]; ring
+
+/-- **Differentiation under the integral for the Gaussian convolution.** For `t > 0` and `f`
+continuous and bounded (`|f| ≤ Cf`), `φ(s) = ∫ f(y)·K(s, y) dy` is differentiable at `t` with
+`φ′(t) = ∫ f(y)·∂_t K(t, y) dy`. The `s`-derivative `f(y)·K(s,y)·(y²−s)/(2s²)` is dominated,
+uniformly over `s ∈ (t/2, 3t/2)`, by `Cf·(2√3/t²)·(y²+3t/2)·K(3t/2, y)` (integrable), using the
+heat-kernel monotonicity `K(s, y) ≤ √3·K(3t/2, y)` on that interval. -/
+private lemma hasDerivAt_phi {t : ℝ} (ht : 0 < t) {f : ℝ → ℝ} (hfc : Continuous f)
+    {Cf : ℝ} (hCf : ∀ x, |f x| ≤ Cf) :
+    HasDerivAt (fun s => ∫ y, f y * heatKernel s y ∂volume)
+      (∫ y, f y * (heatKernel t y * (y ^ 2 - t) / (2 * t ^ 2)) ∂volume) t := by
+  have h32 : (0 : ℝ) < 3 * t / 2 := by positivity
+  have hCf0 : 0 ≤ Cf := le_trans (abs_nonneg _) (hCf 0)
+  set F : ℝ → ℝ → ℝ := fun s y => f y * heatKernel s y with hFdef
+  set F' : ℝ → ℝ → ℝ := fun s y => f y * (heatKernel s y * (y ^ 2 - s) / (2 * s ^ 2)) with hF'def
+  set bound : ℝ → ℝ :=
+    fun y => Cf * (2 * Real.sqrt 3 / t ^ 2) * ((y ^ 2 + 3 * t / 2) * heatKernel (3 * t / 2) y)
+    with hbounddef
+  have hbound_int : Integrable bound volume :=
+    (integrable_poly_heatKernel h32 (3 * t / 2)).const_mul _
+  have hf_gauss : Integrable f (gaussianReal 0 t.toNNReal) :=
+    (integrable_const Cf).mono' hfc.aestronglyMeasurable
+      (ae_of_all _ fun y => by rw [Real.norm_eq_abs]; exact hCf y)
+  have hFt_int : Integrable (F t) volume := integrable_mul_heatKernel_of_gaussian ht hf_gauss
+  have hF_meas : ∀ᶠ s in nhds t, AEStronglyMeasurable (F s) volume :=
+    Eventually.of_forall fun s => (hfc.mul (continuous_heatKernel s)).aestronglyMeasurable
+  have hF'_meas : AEStronglyMeasurable (F' t) volume :=
+    (hfc.mul (((continuous_heatKernel t).mul
+      ((continuous_pow 2).sub continuous_const)).div_const _)).aestronglyMeasurable
+  have h_diff : ∀ᵐ y ∂volume, ∀ s ∈ Metric.ball t (t / 2),
+      HasDerivAt (fun s => F s y) (F' s y) s := by
+    refine ae_of_all _ fun y s hs => ?_
+    rw [Metric.mem_ball, Real.dist_eq, abs_lt] at hs
+    have hs_pos : 0 < s := by linarith [hs.1]
+    exact (hasDerivAt_heatKernel_t (y := y) hs_pos).const_mul (f y)
+  have h_bound : ∀ᵐ y ∂volume, ∀ s ∈ Metric.ball t (t / 2), ‖F' s y‖ ≤ bound y := by
+    refine ae_of_all _ fun y s hs => ?_
+    rw [Metric.mem_ball, Real.dist_eq, abs_lt] at hs
+    have hs_lo : t / 2 < s := by linarith [hs.1]
+    have hs_hi : s < 3 * t / 2 := by linarith [hs.2]
+    have hs_pos : 0 < s := by linarith
+    have hKsnn : 0 ≤ heatKernel s y := heatKernel_nonneg hs_pos y
+    have hKtnn : 0 ≤ heatKernel (3 * t / 2) y := heatKernel_nonneg h32 y
+    -- `K(s, y) ≤ (√(πt))⁻¹·exp(−y²/(3t))`, then rewrite the RHS as `√3·K(3t/2, y)`.
+    have hKstep : heatKernel s y ≤ (Real.sqrt (Real.pi * t))⁻¹ * Real.exp (-(y ^ 2) / (3 * t)) := by
+      rw [heatKernel]
+      have hf1 : (Real.sqrt (2 * Real.pi * s))⁻¹ ≤ (Real.sqrt (Real.pi * t))⁻¹ :=
+        inv_anti₀ (by positivity) (Real.sqrt_le_sqrt (by nlinarith [Real.pi_pos, hs_lo]))
+      have hf2 : Real.exp (-(y ^ 2) / (2 * s)) ≤ Real.exp (-(y ^ 2) / (3 * t)) := by
+        apply Real.exp_le_exp.mpr
+        rw [neg_div, neg_div, neg_le_neg_iff, div_le_div_iff₀ (by positivity) (by positivity)]
+        nlinarith [sq_nonneg y, hs_hi]
+      exact mul_le_mul hf1 hf2 (by positivity) (by positivity)
+    have hKeq : (Real.sqrt (Real.pi * t))⁻¹ * Real.exp (-(y ^ 2) / (3 * t))
+        = Real.sqrt 3 * heatKernel (3 * t / 2) y := by
+      have h3ne : Real.sqrt 3 ≠ 0 := (Real.sqrt_pos.mpr (by norm_num)).ne'
+      have hsqrt : Real.sqrt (2 * Real.pi * (3 * t / 2)) = Real.sqrt 3 * Real.sqrt (Real.pi * t) := by
+        rw [show 2 * Real.pi * (3 * t / 2) = 3 * (Real.pi * t) from by ring,
+            Real.sqrt_mul (by norm_num : (0:ℝ) ≤ 3)]
+      simp only [heatKernel]
+      rw [show -(y ^ 2) / (2 * (3 * t / 2)) = -(y ^ 2) / (3 * t) from by
+            rw [show 2 * (3 * t / 2) = 3 * t from by ring],
+          hsqrt, mul_inv]
+      field_simp
+    have hK : heatKernel s y ≤ Real.sqrt 3 * heatKernel (3 * t / 2) y := hKeq ▸ hKstep
+    have hpoly : |y ^ 2 - s| / (2 * s ^ 2) ≤ 2 * (y ^ 2 + 3 * t / 2) / t ^ 2 := by
+      have habs : |y ^ 2 - s| ≤ y ^ 2 + 3 * t / 2 := by
+        rw [abs_le]; constructor <;> nlinarith [sq_nonneg y]
+      have ht4s : t ^ 2 ≤ 4 * s ^ 2 := by
+        nlinarith [mul_pos (show (0:ℝ) < s - t / 2 by linarith) (show (0:ℝ) < s + t / 2 by linarith)]
+      rw [div_le_div_iff₀ (by positivity) (by positivity)]
+      nlinarith [mul_le_mul_of_nonneg_right habs (sq_nonneg t),
+        mul_le_mul_of_nonneg_left ht4s (show (0:ℝ) ≤ y ^ 2 + 3 * t / 2 by positivity)]
+    have habs_nn : 0 ≤ |y ^ 2 - s| / (2 * s ^ 2) := by positivity
+    have hF'norm : ‖F' s y‖ = |f y| * (heatKernel s y * (|y ^ 2 - s| / (2 * s ^ 2))) := by
+      rw [hF'def, Real.norm_eq_abs, abs_mul, abs_div, abs_mul,
+          abs_of_nonneg hKsnn, abs_of_nonneg (by positivity : (0:ℝ) ≤ 2 * s ^ 2), mul_div_assoc]
+    rw [hF'norm, hbounddef]
+    calc |f y| * (heatKernel s y * (|y ^ 2 - s| / (2 * s ^ 2)))
+        ≤ Cf * (Real.sqrt 3 * heatKernel (3 * t / 2) y * (2 * (y ^ 2 + 3 * t / 2) / t ^ 2)) := by
+          refine mul_le_mul (hCf y) ?_ (mul_nonneg hKsnn habs_nn) hCf0
+          exact mul_le_mul hK hpoly habs_nn (mul_nonneg (Real.sqrt_nonneg 3) hKtnn)
+      _ = Cf * (2 * Real.sqrt 3 / t ^ 2) * ((y ^ 2 + 3 * t / 2) * heatKernel (3 * t / 2) y) := by
+          ring
+  exact (hasDerivAt_integral_of_dominated_loc_of_deriv_le
+    (Metric.ball_mem_nhds t (show (0:ℝ) < t / 2 by positivity))
+    hF_meas hFt_int hF'_meas h_bound hbound_int h_diff).2
+
+/-- **The Gaussian convolution satisfies the heat equation.** For `f ∈ C²_b`,
+`φ(s) = ∫ f(y)·K(s, y) dy` has `φ′(t) = ½·∫ f″(y)·K(t, y) dy`. Combines the parametric derivative
+`hasDerivAt_phi` (`φ′(t) = ∫ f·∂_t K`) with the kernel PDE `∂_t K = ½·∂²_y K` and the double
+integration by parts `∫ f·∂²_y K = ∫ f″·K` (`ibp_heatKernel`). This is the heat equation for the
+*function* `φ`, not merely the kernel. -/
+private lemma hasDerivAt_phi_heatEq {t : ℝ} (ht : 0 < t) {f f' f'' : ℝ → ℝ}
+    (hf : ∀ x, HasDerivAt f (f' x) x) (hf' : ∀ x, HasDerivAt f' (f'' x) x)
+    (hf''c : Continuous f'') {Cf Cf' Cf'' : ℝ}
+    (hCf : ∀ x, |f x| ≤ Cf) (hCf' : ∀ x, |f' x| ≤ Cf') (hCf'' : ∀ x, |f'' x| ≤ Cf'') :
+    HasDerivAt (fun s => ∫ y, f y * heatKernel s y ∂volume)
+      (1 / 2 * ∫ y, f'' y * heatKernel t y ∂volume) t := by
+  have hfc : Continuous f := continuous_iff_continuousAt.mpr fun x => (hf x).continuousAt
+  convert hasDerivAt_phi ht hfc hCf using 1
+  rw [← ibp_heatKernel ht hf hf' hf''c hCf hCf' hCf'', ← integral_const_mul]
+  refine integral_congr_ae (Filter.Eventually.of_forall fun y => ?_)
+  ring
+
 /-! ### The Feynman–Kac function `u(t, x) = ∫ z, g(z) · K(t, z - x) dz`
 
 We define `u` directly via the heat-kernel representation, then show it equals
