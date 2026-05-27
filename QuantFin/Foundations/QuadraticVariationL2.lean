@@ -264,5 +264,53 @@ theorem tendsto_qv (hBmeas : ∀ t, Measurable (B t)) (T : ℝ≥0) :
   rw [show (2 : ℝ) * (T : ℝ) ^ 2 / (n : ℝ) = 2 * ((T : ℝ) / n) * T from by ring]
   exact hbound
 
+/-- **Quadratic variation converges in probability**: along the uniform partition of `[0, T]`,
+`∑ₖ (ΔBₖ)² → T` in measure. This is the textbook form of `[B, B]_T = T`, and a *genuine*
+consequence of the L² convergence `tendsto_qv` (through `tendstoInMeasure_of_tendsto_eLpNorm`) —
+not of the marginal mean alone (which gives only `E[∑(ΔBₖ)²] = T`). It is the L² headline
+result's first real consumer. -/
+theorem tendstoInMeasure_qv (hBmeas : ∀ t, Measurable (B t)) (T : ℝ≥0) :
+    TendstoInMeasure μ
+      (fun n ω => ∑ k ∈ Finset.range n,
+        (B (unifPart T n (k + 1)) ω - B (unifPart T n k) ω) ^ 2)
+      atTop (fun _ => (T : ℝ)) := by
+  haveI : IsProbabilityMeasure μ := hB.isGaussianProcess.isProbabilityMeasure
+  -- each centered sum `Sₙ − T` lies in `L²` (each squared increment is `L²`, via `r = 0`)
+  have hmem : ∀ n : ℕ, MemLp (fun ω => (∑ k ∈ Finset.range n,
+      (B (unifPart T n (k + 1)) ω - B (unifPart T n k) ω) ^ 2) - (T : ℝ)) 2 μ := by
+    intro n
+    have hsum : MemLp (fun ω => ∑ k ∈ Finset.range n,
+        (B (unifPart T n (k + 1)) ω - B (unifPart T n k) ω) ^ 2) 2 μ := by
+      apply memLp_finset_sum
+      intro k _
+      simpa using memLp_increment_sq_centered_two (unifPart T n k) (unifPart T n (k + 1)) 0
+    exact hsum.sub (memLp_const (T : ℝ))
+  refine tendstoInMeasure_of_tendsto_eLpNorm (by norm_num : (2 : ℝ≥0∞) ≠ 0)
+    (fun n => (Finset.measurable_sum _ fun k _ =>
+      ((hBmeas _).sub (hBmeas _)).pow_const 2).aestronglyMeasurable)
+    aestronglyMeasurable_const ?_
+  -- `eLpNorm (Sₙ − T) 2 = ofReal √(∫ (Sₙ − T)²) → 0`, the L² convergence `tendsto_qv`
+  have hconv : ∀ n : ℕ, eLpNorm (fun ω => (∑ k ∈ Finset.range n,
+        (B (unifPart T n (k + 1)) ω - B (unifPart T n k) ω) ^ 2) - (T : ℝ)) 2 μ
+      = ENNReal.ofReal (Real.sqrt (∫ ω, ((∑ k ∈ Finset.range n,
+        (B (unifPart T n (k + 1)) ω - B (unifPart T n k) ω) ^ 2) - (T : ℝ)) ^ 2 ∂μ)) := by
+    intro n
+    rw [(hmem n).eLpNorm_eq_integral_rpow_norm (by norm_num) (by norm_num),
+      ENNReal.toReal_ofNat, ← one_div, ← Real.sqrt_eq_rpow]
+    congr 2
+    refine integral_congr_ae (Filter.Eventually.of_forall fun ω => ?_)
+    show ‖(∑ k ∈ Finset.range n,
+          (B (unifPart T n (k + 1)) ω - B (unifPart T n k) ω) ^ 2) - (T : ℝ)‖ ^ (2 : ℝ)
+        = ((∑ k ∈ Finset.range n,
+          (B (unifPart T n (k + 1)) ω - B (unifPart T n k) ω) ^ 2) - (T : ℝ)) ^ 2
+    rw [Real.norm_eq_abs, show (2 : ℝ) = ((2 : ℕ) : ℝ) from by norm_num, Real.rpow_natCast, sq_abs]
+  have hlim : Tendsto (fun n : ℕ => ENNReal.ofReal (Real.sqrt (∫ ω, ((∑ k ∈ Finset.range n,
+      (B (unifPart T n (k + 1)) ω - B (unifPart T n k) ω) ^ 2) - (T : ℝ)) ^ 2 ∂μ)))
+      atTop (𝓝 0) := by
+    rw [show (0 : ℝ≥0∞) = ENNReal.ofReal (Real.sqrt 0) from by simp]
+    exact (ENNReal.continuous_ofReal.tendsto _).comp
+      ((Real.continuous_sqrt.tendsto _).comp (tendsto_qv hBmeas T))
+  exact Tendsto.congr (fun n => (hconv n).symm) hlim
+
 end QuadraticVariationL2
 end QuantFin

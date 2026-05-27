@@ -38,6 +38,7 @@ import QuantFin.Foundations.GaussianGirsanov
 import QuantFin.Foundations.FeynmanKacHeatEquation
 import QuantFin.Foundations.BrownianMartingale
 import QuantFin.Foundations.BrownianQuadraticVariation
+import QuantFin.Foundations.QuadraticVariationL2
 import QuantFin.Foundations.CondExpJensen
 import QuantFin.Foundations.ExpMin
 import QuantFin.Foundations.FTAP

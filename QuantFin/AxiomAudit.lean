@@ -152,6 +152,14 @@ namespace QuantFin.AxiomAudit
 /-- info: 'QuantFin.tendsto_expected_bsLogPrice_equipartition_sum' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in #print axioms QuantFin.tendsto_expected_bsLogPrice_equipartition_sum
 
+/-! ## L² quadratic variation of Brownian motion (Summit 1) + its in-probability corollary -/
+
+/-- info: 'QuantFin.QuadraticVariationL2.tendsto_qv' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in #print axioms QuantFin.QuadraticVariationL2.tendsto_qv
+
+/-- info: 'QuantFin.QuadraticVariationL2.tendstoInMeasure_qv' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in #print axioms QuantFin.QuadraticVariationL2.tendstoInMeasure_qv
+
 /-! ## Expectation-form Itô / Feynman–Kac (the QV → ½f″ correction, from first principles) -/
 
 /-- info: 'QuantFin.FeynmanKacHeatEquation.heatConvolution_eq_add_integral_deriv' depends on axioms: [propext, Classical.choice, Quot.sound] -/
