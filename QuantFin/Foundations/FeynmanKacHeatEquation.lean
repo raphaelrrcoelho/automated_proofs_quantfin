@@ -184,6 +184,37 @@ private lemma integrable_heatKernel {t : ℝ} (ht : 0 < t) :
   refine this.congr (Filter.Eventually.of_forall fun y => ?_)
   exact (heatKernel_eq_gaussianPDFReal ht y).symm
 
+/-- **Transfer integrability from the Gaussian law to the heat kernel.** If `g ∈ L¹(N(0,t))`,
+then `g · K(t,·)` is Lebesgue-integrable — because `N(0,t) = volume.withDensity K(t,·)`. This
+turns Gaussian moments (`memLp_id_gaussianReal`) into integrability of polynomial × heat kernel,
+needed for the integration-by-parts in the expectation-form Itô formula. -/
+private lemma integrable_mul_heatKernel_of_gaussian {t : ℝ} (ht : 0 < t) {g : ℝ → ℝ}
+    (hg : Integrable g (gaussianReal 0 t.toNNReal)) :
+    Integrable (fun y => g y * heatKernel t y) volume := by
+  have hv : (t.toNNReal : ℝ≥0) ≠ 0 := (Real.toNNReal_pos.mpr ht).ne'
+  rw [gaussianReal_of_var_ne_zero 0 hv,
+    integrable_withDensity_iff_integrable_smul' (by fun_prop)
+      (ae_of_all _ fun y => gaussianPDF_lt_top)] at hg
+  refine hg.congr (Filter.Eventually.of_forall fun y => ?_)
+  show (gaussianPDF 0 t.toNNReal y).toReal • g y = g y * heatKernel t y
+  have hpdf : (gaussianPDF 0 t.toNNReal y).toReal = heatKernel t y := by
+    rw [heatKernel_eq_gaussianPDFReal ht]
+    simp only [gaussianPDF]
+    rw [ENNReal.toReal_ofReal (gaussianPDFReal_nonneg _ _ _)]
+  rw [smul_eq_mul, hpdf]; ring
+
+/-- First moment: `y · K(t, ·)` is integrable. -/
+private lemma integrable_id_mul_heatKernel {t : ℝ} (ht : 0 < t) :
+    Integrable (fun y => y * heatKernel t y) volume :=
+  integrable_mul_heatKernel_of_gaussian ht
+    ((memLp_id_gaussianReal (μ := 0) (v := t.toNNReal) 1).integrable (by norm_num))
+
+/-- Second moment: `y² · K(t, ·)` is integrable. -/
+private lemma integrable_sq_mul_heatKernel {t : ℝ} (ht : 0 < t) :
+    Integrable (fun y => y ^ 2 * heatKernel t y) volume :=
+  integrable_mul_heatKernel_of_gaussian ht
+    (memLp_id_gaussianReal (μ := 0) (v := t.toNNReal) 2).integrable_sq
+
 /-! ### The Feynman–Kac function `u(t, x) = ∫ z, g(z) · K(t, z - x) dz`
 
 We define `u` directly via the heat-kernel representation, then show it equals
