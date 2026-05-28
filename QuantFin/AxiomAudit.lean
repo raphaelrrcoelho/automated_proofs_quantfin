@@ -249,6 +249,16 @@ namespace QuantFin.AxiomAudit
 #guard_msgs (whitespace := lax) in
   #print axioms QuantFin.discrete_squaring_identity
 
+/-! ## Itô's lemma for f(x) = x² — the L² continuous form (the QF-keystone) -/
+
+/-- info: 'QuantFin.itoSquared_L2_tendsto' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+  #print axioms QuantFin.itoSquared_L2_tendsto
+
+/-- info: 'QuantFin.itoSquared_L2_tendsto_div2' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+  #print axioms QuantFin.itoSquared_L2_tendsto_div2
+
 /-! ## Margrabe BSCallHyp grounding (leap-3 closure via gaussian vector) -/
 
 /-- info: 'QuantFin.normalizedSpread_hasLaw_std' depends on axioms: [propext, Classical.choice, Quot.sound] -/
