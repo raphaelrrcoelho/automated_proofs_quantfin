@@ -130,9 +130,31 @@ def main() -> int:
     )
 
     config = load_config("quantfin.toml")
-    backend = LeanBackend(local_project=config.lean.local_project)
 
-    print("Initializing Lean server (Mathlib load is ~5 min cold)...", flush=True)
+    # Daemon-tuned memory + thread settings (long-lived session, heavier
+    # workload than ad-hoc verify pathway). See `LeanBackend.__init__`
+    # docstring for the semantics. Rationale:
+    #   - hard_cap=None: RLIMIT_AS is omitted. Set 8000 MB initially, but
+    #     it interacts badly with Lean's olean mmap + multi-thread stack
+    #     allocation (RLIMIT_AS=8000 + LEAN_NUM_THREADS=4 → "failed to
+    #     create thread" on first ItoIntegralL2 import). The container's
+    #     cgroup memory limit (11.68 GB on the host) is the real backstop.
+    #   - soft_total=0.90: only restart on system-wide pressure if we cross
+    #     90% (instead of the conservative default 0.80). Avoids spurious
+    #     mid-session restarts from buffer-cache fluctuations.
+    #   - soft_proc=None: disable in-session auto-restart based on Lean
+    #     process memory. We'd rather see an OOM (cgroup kill, observable)
+    #     than lose mid-session state silently.
+    backend = LeanBackend(
+        local_project=config.lean.local_project,
+        memory_hard_limit_mb=None,
+        max_total_memory=0.90,
+        max_process_memory=None,
+    )
+
+    print("Initializing Lean server (Mathlib + QuantFin load, ~3-5 min cold "
+          "with persistent .lake volume; ~10-15 min cold on first ever start)...",
+          flush=True)
     backend._ensure_server()
     print(f"READY: listening on {HOST}:{PORT}", flush=True)
 

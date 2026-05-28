@@ -217,6 +217,24 @@ namespace QuantFin.AxiomAudit
 /-- info: 'QuantFin.ItoIntegralL2.adaptedAt_of_measurable_natural' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in #print axioms QuantFin.ItoIntegralL2.adaptedAt_of_measurable_natural
 
+/-! ## Continuous Itô integral as a CLM on `[0,T]` — the headline -/
+
+/-- info: 'QuantFin.ItoIntegralCLM.generateFrom_predictableRect' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+  #print axioms QuantFin.ItoIntegralCLM.generateFrom_predictableRect
+
+/-- info: 'QuantFin.ItoIntegralCLM.assembly_isometry_T' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+  #print axioms QuantFin.ItoIntegralCLM.assembly_isometry_T
+
+/-- info: 'QuantFin.ItoIntegralCLM.simpleAssembly_T_denseRange' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+  #print axioms QuantFin.ItoIntegralCLM.simpleAssembly_T_denseRange
+
+/-- info: 'QuantFin.ItoIntegralCLM.itoIntegralCLM_T_norm' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+  #print axioms QuantFin.ItoIntegralCLM.itoIntegralCLM_T_norm
+
 /-! ## Margrabe BSCallHyp grounding (leap-3 closure via gaussian vector) -/
 
 /-- info: 'QuantFin.normalizedSpread_hasLaw_std' depends on axioms: [propext, Classical.choice, Quot.sound] -/

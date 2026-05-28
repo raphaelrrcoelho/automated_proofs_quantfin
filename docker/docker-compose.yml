@@ -32,8 +32,14 @@ services:
     # CPUs 0-7 (8 workers, ~8-16 GB peak Lean memory). Drop back to `0-3` on
     # tight hosts: `VERIFY_CPUSET=0-3 docker compose ... run --rm verify ...`
     #
-    # `LEAN_NUM_THREADS=1` makes each lean worker single-threaded for an
-    # additional per-worker memory cap.
+    # `LEAN_NUM_THREADS=1` is the cold-build sweet spot on this host:
+    # Lake's own worker parallelism (~nproc concurrent module builds) already
+    # saturates the 8 cores. Adding intra-elaboration threads on top causes
+    # severe oversubscription (verified 2026-05-28: per-module elaboration
+    # went from ~120s to ~290s when threads went 1→4). For per-request
+    # serving (single Lean process in the REPL) intra-elaboration threads
+    # would help, but our typical request elaborates ~100-LOC files, not
+    # heavy enough to matter. Override only if you know what you're doing.
     cpuset: "${VERIFY_CPUSET:-0-7}"
     environment:
       - LEAN_NUM_THREADS=${LEAN_NUM_THREADS:-1}
@@ -92,6 +98,13 @@ services:
       - ../lean-toolchain:/app/lean-toolchain
       - ../quantfin.toml:/app/quantfin.toml:ro
       - lean_interact_cache:/usr/local/lib/python3.12/dist-packages/lean_interact/cache
+      # Olean cache persistence: without this, every daemon restart re-runs
+      # `lake build` from scratch on whatever's stale since the image was
+      # built (~10–15 min). The named volume is populated from the image's
+      # `/app/.lake/` on first creation (Docker semantics), then survives
+      # `docker compose down lean-repl` so subsequent restarts skip the
+      # rebuild entirely (seconds, not minutes).
+      - lake_build_cache:/app/.lake
     working_dir: /app
     entrypoint: ["python3", "-m", "tools.verify.lean_repl"]
     ports:
@@ -100,3 +113,4 @@ services:
 
 volumes:
   lean_interact_cache:
+  lake_build_cache:

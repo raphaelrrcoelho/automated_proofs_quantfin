@@ -33,11 +33,36 @@ class LeanBackend:
     by name.
     """
 
-    def __init__(self, local_project: str = "."):
+    def __init__(
+        self,
+        local_project: str = ".",
+        *,
+        memory_hard_limit_mb: int | None = None,
+        max_total_memory: float = 0.8,
+        max_process_memory: float | None = 0.8,
+    ):
+        """
+        Args:
+            local_project: Lake project directory.
+            memory_hard_limit_mb: OS-enforced hard cap on the Lean process's
+                resident memory. ``None`` (default) = no cap. Long-lived
+                daemons should set this (e.g. ``8000``) so heavy proofs
+                cannot OOM the host.
+            max_total_memory: Soft cap on *system-wide* memory before the
+                Lean server auto-restarts (proportion in [0,1]). Default
+                0.8. Daemons should raise to ~0.9 to avoid mid-work restarts.
+            max_process_memory: Soft cap on the Lean process memory (as a
+                fraction of ``memory_hard_limit_mb``) before auto-restart.
+                ``None`` disables. Daemons doing long sessions should set
+                this to ``None`` so a slow leak doesn't kill the session.
+        """
         self._local_project = local_project
         self._server: Any = None
         self._project: Any = None
         self._lock = threading.Lock()
+        self._memory_hard_limit_mb = memory_hard_limit_mb
+        self._max_total_memory = max_total_memory
+        self._max_process_memory = max_process_memory
 
     @property
     def name(self) -> str:
@@ -64,11 +89,26 @@ class LeanBackend:
             directory=self._local_project,
             auto_build=True,
         )
-        config = LeanREPLConfig(project=self._project, verbose=False)
-        self._server = AutoLeanServer(config)
+        config = LeanREPLConfig(
+            project=self._project,
+            verbose=False,
+            memory_hard_limit_mb=self._memory_hard_limit_mb,
+            # `enable_incremental_optimization` and `enable_parallel_elaboration`
+            # are True by default — keep them; both help per-request latency
+            # at modest memory cost.
+        )
+        self._server = AutoLeanServer(
+            config,
+            max_total_memory=self._max_total_memory,
+            max_process_memory=self._max_process_memory,
+        )
         logger.info(
-            "Lean server initialized (LocalProject=%s)",
+            "Lean server initialized (LocalProject=%s, hard_cap=%sMB, "
+            "soft_total=%.2f, soft_proc=%s)",
             self._local_project,
+            self._memory_hard_limit_mb,
+            self._max_total_memory,
+            self._max_process_memory,
         )
 
     async def verify(

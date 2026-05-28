@@ -76,6 +76,8 @@ import QuantFin.Foundations.ItoIsometryAdapted
 import QuantFin.Foundations.StochasticInterval
 -- Continuous L²-adapted Itô integral (construction, anchored on Degenne SimpleProcess)
 import QuantFin.Foundations.ItoIntegralL2
+-- The Itô integral as a continuous linear isometry `Lp 2 trim_T → Lp 2 μ` on `[0,T]`
+import QuantFin.Foundations.ItoIntegralCLM
 -- Phase 37: FTAP both directions, two-state market (adapted from Nagy 2026)
 import QuantFin.Foundations.FTAPTwoState
 -- Phase 38: Constant-product AMM (adapted from Pusceddu-Bartoletti FMBC 2024)

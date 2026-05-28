@@ -92,6 +92,23 @@ the distinction that separates Itô from Wiener — with the `∫ B dB` capstone
 has variance equal to the sum of its per-period variances.
 [`Foundations/ItoIsometryAdapted.lean`](../QuantFin/Foundations/ItoIsometryAdapted.lean)
 
+### Continuous Itô integral as a CLM on `[0,T]` ✅
+The discrete Itô isometry (`assembly_isometry`) extended to a continuous linear
+isometry `itoIntegralCLM_T : Lp ℝ 2 (timeMeasure_T ⊗ μ).trim 𝓕.predictable →L[ℝ]
+Lp ℝ 2 μ` with `itoIntegralCLM_T_norm`. Density of T-bounded simple processes
+(`simpleAssembly_T_denseRange`) is proved by Dynkin's π-λ theorem on the basic
+predictable rectangles (`isPiSystem_predictableRect`,
+`generateFrom_predictableRect`), reducing orthogonality to `∫_R g dμ = 0` for
+every basic rect `R = (a, b] × F` with `F ∈ ℱ_a`, then to all measurable sets
+via `setIntegral_eq_zero_of_orthogonal_pred`, and finally to `g = 0` via
+`Lp.ae_eq_zero_of_forall_setIntegral_eq_zero`. The CLM falls out of
+`LinearMap.extendOfNorm`.
+→ *Finance:* the analytic foundation for the Itô calculus layer — every
+predictable `L²` integrand on `[0, T]` has a well-defined Itô integral with
+the isometry norm identity, the bedrock of SDE existence/uniqueness and the
+Black–Scholes PDE derivation downstream.
+[`Foundations/ItoIntegralCLM.lean`](../QuantFin/Foundations/ItoIntegralCLM.lean)
+
 ### Expectation-form Itô / Feynman–Kac ✅
 `E[f(Bₜ)] = f(0) + ½ ∫₀ᵗ E[f''(Bₛ)] ds` (`expectation_ito`,
 `expectation_ito_isPreBrownian`), proved via the heat equation
