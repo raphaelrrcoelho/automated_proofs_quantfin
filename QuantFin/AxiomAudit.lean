@@ -235,6 +235,20 @@ namespace QuantFin.AxiomAudit
 #guard_msgs (whitespace := lax) in
   #print axioms QuantFin.ItoIntegralCLM.itoIntegralCLM_T_norm
 
+/-! ## Itô integral as a process + discrete squaring identity -/
+
+/-- info: 'QuantFin.ItoIntegralProcess.itoSimpleProcess_add' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+  #print axioms QuantFin.ItoIntegralProcess.itoSimpleProcess_add
+
+/-- info: 'QuantFin.ItoIntegralProcess.itoSimpleProcess_smul' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+  #print axioms QuantFin.ItoIntegralProcess.itoSimpleProcess_smul
+
+/-- info: 'QuantFin.discrete_squaring_identity' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+  #print axioms QuantFin.discrete_squaring_identity
+
 /-! ## Margrabe BSCallHyp grounding (leap-3 closure via gaussian vector) -/
 
 /-- info: 'QuantFin.normalizedSpread_hasLaw_std' depends on axioms: [propext, Classical.choice, Quot.sound] -/

@@ -78,6 +78,10 @@ import QuantFin.Foundations.StochasticInterval
 import QuantFin.Foundations.ItoIntegralL2
 -- The Itô integral as a continuous linear isometry `Lp 2 trim_T → Lp 2 μ` on `[0,T]`
 import QuantFin.Foundations.ItoIntegralCLM
+-- Process-level Itô integral `t ↦ (V ● B)_t` for simple processes (scaffold)
+import QuantFin.Foundations.ItoIntegralProcess
+-- Pathwise discrete Itô identity for `f(x) = x²` (the squaring keystone)
+import QuantFin.Foundations.ItoSquaringIdentity
 -- Phase 37: FTAP both directions, two-state market (adapted from Nagy 2026)
 import QuantFin.Foundations.FTAPTwoState
 -- Phase 38: Constant-product AMM (adapted from Pusceddu-Bartoletti FMBC 2024)
