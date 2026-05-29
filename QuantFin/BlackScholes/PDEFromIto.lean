@@ -5,6 +5,7 @@ Authors: Raphael Coelho
 -/
 import Mathlib
 import QuantFin.Foundations.ItoLemma
+import QuantFin.Foundations.ItoLemma2D
 import QuantFin.BlackScholes.PDE
 
 /-!
@@ -133,6 +134,37 @@ with `μ_X = r S, σ_X = σ S, f' = V_S, f'' = V_SS`. -/
 lemma bsItoDrift_no_time_eq_itoDrift (r σ S V_S V_SS : ℝ) :
     bsItoDrift r σ S V_S V_SS 0 = itoDrift V_S V_SS (r * S) (σ * S) := by
   unfold bsItoDrift itoDrift
+  ring
+
+/-! ### Item 6 — the BS drift IS the general 2D Itô drift under GBM
+
+This closes the loop to `Foundations/ItoLemma2D.lean`: the bespoke
+`bsItoDrift` is *literally* `itoDrift2D` of `V(t, S)` specialised to the
+risk-neutral GBM generator `(μ_X, σ_X) = (r S, σ S)`. The BS PDE is then
+the general Itô-drift machinery applied to one diffusion, not a
+pricing-specific algebra — a structural consumer of the foundations
+2D-Itô layer (cf. F1 in `docs/portfolio-review-2026-05-28.md`). -/
+
+/-- **The BS Itô drift is the 2D Itô drift under risk-neutral GBM.**
+`bsItoDrift r σ S V_S V_SS V_t = itoDrift2D V_t V_S V_SS (r·S) (σ·S)`. The
+time-derivative slot `V_t` of `itoDrift2D` carries the `∂_t V` term; the
+GBM local drift `r·S` and local volatility `σ·S` fill the generator. -/
+lemma bsItoDrift_eq_itoDrift2D (r σ S V_S V_SS V_t : ℝ) :
+    bsItoDrift r σ S V_S V_SS V_t = itoDrift2D V_t V_S V_SS (r * S) (σ * S) := by
+  unfold bsItoDrift itoDrift2D
+  ring
+
+/-- **The Black–Scholes PDE is the vanishing of the discounted-price 2D Itô
+drift.** Its LHS equals `itoDrift2D V_t V_S V_SS (r·S) (σ·S) − r·V` — the
+2D-Itô drift of `V(t, S_t)` under risk-neutral GBM, minus the `r·V` from
+differentiating the discount factor `e^{−rt}`. No-arbitrage (`e^{−rt} V_t`
+is a `Q`-martingale, so its drift is zero) is *exactly* this expression
+set to `0`. This routes the BS PDE through the general
+`Foundations.ItoLemma2D.itoDrift2D`, not the bespoke `bsItoDrift`. -/
+theorem bs_pde_eq_itoDrift2D_minus_rV (r σ S V V_S V_SS V_t : ℝ) :
+    V_t + r * S * V_S + (1 / 2) * σ ^ 2 * S ^ 2 * V_SS - r * V =
+      itoDrift2D V_t V_S V_SS (r * S) (σ * S) - r * V := by
+  unfold itoDrift2D
   ring
 
 end QuantFin

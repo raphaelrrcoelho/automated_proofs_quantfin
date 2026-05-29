@@ -82,6 +82,8 @@ import QuantFin.Foundations.ItoIntegralCLM
 import QuantFin.Foundations.ItoIntegralProcess
 -- Pathwise discrete Itô identity for `f(x) = x²` (the squaring keystone)
 import QuantFin.Foundations.ItoSquaringIdentity
+-- Polynomial Itô remainders (x³, x⁴) + the pathwise discrete cubing identity
+import QuantFin.Foundations.DiscreteItoPolynomial
 -- Continuous-time L² Itô formula for `f(x) = x²`: `∑ B ΔB → ½(B_T² − B_0² − T)`
 import QuantFin.Foundations.ItoFormulaSquaredL2
 -- Phase 37: FTAP both directions, two-state market (adapted from Nagy 2026)
@@ -90,6 +92,8 @@ import QuantFin.Foundations.FTAPTwoState
 import QuantFin.DeFi.ConstantProductAMM
 -- Phase 39: Itô structural drift formula + GBM log-drift (after Nagy 2026)
 import QuantFin.Foundations.ItoLemma
+-- Time-dependent (2D) Itô formula + GBM-as-SDE-solution (genuine exp partials)
+import QuantFin.Foundations.ItoLemma2D
 -- Phase 45: Variance swap log-payoff and QV-limit form equivalence
 import QuantFin.Foundations.VarianceSwapEquivalence
 -- Phase 53: Pricing kernel from two-state FTAP (state-prices composition)

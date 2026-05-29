@@ -259,6 +259,28 @@ namespace QuantFin.AxiomAudit
 #guard_msgs (whitespace := lax) in
   #print axioms QuantFin.itoSquared_L2_tendsto_div2
 
+/-! ## Itô chain items 3-6: polynomial remainders, 2D Itô, GBM-SDE, BS-PDE -/
+
+/-- info: 'QuantFin.discrete_cubing_identity' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+  #print axioms QuantFin.discrete_cubing_identity
+
+/-- info: 'QuantFin.discrete_ito_formula_2d' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+  #print axioms QuantFin.discrete_ito_formula_2d
+
+/-- info: 'QuantFin.hasDerivAt_gbmValue_space' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+  #print axioms QuantFin.hasDerivAt_gbmValue_space
+
+/-- info: 'QuantFin.gbm_solves_sde' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+  #print axioms QuantFin.gbm_solves_sde
+
+/-- info: 'QuantFin.bs_pde_eq_itoDrift2D_minus_rV' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+  #print axioms QuantFin.bs_pde_eq_itoDrift2D_minus_rV
+
 /-! ## Margrabe BSCallHyp grounding (leap-3 closure via gaussian vector) -/
 
 /-- info: 'QuantFin.normalizedSpread_hasLaw_std' depends on axioms: [propext, Classical.choice, Quot.sound] -/

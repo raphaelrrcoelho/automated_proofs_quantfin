@@ -109,6 +109,40 @@ the isometry norm identity, the bedrock of SDE existence/uniqueness and the
 Black–Scholes PDE derivation downstream.
 [`Foundations/ItoIntegralCLM.lean`](../QuantFin/Foundations/ItoIntegralCLM.lean)
 
+### Itô's lemma — discrete pathwise core + continuous `x²` L² form ✅
+The exact pathwise identity `f(X_N) − f(X_0) = ∑ f′(X_k)ΔX_k + ½∑ f″(X_k)(ΔX_k)²
++ ∑ R_k` (`discrete_ito_formula`), with the Taylor remainder `R_k` computed in
+closed form for the keystone polynomials: `x²` (remainder `0`,
+`discrete_squaring_identity`), `x³` (`discrete_cubing_identity`), `x⁴`. The
+**continuous L² form** for `x²`: along the uniform partition, the Riemann sums
+`∑ B·ΔB → ½(B_T² − B_0² − T)` in `L²(μ)` (`itoSquared_L2_tendsto_div2`), one
+algebraic step from the discrete identity + the `L²` quadratic variation
+`tendsto_qv`. The **time-dependent 2D** formula (`discrete_ito_formula_2d`,
+`itoDrift2D`) carries the `∂_t f · Δt` term.
+→ *Finance:* the `B_t² = 2∫B dB + t` keystone behind variance-swap pricing
+and Doob's stochastic-integral definition.
+[`Foundations/ItoSquaringIdentity.lean`](../QuantFin/Foundations/ItoSquaringIdentity.lean),
+[`Foundations/DiscreteItoPolynomial.lean`](../QuantFin/Foundations/DiscreteItoPolynomial.lean),
+[`Foundations/ItoFormulaSquaredL2.lean`](../QuantFin/Foundations/ItoFormulaSquaredL2.lean),
+[`Foundations/ItoLemma2D.lean`](../QuantFin/Foundations/ItoLemma2D.lean)
+
+### Geometric Brownian motion solves the GBM SDE ✅
+For `S(t, x) = S₀·exp((μ − ½σ²)t + σx)`, the *genuine* partials
+(`hasDerivAt_gbmValue_space/_time/_space_space`, proved from the `Real.exp`
+chain rule) plug into the 2D Itô drift with the Brownian generator
+`(μ_X, σ_X) = (0, 1)` to give drift `μ·S` and diffusion `σ·S` (`gbm_solves_sde`,
+`gbm_diffusion`): `S_t = S(t, B_t)` satisfies `dS_t = μ S_t dt + σ S_t dB_t`.
+The `−½σ²` in the exponent cancels the `+½σ²` Itô second-order term — that
+cancellation *is* the Itô correction. Routed into the BS PDE
+(`bsItoDrift_eq_itoDrift2D`, `bs_pde_eq_itoDrift2D_minus_rV`): the BS PDE LHS
+*is* `itoDrift2D V_t V_S V_SS (rS) (σS) − rV`, so no-arbitrage (driftless
+discounted price) gives the PDE through the general Itô machinery, not a
+bespoke algebra.
+→ *Finance:* the asset dynamics underlying every BS-family closed form, now a
+*derived* SDE solution rather than a posited model.
+[`Foundations/ItoLemma2D.lean`](../QuantFin/Foundations/ItoLemma2D.lean),
+[`BlackScholes/PDEFromIto.lean`](../QuantFin/BlackScholes/PDEFromIto.lean)
+
 ### Expectation-form Itô / Feynman–Kac ✅
 `E[f(Bₜ)] = f(0) + ½ ∫₀ᵗ E[f''(Bₛ)] ds` (`expectation_ito`,
 `expectation_ito_isPreBrownian`), proved via the heat equation
