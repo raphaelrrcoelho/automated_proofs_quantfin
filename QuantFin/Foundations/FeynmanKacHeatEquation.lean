@@ -333,6 +333,22 @@ private lemma hasDerivAt_heatKernel_sub {t : ℝ} (ht : 0 < t) (z x : ℝ) :
   have h := (hasDerivAt_heatKernel_y ht (z - x)).comp x ((hasDerivAt_id x).const_sub z)
   simpa using h
 
+/-- **`e^w · |w|ⁿ · K(t, w)` is integrable** for every `n`. Via the Gaussian MGF: the set of
+exponential moments of `id` under `gaussianReal 0 t` is all of `ℝ`
+(`integrableExpSet_id_gaussianReal`), so `|w|ⁿ · e^{1·w}` is `gaussianReal`-integrable
+(`integrable_pow_abs_mul_exp_of_mem_interior_integrableExpSet`); transfer to the heat kernel
+via `integrable_mul_heatKernel_of_gaussian`. Supplies the `∂ₓ`/`∂ₓₓ`-domination majorants for
+growth-controlled payoffs. -/
+private lemma integrable_exp_mul_abs_pow_heatKernel {t : ℝ} (ht : 0 < t) (n : ℕ) :
+    Integrable (fun w => Real.exp w * |w| ^ n * heatKernel t w) volume := by
+  have hg : Integrable (fun w => |w| ^ n * Real.exp (1 * w)) (gaussianReal 0 t.toNNReal) :=
+    integrable_pow_abs_mul_exp_of_mem_interior_integrableExpSet
+      (by rw [integrableExpSet_fun_id_gaussianReal, interior_univ]; exact Set.mem_univ 1) n
+  refine (integrable_mul_heatKernel_of_gaussian ht hg).congr
+    (Filter.Eventually.of_forall fun w => ?_)
+  show (|w| ^ n * Real.exp (1 * w)) * heatKernel t w = Real.exp w * |w| ^ n * heatKernel t w
+  rw [one_mul]; ring
+
 /-- **Differentiation under the integral for the Gaussian convolution.** For `t > 0` and `f`
 continuous and bounded (`|f| ≤ Cf`), `φ(s) = ∫ f(y)·K(s, y) dy` is differentiable at `t` with
 `φ′(t) = ∫ f(y)·∂_t K(t, y) dy`. The `s`-derivative `f(y)·K(s,y)·(y²−s)/(2s²)` is dominated,
