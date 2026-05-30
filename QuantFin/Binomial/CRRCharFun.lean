@@ -230,4 +230,31 @@ theorem crr_charFun_pow_tendsto (hσ : 0 < σ) (hT : 0 < T) (t : ℝ) :
     show (1 + (crrStepCharFun r σ T n t - 1)) ^ n = crrStepCharFun r σ T n t ^ n
     rw [show (1 : ℂ) + (crrStepCharFun r σ T n t - 1) = crrStepCharFun r σ T n t from by ring]
 
+/-- **CRR → BS, Gaussian-characteristic-function form.** The same limit as
+`crr_charFun_pow_tendsto`, with the target written explicitly as the characteristic
+function of the Black–Scholes Gaussian `N((r − σ²/2)T, σ²T)`
+(`MeasureTheory.charFun (gaussianReal ((r−σ²/2)T) (σ²T))`).
+
+This is the precise hypothesis Lévy's continuity theorem consumes: once the `n`-step
+CRR log-return law is identified as the `n`-fold convolution of the step law — whose
+characteristic function is `crrStepCharFun`, so the convolution's is `crrStepCharFun ^ n`
+(`MeasureTheory.charFun_conv`) — `ProbabilityMeasure.tendsto_iff_tendsto_charFun`
+upgrades this pointwise charFun convergence to convergence in distribution, i.e. the
+CRR risk-neutral log-return converges in law to the Black–Scholes normal. -/
+theorem crr_charFun_pow_tendsto_gaussian (hσ : 0 < σ) (hT : 0 < T) (t : ℝ) :
+    Tendsto (fun n : ℕ => crrStepCharFun r σ T n t ^ n) atTop
+      (𝓝 (MeasureTheory.charFun
+        (ProbabilityTheory.gaussianReal ((r - σ ^ 2 / 2) * T) (σ ^ 2 * T).toNNReal) t)) := by
+  have hgauss : MeasureTheory.charFun
+      (ProbabilityTheory.gaussianReal ((r - σ ^ 2 / 2) * T) (σ ^ 2 * T).toNNReal) t
+      = Complex.exp (I * Complex.ofReal ((r - σ ^ 2 / 2) * T) * Complex.ofReal t
+        - Complex.ofReal (σ ^ 2 * T) * Complex.ofReal t ^ 2 / 2) := by
+    rw [ProbabilityTheory.charFun_gaussianReal,
+        Real.coe_toNNReal (σ ^ 2 * T) (mul_nonneg (sq_nonneg σ) hT.le)]
+    congr 1
+    push_cast
+    ring
+  rw [hgauss]
+  exact crr_charFun_pow_tendsto hσ hT t
+
 end QuantFin

@@ -329,4 +329,7 @@ namespace QuantFin.AxiomAudit
 /-- info: 'QuantFin.crr_charFun_pow_tendsto' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in #print axioms QuantFin.crr_charFun_pow_tendsto
 
+/-- info: 'QuantFin.crr_charFun_pow_tendsto_gaussian' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in #print axioms QuantFin.crr_charFun_pow_tendsto_gaussian
+
 end QuantFin.AxiomAudit
