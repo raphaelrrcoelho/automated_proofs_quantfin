@@ -227,9 +227,9 @@ milestone DONE: rigorous theory of vanilla derivatives. covers the standard clos
   - exponential difference-quotient limits: `(e^{cx}−1)/x → c`, `(e^{c·h²}−1)/h² → c`, `(e^{c·h²}−1)/h → 0`, `(e^{σh} − e^{−σh})/h → 2σ`. all proved via `HasDerivAt` + `hasDerivAt_iff_tendsto_slope`.
   - **`crrProb_tendsto_half`**: `p_n → 1/2` as `n → ∞`. the substantive analytic step — `p_n` becomes asymptotically symmetric Bernoulli. ~80 lines, uses quotient-of-limits + composition with `h_n = √(T/n)`.
   - **`crr_variance_limit`**: `4 σ² T · p_n (1 − p_n) → σ² T`. direct corollary.
-- [ ] **full pricing-convergence theorem**: `binomialPrice → bs_call_price` as `n → ∞`. requires a **triangular-array CLT** (Lindeberg-Feller) — Mathlib at the current pin only ships the **fixed-iid CLT** (`tendstoInDistribution_inv_sqrt_mul_sum_sub`). plus a continuous-mapping + uniform-integrability argument for the call payoff. **TODO future session**: either (a) draft a triangular-array CLT upstream in Mathlib, or (b) prove CRR convergence directly via characteristic functions (Levy's continuity theorem on log-returns).
+- [x] **full pricing-convergence theorem**: `binomialPrice → bs_call_price` as `n → ∞` — **DONE** via route (b): characteristic functions + Lévy's continuity theorem on the log-returns (`binomialPrice_call_tendsto_bs`, `Binomial/CRRCharFun.lean`). No triangular-array CLT needed — the bounded *put* payoff converges weakly directly and put-call parity lifts it to the call. The literal closed form `S₀Φ(d₁) − Ke^{−rT}Φ(d₂)` is `binomialPrice_call_tendsto_bs_closed` (`Binomial/CRRClosedForm.lean`).
 
-milestone (still partial): classical-analytic CRR↔BS correspondence is formalized on the variance side (and via `p_n → 1/2`). drift-limit `n · (2 p_n − 1) · σ√Δt → (r − σ²/2) T` needs second-order Taylor on `2 e^{rΔt} − e^{σ√Δt} − e^{−σ√Δt}` and is documented in `BinomialCRRConvergence.lean` as further analytic work. full distributional convergence to BS is upstream-gated.
+milestone (achieved): the CRR↔BS correspondence is complete — the variance limit, `p_n → 1/2`, the drift limit `n · (2 p_n − 1) · σ√Δt → (r − σ²/2) T` (`crr_drift_limit_n`, `DriftLimit.lean`), and full distributional + price-level convergence to the BS closed form (`binomialPrice_call_tendsto_bs` / `…_closed`).
 
 ## phase 4: upstream foundations
 
@@ -269,7 +269,7 @@ if mathlib lands an itô integral or degenne extends the brownian-motion library
 
 phases 1 + 2 + phase 3 (basic framework) all landed in a single session on 2026-05-18. remaining work:
 
-1. **CRR convergence to BS** (phase 3 continuation). the big remaining classical-pedagogy artifact. needs CLT applied to log-returns with `u_n = e^{σ√Δt}, d_n = e^{−σ√Δt}` and matching drift correction. ~500-800 lines, multi-session.
+1. **CRR convergence to BS** (phase 3 continuation) — **DONE**: `binomialPrice_call_tendsto_bs` and the closed-form `…_closed` (characteristic functions + Lévy + put-call parity; no triangular-array CLT needed).
 2. **upstream PRs** (phase 4). the 3 already-drafted items are ready to submit. the `Real.erf` PR would be a fresh multi-day drafting effort.
 
 ## what done looks like (achieved)
@@ -376,6 +376,8 @@ load-bearing into the pricing modules rather than a standalone cornerstone.
 
 **Out of scope / still genuinely gated** (do not conflate with the above):
 continuous-time Poisson processes (Cox/Credit), BM reflection principle,
-nowhere-differentiability, law of iterated logarithm, and the triangular-array
-CLT for full CRR→BS distributional convergence — none are unblocked by the
-Itô integral; they need their own upstream Mathlib infrastructure.
+nowhere-differentiability, and the law of iterated logarithm — none are
+unblocked by the Itô integral; they need their own upstream Mathlib
+infrastructure. (CRR→BS distributional convergence is **done** — via
+characteristic functions + put-call parity, sidestepping the triangular-array
+CLT.)
