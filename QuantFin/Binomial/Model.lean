@@ -217,4 +217,28 @@ theorem binomialPrice_const (u d r c : ℝ) (_h : BinomialNoArb u d r) (n : ℕ)
       _ = Real.exp (-r) * Real.exp (-(n : ℝ) * r) * c * 1 := by rw [h_q_complement]
       _ = Real.exp (-((n + 1 : ℕ) : ℝ) * r) * c := by rw [mul_one, h_factor]
 
+/-- **One-step risk-neutral martingale identity** for the binomial up-probability:
+`p · u + (1 − p) · d = eʳ`. -/
+lemma crrUpProb_mul_up_add (u d r : ℝ) (h : BinomialNoArb u d r) :
+    crrUpProb u d r * u + (1 - crrUpProb u d r) * d = Real.exp r := by
+  have hud : u - d ≠ 0 := sub_ne_zero.mpr h.d_lt_u.ne'
+  rw [crrUpProb]
+  field_simp
+  ring
+
+/-- **Stock-price martingale value**: pricing the payoff `g(S) = S` (the underlying
+itself) returns `S` — the discounted stock price is a martingale under the
+risk-neutral probability. -/
+theorem binomialPrice_id (u d r : ℝ) (h : BinomialNoArb u d r) (n : ℕ) (S : ℝ) :
+    binomialPrice u d r (fun x => x) n S = S := by
+  have hmart := crrUpProb_mul_up_add u d r h
+  induction n generalizing S with
+  | zero => rfl
+  | succ n ih =>
+    rw [binomialPrice_succ, ih (S * u), ih (S * d),
+        show crrUpProb u d r * (S * u) + (1 - crrUpProb u d r) * (S * d)
+          = S * (crrUpProb u d r * u + (1 - crrUpProb u d r) * d) from by ring, hmart,
+        show Real.exp (-r) * (S * Real.exp r) = S * (Real.exp (-r) * Real.exp r) from by ring,
+        ← Real.exp_add, neg_add_cancel, Real.exp_zero, mul_one]
+
 end QuantFin
